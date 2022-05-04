@@ -7,6 +7,7 @@ class Unit {
         this.s = s
         this.l = l
         this.selected = false
+        this.strength = 100
         this.sprite = createSprite(positionX, positionY, height, width)
         this.goToPoint = this.sprite.position
         this.sprite.shapeColor = `hsl(${h},${s}%,${l}%)`
