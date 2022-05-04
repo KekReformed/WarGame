@@ -9,7 +9,6 @@ class Battle {
         this.damageInterval = 0.1
         this.timer = 0
         this.totalStrength = totalStrength
-        this.winningStrength = 0
         this.factionList = [factionList[0][0],factionList[1][0]]
 
         for (const i in factionList) {
@@ -31,11 +30,14 @@ class Battle {
 
             for (const i in this.factionList) {
                 let faction = this.factionList[i]
-                
+                this.winningStrength = 0
                 
                 this[faction] -= Math.min(0.025*(this.totalStrength-this[faction]),100)
                 
-                if (this[faction] > this.winningStrength) this.winningFaction = faction;
+                if (this[faction] > this.winningStrength) {
+                    this.winningFaction = faction;
+                    this.winningStrength = this[faction]
+                }
             }
         }
 
@@ -56,6 +58,6 @@ class Battle {
         fill(255,255,255)
         text(`Battle between ${this.battleParticipantStr.join(" and ")}`,this.sprite.position.x,this.sprite.position.y)
         text(`Total Strength:${Math.round(this.totalStrength)}`,this.sprite.position.x,this.sprite.position.y+20)
-        text(`Currently winning: ${this.winningFaction} with ${Math.round(this[this.winningFaction])} troops left`,this.sprite.position.x,this.sprite.position.y+40)
+        text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left`,this.sprite.position.x,this.sprite.position.y+40)
     }
 }

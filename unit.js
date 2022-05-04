@@ -49,6 +49,9 @@ class Unit {
                     //If the faction doesn't exist in the battle yet add it
                     if (typeof battle[this.faction] === typeof undefined) {
                         battle[this.faction] = 0
+                    }
+
+                    if (!battle.factionList.includes(this.faction)) {
                         battle.factionList.push(this.faction)
                     }
 
