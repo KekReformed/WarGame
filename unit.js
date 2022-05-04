@@ -32,8 +32,8 @@ class Unit {
             this.deselectUnit()
         }
 
-        if (this.inBattle) {
-
+        if (!this.sprite.overlap(allSprites) && this.inBattle) {
+            this.inBattle = false
         }
 
         this.sprite.mouseUpdate()
