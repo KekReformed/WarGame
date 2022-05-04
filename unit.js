@@ -18,7 +18,6 @@ class Unit {
     }
 
     updateUnit(){
-
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
         if (this.sprite.collide(allSprites)) this.sprite.setVelocity(0, 0)
         this.sprite.mouseUpdate()
@@ -26,7 +25,7 @@ class Unit {
         //Move the unit if right click pressed whilst selected
         if (this.selected && mouseWentUp(RIGHT)) {
 
-            let mousePos = createVector(mouseX, mouseY)
+            let mousePos = createVector(camera.mouseX, camera.mouseY)
 
             if (mouseButton === RIGHT) {
                 this.goTo(mousePos, 5)
