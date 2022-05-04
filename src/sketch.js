@@ -1,6 +1,4 @@
-try {
-    Unit = require('./unit')
-} catch {}
+Unit = require('./unit')
 
 const damageInterval = 0.1
 let unitList = []

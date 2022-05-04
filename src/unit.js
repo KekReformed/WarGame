@@ -96,4 +96,4 @@ class Unit {
         this.sprite.setVelocity(this.vector.x,this.vector.y)
     }
 }
-try {module.exports = Unit} catch {}
+module.exports = Unit
