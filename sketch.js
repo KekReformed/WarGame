@@ -48,6 +48,7 @@ function mousePressed() {
 function mouseReleased() {
     if (mouseButton !== LEFT) return;
     unitList.forEach(unit => {
+        //Check if a unit is within the box
         if (Math.min(rectStartX,mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX,mouseX) && Math.min(rectStartY,mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY,mouseY)){
             unit.selectUnit()
         }
