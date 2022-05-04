@@ -1,11 +1,14 @@
 class Unit {
 
-    constructor(height, width, h, s, l, positionX, positionY, list) {
+    constructor(name,height, width, h, s, l, positionX, positionY, list, unitNumber) {
         this.height = height
         this.width = width;
         this.h = h
         this.s = s
         this.l = l
+        this.name = name
+        this.unitNumber = unitNumber
+        unitNumber++
         this.selected = false
         this.faction = "neutral"
         this.strength = 100
@@ -14,14 +17,33 @@ class Unit {
         this.sprite.shapeColor = `hsl(${h},${s}%,${l}%)`
         this.sprite.rotateToDirection = true
         this.sprite.setDefaultCollider()
+        this.inBattle = false
         list.push(this)
+        console.log(this.unitNumber)
     }
 
     updateUnit(){
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
-        if (this.sprite.collide(allSprites)) this.sprite.setVelocity(0, 0)
+        
+        if (this.sprite.overlap(allSprites) && !this.inBattle) {
+            this.inBattle = true
+            this.sprite.setVelocity(0,0)
+            this.deselectUnit()
+        }
+
+        if (this.inBattle) {
+
+        }
+
         this.sprite.mouseUpdate()
+        
+        textSize(12)
+        textAlign(CENTER)
+        fill(255,255,255)
+        text(this.name,this.sprite.position.x,this.sprite.position.y)
+        textSize(8)
+        text(`Strength:${this.strength}`,this.sprite.position.x,this.sprite.position.y+10)
 
         //Move the unit if right click pressed whilst selected
         if (this.selected && mouseWentUp(RIGHT)) {
@@ -32,6 +54,10 @@ class Unit {
                 this.goTo(mousePos, 5)
             }
         }
+    }
+
+    bark(){
+        console.log("Woof")
     }
 
     selectUnit() {
