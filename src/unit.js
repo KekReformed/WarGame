@@ -1,5 +1,4 @@
 class Unit {
-
     constructor(height, width, h, s, l, positionX, positionY, list) {
         this.height = height
         this.width = width;
@@ -53,3 +52,4 @@ class Unit {
         this.sprite.setVelocity(this.vector.x,this.vector.y)
     }
 }
+module.exports = Unit

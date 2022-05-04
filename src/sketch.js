@@ -1,18 +1,23 @@
+p5 = require('p5')
+require('../node_modules/p5.play/lib/p5.play.js')
+Unit = require('./unit.js')
+
 let unitList = []
 let boxCreated = false
 let dragged = false
 let rectStartX = 0
 let rectStartY = 0
 
-function setup() {
+setup = () => {
     canvas = createCanvas(window.outerWidth, window.outerHeight);
+    console.log(canvas)
     jeff = new Unit(50,50,0,100,40,300,200,unitList)
     dave = new Unit(50,50,0,100,40,200,200,unitList)
     derek = new Unit(50,50,0,100,40,400,200,unitList)
     john = new Unit(50,50,0,100,40,100,200,unitList)
 }
 
-function draw() {
+draw = () => {
     frameRate(60)
     background(10, 10, 10);
 
@@ -29,7 +34,7 @@ function draw() {
     }
 }
 
-function mousePressed() {
+mousePressed = () => {
     if (mouseButton == LEFT) {
         rectStartX = mouseX
         rectStartY = mouseY
@@ -45,7 +50,7 @@ function mousePressed() {
     }
 }
 
-function mouseReleased() {
+mouseReleased = () => {
     if (mouseButton !== LEFT) return;
     unitList.forEach(unit => {
         //Check if a unit is within the box
@@ -57,7 +62,7 @@ function mouseReleased() {
     boxCreated = false
 }
 
-function mouseDragged() {
+mouseDragged = () => {
     if (mouseButton !== LEFT) return;
     dragged = true
 }
