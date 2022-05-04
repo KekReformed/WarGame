@@ -7,18 +7,18 @@ let rectStartX = 0
 let rectStartY = 0
 let timer = 0
 
-function createUnit(name,height,width,h,s,l,xPos,yPos,list) {
-    unit = new Unit(name,height,width,h,s,l,xPos,yPos,list,unitsCreated)
+function createUnit(name,height,width,h,s,l,xPos,yPos,list, faction = "neutral") {
+    unit = new Unit(name,height,width,h,s,l,xPos,yPos,list,unitsCreated, faction)
     unitsCreated++
     return unit
 }
 
 function setup() {
     canvas = createCanvas(window.outerWidth, window.outerHeight);
-    jeff = createUnit("Jeff", 50, 50, 0, 100, 40, 300, 200, unitList)
-    dave = createUnit("Dave", 50, 50, 0, 100, 40, 200, 200, unitList)
-    derek = createUnit("Derek", 50, 50, 0, 100, 40, 400, 200, unitList)
-    john = createUnit("John", 50, 50, 0, 100, 40, 100, 200, unitList)
+    jeff = createUnit("Jeff", 50, 50, 0, 100, 20, 300, 200, unitList, "USA")
+    dave = createUnit("Dave", 50, 50, 0, 100, 20, 200, 200, unitList, "USA")
+    derek = createUnit("Derek", 50, 50, 0, 100, 20, 400, 200, unitList, "UK")
+    john = createUnit("John", 50, 50, 0, 100, 20, 100, 200, unitList, "UK")
 }
 
 function draw() {
@@ -30,13 +30,13 @@ function draw() {
     for (const i in unitList){
         
         unit = unitList[i]
-        unit.updateUnit()
+        unit.updateUnit(unitList)
         
         if (timer>damageInterval) {
-            if (unit.inBattle) unit.strength -= 1;
+            if (unit.inBattle) unit.strength -= 1*unit.collisionCount;
         }
 
-        if (unit.strength===0) {
+        if (unit.strength<=0) {
             unit.sprite.remove()
             unitList.splice(i,1)
         } 
@@ -52,7 +52,7 @@ function draw() {
 }
 
 function mousePressed() {
-    if (mouseButton == LEFT) {
+    if (mouseButton === LEFT) {
         rectStartX = mouseX
         rectStartY = mouseY
 
@@ -69,6 +69,7 @@ function mousePressed() {
 }
 
 function mouseReleased() {
+    if (mouseButton !== LEFT) return;
     for (const i in unitList) {
         unit = unitList[i]
         //Check if a unit is within the box

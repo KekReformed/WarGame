@@ -1,6 +1,6 @@
 class Unit {
 
-    constructor(name,height, width, h, s, l, positionX, positionY, list, unitNumber) {
+    constructor(name, height, width, h, s, l, positionX, positionY, list, unitNumber, faction) {
         this.height = height
         this.width = width;
         this.h = h
@@ -10,7 +10,7 @@ class Unit {
         this.unitNumber = unitNumber
         unitNumber++
         this.selected = false
-        this.faction = "neutral"
+        this.faction = faction
         this.strength = 100
         this.sprite = createSprite(positionX, positionY, height, width)
         this.goToPoint = this.sprite.position
@@ -22,14 +22,32 @@ class Unit {
         console.log(this.unitNumber)
     }
 
-    updateUnit(){
+    updateUnit(unitList){
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
         
-        if (this.sprite.overlap(allSprites) && !this.inBattle) {
-            this.inBattle = true
-            this.sprite.setVelocity(0,0)
-            this.deselectUnit()
+        this.collisionCount = 0
+
+        for (const i in unitList) {
+            let unit = unitList[i]
+            if (this.sprite.overlap(unit.sprite)){
+
+                //If the unit we're colliding with is an enemy
+                if (unit.faction !== this.faction) {
+
+                    this.collisionCount +=1
+                    if (!this.inBattle) {
+                        this.inBattle = true
+                        this.sprite.setVelocity(0,0)
+                        this.deselectUnit()
+                    }
+
+                }
+
+                else {
+
+                }
+            }
         }
 
         if (!this.sprite.overlap(allSprites) && this.inBattle) {
