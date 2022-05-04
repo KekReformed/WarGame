@@ -1,6 +1,6 @@
-// p5 = require('p5')
-// require('../node_modules/p5.play/lib/p5.play.js')
-// Unit = require('./unit.js')
+try {
+    Unit = require('./unit')
+} catch {}
 
 const damageInterval = 0.1
 let unitList = []
