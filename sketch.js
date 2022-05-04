@@ -5,6 +5,9 @@ let boxCreated = false
 let dragged = false
 let rectStartX = 0
 let rectStartY = 0
+let offset;
+let mouseOffset;
+let w, h
 let timer = 0
 
 function createUnit(name,height,width,h,s,l,xPos,yPos,list, faction = "neutral") {
@@ -14,21 +17,26 @@ function createUnit(name,height,width,h,s,l,xPos,yPos,list, faction = "neutral")
 }
 
 function setup() {
-    canvas = createCanvas(window.outerWidth, window.outerHeight);
+    w = window.outerWidth
+    h = window.outerHeight
+    canvas = createCanvas(w, h);
     jeff = createUnit("Jeff", 50, 50, 0, 100, 20, 300, 200, unitList, "USA")
     dave = createUnit("Dave", 50, 50, 0, 100, 20, 200, 200, unitList, "USA")
     derek = createUnit("Derek", 50, 50, 0, 100, 20, 400, 200, unitList, "UK")
     john = createUnit("John", 50, 50, 0, 100, 20, 100, 200, unitList, "UK")
+    pan = createVector(0, 0);
+    offset = createVector(0, 0)
+    mouseOffset = createVector(0, 0)
 }
 
 function draw() {
+    
     frameRate(60)
     background(10, 10, 10);
-    drawSprites();
+    drawSprites()
     timer+=deltaTime/1000
 
     for (const i in unitList){
-        
         unit = unitList[i]
         unit.updateUnit(unitList)
         
@@ -41,20 +49,21 @@ function draw() {
             unitList.splice(i,1)
         } 
     }
+
     
     if (timer>damageInterval) timer-=damageInterval;
     
     if (dragged === true) {
         stroke("#03e3fc")
         noFill()
-        box = rect(rectStartX, rectStartY, mouseX - rectStartX, mouseY - rectStartY)
+        box = rect(rectStartX, rectStartY, camera.mouseX - rectStartX, camera.mouseY - rectStartY)
     }
 }
 
 function mousePressed() {
-    if (mouseButton === LEFT) {
-        rectStartX = mouseX
-        rectStartY = mouseY
+    if (mouseButton === LEFT && !keyIsDown(CONTROL)) {
+        rectStartX = camera.mouseX
+        rectStartY = camera.mouseY
 
         for (const i in unitList) {
             unit = unitList[i]
@@ -69,11 +78,14 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-    if (mouseButton !== LEFT) return;
+    if (mouseButton === CENTER || (mouseButton === LEFT && keyIsDown(CONTROL))) {
+        offset.set(camera.position.x, camera.position.y)
+    }
+    if (mouseButton !== LEFT && !dragged) return;
     for (const i in unitList) {
         unit = unitList[i]
         //Check if a unit is within the box
-        if (Math.min(rectStartX,mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX,mouseX) && Math.min(rectStartY,mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY,mouseY) && !unit.inBattle){
+        if (Math.min(rectStartX, camera.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, camera.mouseX) && Math.min(rectStartY, camera.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, camera.mouseY)) {
             unit.selectUnit()
         }
     }
