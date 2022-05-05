@@ -38,6 +38,13 @@ class Unit {
                     unit.strength = 0
                 }
             }
+
+            //Unit Combining
+            if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining) {
+                this.strength += unit.strength
+                unit.strength = 0
+                unit.combining = true
+            }
         }
         
         if (this.strength > 0) {
