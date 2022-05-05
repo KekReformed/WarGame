@@ -1,4 +1,4 @@
-Unit = require('./unit')
+const Unit = require('./unit.js').default
 
 let unitList = []
 let battleList = []
@@ -9,7 +9,7 @@ let rectStartX = 0
 let rectStartY = 0
 
 function createUnit(name,height,width,h,s,l,xPos,yPos,list, strength = 100) {
-    unit = new Unit(name,height,width,h,s,l,xPos,yPos,list,unitsCreated, strength)
+    const unit = new Unit(name,height,width,h,s,l,xPos,yPos,list,unitsCreated, strength)
     unitsCreated++
     return unit
 }

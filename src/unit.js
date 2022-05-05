@@ -1,3 +1,5 @@
+import Battle from "./Battle.js";
+
 class Unit {
     constructor(faction, height, width, h, s, l, positionX, positionY, list, unitNumber, strength) {
         this.height = height
@@ -106,4 +108,4 @@ class Unit {
         this.sprite.setVelocity(this.vector.x,this.vector.y)
     }
 }
-module.exports = Unit
+export default Unit
