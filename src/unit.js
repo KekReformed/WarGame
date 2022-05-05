@@ -41,11 +41,11 @@ class Unit {
             }
 
             //Unit Combining
-            if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining) {
-                this.strength += unit.strength
-                unit.strength = 0
-                unit.combining = true
-            }
+            // if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining) {
+            //     this.strength += unit.strength
+            //     unit.strength = 0
+            //     unit.combining = true
+            // }
         }
         
         if (this.strength > 0) {
@@ -75,9 +75,9 @@ class Unit {
         textSize(12)
         textAlign(CENTER)
         fill(255,255,255)
-        text(this.faction,this.sprite.position.x,this.sprite.position.y)
-        textSize(8)
-        text(`Strength:${this.strength}`,this.sprite.position.x,this.sprite.position.y+10)
+        // text(this.faction,this.sprite.position.x,this.sprite.position.y)
+        // textSize(8)
+        // text(`Strength:${this.strength}`,this.sprite.position.x,this.sprite.position.y+10)
 
         //Move the unit if right click pressed whilst selected
         if (this.selected && mouseWentUp(RIGHT)) {

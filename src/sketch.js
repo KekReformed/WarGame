@@ -14,14 +14,39 @@ function createUnit(name,height,width,h,s,l,xPos,yPos,list, strength = 100) {
     return unit
 }
 
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+async function delay(seconds) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
+
 setup = () => {
     canvas = createCanvas(window.outerWidth, window.outerHeight);
-    jeff = createUnit("USA", 50, 50, 0, 100, 20, 300, 200, unitList,2000)
-    dave = createUnit("USA", 50, 50, 0, 100, 20, 200, 200, unitList,2000)
-    derek = createUnit("UK", 50, 50, 0, 100, 20, 400, 200, unitList,2000)
-    john = createUnit("UK", 50, 50, 0, 100, 20, 100, 200, unitList,2000)
-    derek = createUnit("Spain", 50, 50, 0, 100, 20, 600, 200, unitList,2000)
-    john = createUnit("Spain", 50, 50, 0, 100, 20, 500, 200, unitList,2000)
+
+
+    for (i=0; i < randomInt(30, 40); i++) {
+        createUnit("", 50, 50, 
+            randomInt(30, 100), randomInt(30, 100), randomInt(30, 100),
+            randomInt(5, window.outerWidth-5), randomInt(10, window.outerHeight-10),
+            unitList, 2000
+        )
+    }
+
+    async function moveUnits(delayMove=true) {
+        for (let i in unitList) {
+            /** @type {Unit} */
+            const unit = unitList[i]
+            unit.goTo({
+                x: randomInt(5, window.outerWidth-5),
+                y: randomInt(10, window.outerHeight-10)
+            }, [0.3,0.4,0.5,0.6,0.7,0.8,0.9][randomInt(0,6)])
+            if (delayMove) await delay(randomInt(0, 3))
+        }
+    }
+    moveUnits(false)
+    setInterval(moveUnits, 5000)
 }
 
 draw = () => {
