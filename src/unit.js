@@ -12,6 +12,9 @@ class Unit {
         this.selected = false
         this.faction = faction
         this.strength = strength
+        this.effectiveStrength = strength
+        this.strengthModifier = 1
+        this.inCity = false
         this.sprite = createSprite(positionX, positionY, height, width)
         this.goToPoint = this.sprite.position
         this.sprite.shapeColor = `hsl(${h},${s}%,${l}%)`
@@ -20,7 +23,7 @@ class Unit {
         list.push(this)
     }
 
-    updateUnit(unitList,battleList) {
+    update(unitList, battleList, cityList) {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
         
@@ -34,7 +37,7 @@ class Unit {
                 //If the unit we're colliding with is an enemy
                 if (unit.faction !== this.faction) {
                     this.deselectUnit()
-                    battleList.push(new Battle((this.sprite.position.x + unit.sprite.position.x) / 2, (this.sprite.position.y + unit.sprite.position.y) / 2, unit.strength + this.strength, [[this.faction, this.strength], [unit.faction, unit.strength]]))
+                    battleList.push(new Battle((this.sprite.position.x + unit.sprite.position.x) / 2, (this.sprite.position.y + unit.sprite.position.y) / 2, [[this.faction, this.effectiveStrength], [unit.faction, unit.effectiveStrength]]))
                     this.strength = 0
                     unit.strength = 0
                 }
@@ -52,6 +55,7 @@ class Unit {
             for (const i in battleList) {
                 let battle = battleList[i]
                 
+                //If we touch a battle
                 if (this.sprite.overlap(battle.sprite)) {
 
                     //If the faction doesn't exist in the battle yet add it
@@ -63,21 +67,29 @@ class Unit {
                         battle.factionList.push(this.faction)
                     }
 
-                    battle[this.faction] += this.strength
+                    battle[this.faction] += this.effectiveStrength
 
                     this.strength = 0
                 }
             }
         }
 
-        this.sprite.mouseUpdate()
+        for (const i in cityList) {
+            let city = cityList[i]
+
+            if (this.inCity && !this.sprite.overlap(city.sprite)) {
+                this.inCity = false
+                this.strengthModifier -= 1
+            }
+
+        }
         
         textSize(12)
         textAlign(CENTER)
         fill(255,255,255)
         text(this.faction,this.sprite.position.x,this.sprite.position.y)
         textSize(8)
-        text(`Strength:${this.strength}`,this.sprite.position.x,this.sprite.position.y+10)
+        text(`Strength:${this.effectiveStrength}`,this.sprite.position.x,this.sprite.position.y+10)
 
         //Move the unit if right click pressed whilst selected
         if (this.selected && mouseWentUp(RIGHT)) {
@@ -88,6 +100,8 @@ class Unit {
                 this.goTo(mousePos, 5)
             }
         }
+
+        this.effectiveStrength = this.strength * this.strengthModifier
     }
 
     selectUnit() {
@@ -108,4 +122,5 @@ class Unit {
         this.sprite.setVelocity(this.vector.x,this.vector.y)
     }
 }
+
 export default Unit

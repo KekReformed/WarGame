@@ -1,6 +1,6 @@
 class Battle {
 
-    constructor(positionX,positionY,totalStrength,factionList) {
+    constructor(positionX,positionY,factionList) {
         this.positionX = positionX
         this.positionY = positionY
         this.sprite = createSprite(positionX, positionY, 100, 100)
@@ -8,7 +8,6 @@ class Battle {
         this.sprite.shapeColor = `rgb(0,0,255)`
         this.damageInterval = 0.1
         this.timer = 0
-        this.totalStrength = totalStrength
         this.factionList = [factionList[0][0],factionList[1][0]]
 
         for (const i in factionList) {
@@ -17,9 +16,8 @@ class Battle {
         }
     }
 
-    updateBattle() {
+    update() {
         this.timer+=deltaTime/1000
-
         if (this.timer > this.damageInterval) {
             this.totalStrength = 0
             for (const i in this.factionList) {
@@ -41,7 +39,6 @@ class Battle {
             }
         }
 
-        console.log (this)
         if (this.timer > this.damageInterval) this.timer -= this.damageInterval;
         
         //Creates the label overtop of the battle
@@ -59,6 +56,8 @@ class Battle {
         text(`Battle between ${this.battleParticipantStr.join(" and ")}`,this.sprite.position.x,this.sprite.position.y)
         text(`Total Strength:${Math.round(this.totalStrength)}`,this.sprite.position.x,this.sprite.position.y+20)
         text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left`,this.sprite.position.x,this.sprite.position.y+40)
+        console.log(this)
     }
 }
+
 export default Battle

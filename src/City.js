@@ -1,0 +1,46 @@
+class City {
+
+    constructor(faction, cityName, positionX, positionY, value, cityList) {
+
+        this.faction = faction
+        this.cityName = cityName
+        this.positionX = positionX
+        this.positionY = positionY
+        this.value = value
+        this.sprite = createSprite(positionX,positionY,80,80)
+        this.sprite.depth = -1
+        this.sprite.shapeColor = `rgb(0,50,255)`
+        cityList.push(this)
+    }
+
+    update(unitList) {
+        this.defenders = 0
+        
+        for (const i in unitList) {
+            let unit = unitList[i]
+
+            if (this.sprite.overlap(unit.sprite) && unit.faction === this.faction && !unit.inCity){
+                this.defenders += 1
+                unit.inCity = true
+                unit.strengthModifier += 1
+            }
+        }
+
+        for (const i in unitList) {
+            let unit = unitList[i]
+
+            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0) {
+                this.faction = unit.faction
+            }
+        }
+        
+        textSize(12)
+        textAlign(CENTER)
+        fill(255,255,255)
+        text(`${this.cityName}: £${this.value}B/yr`,this.sprite.position.x, this.sprite.position.y)
+        text(`Owned by: ${this.faction}`,this.sprite.position.x, this.sprite.position.y+10)
+    }
+
+}
+
+export default City
