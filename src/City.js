@@ -16,6 +16,8 @@ class City {
     update(unitList) {
         this.defenders = 0
         
+
+        //Counts how many defenders there are 
         for (const i in unitList) {
             let unit = unitList[i]
 
@@ -26,9 +28,11 @@ class City {
             }
         }
 
+
         for (const i in unitList) {
             let unit = unitList[i]
 
+            //Oh noes! there is an enemy inside of me, now im gonna be captured!
             if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0) {
                 this.faction = unit.faction
             }
@@ -37,6 +41,7 @@ class City {
         textSize(12)
         textAlign(CENTER)
         fill(255,255,255)
+        noStroke()
         text(`${this.cityName}: £${this.value}B/yr`,this.sprite.position.x, this.sprite.position.y)
         text(`Owned by: ${this.faction}`,this.sprite.position.x, this.sprite.position.y+10)
     }

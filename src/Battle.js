@@ -53,6 +53,7 @@ class Battle {
         textSize(12)
         textAlign(CENTER)
         fill(255,255,255)
+        noStroke()
         text(`Battle between ${this.battleParticipantStr.join(" and ")}`,this.sprite.position.x,this.sprite.position.y)
         text(`Total Strength:${Math.round(this.totalStrength)}`,this.sprite.position.x,this.sprite.position.y+20)
         text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left`,this.sprite.position.x,this.sprite.position.y+40)

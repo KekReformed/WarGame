@@ -1,6 +1,7 @@
 import Battle from "./Battle.js";
 
 class Unit {
+
     constructor(faction, height, width, h, s, l, positionX, positionY, list, strength) {
         this.height = height
         this.width = width;
@@ -25,6 +26,8 @@ class Unit {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
         
+        this.sprite.mouseUpdate()
+
         this.collisionCount = 0
 
         for (const i in unitList) {
@@ -34,7 +37,7 @@ class Unit {
 
                 //If the unit we're colliding with is an enemy
                 if (unit.faction !== this.faction) {
-                    this.deselectUnit()
+                    this.deselect()
                     battleList.push(new Battle((this.sprite.position.x + unit.sprite.position.x) / 2, (this.sprite.position.y + unit.sprite.position.y) / 2, [[this.faction, this.effectiveStrength], [unit.faction, unit.effectiveStrength]]))
                     this.strength = 0
                     unit.strength = 0
@@ -88,7 +91,7 @@ class Unit {
         text(this.faction,this.sprite.position.x,this.sprite.position.y)
         textSize(8)
         text(`Strength:${this.effectiveStrength}`,this.sprite.position.x,this.sprite.position.y+10)
-
+        
         //Move the unit if right click pressed whilst selected
         if (this.selected && mouseWentUp(RIGHT)) {
 
@@ -102,12 +105,12 @@ class Unit {
         this.effectiveStrength = this.strength * this.strengthModifier
     }
 
-    selectUnit() {
+    select() {
         this.selected = true
         this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,50%)`)
     }
 
-    deselectUnit(){
+    deselect(){
         this.selected = false
         this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,${this.l}%)`)
     }
