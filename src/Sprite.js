@@ -10,10 +10,10 @@ let p = undefined
 let allCollisions = []
 let allDomainOverlaps = []
 
-function rotateVector(x, y, rad, org = p.createVector(0,0)) {
-    x = (x - org.x)*Math.cos(rad) - (y - org.y)*Math.sin(rad)
-    y = (x - org.x)*Math.sin(rad) + (y - org.y)*Math.cos(rad)
-    return p.createVector(org.x + x, org.y + y)
+function rotateVector(x, y, rad, org = p.createVector(0, 0)) {
+    const rotatedX = (x - org.x) * Math.cos(rad) - (y - org.y) * Math.sin(rad)
+    const rotatedY = (x - org.x) * Math.sin(rad) + (y - org.y) * Math.cos(rad)
+    return p.createVector(org.x + rotatedX, org.y + rotatedY)
 }
 
 class Sprite {
@@ -37,7 +37,12 @@ class Sprite {
 
     isMouseOver() {
         let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
-        if (mouse.x <= this.position.x + (this.width/2) && mouse.x >= this.position.x-(this.width/2) && mouse.y <= this.position.x+(this.height/2), mouse.y >= this.position.y-(this.height/2)) {
+        if (
+            mouse.x <= this.position.x + (this.width / 2) &&
+            mouse.x >= this.position.x - (this.width / 2) &&
+            mouse.y <= this.position.y + (this.height / 2) &&
+            mouse.y >= this.position.y - (this.height / 2)
+        ) {
             // console.log("mouseOver "+this.id)
             return true
         }
@@ -54,7 +59,7 @@ class Sprite {
         this.update()
         let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
         p.stroke(255)
-        p.line(this.position.x, this.position.y,mouse.x, mouse.y)
+        p.line(this.position.x, this.position.y, mouse.x, mouse.y)
         p.translate(this.position.x, this.position.y)
         p.rotate(this.rad)
         p.translate(-this.position.x, -this.position.y)
