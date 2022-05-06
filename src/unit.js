@@ -7,8 +7,6 @@ class Unit {
         this.h = h
         this.s = s
         this.l = l
-        this.unitNumber = unitNumber
-        unitNumber++
         this.selected = false
         this.faction = faction
         this.strength = strength

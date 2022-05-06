@@ -1,10 +1,9 @@
-const Unit = require('./unit.js').default
+const Unit = require('./Unit.js').default
 const City = require('./City.js').default
 
 let unitList = []
 let battleList = []
 let cityList = []
-let unitsCreated = 0
 let playerMoney = 0
 let playerFaction = "UK"
 let dragged = false
@@ -12,8 +11,7 @@ let rectStartX = 0
 let rectStartY = 0
 
 function createUnit(name,height,width,h,s,l,xPos,yPos,list, strength = 100) {
-    const unit = new Unit(name,height,width,h,s,l,xPos,yPos,list,unitsCreated, strength)
-    unitsCreated++
+    const unit = new Unit(name,height,width,h,s,l,xPos,yPos,list, strength)
     return unit
 }
 
