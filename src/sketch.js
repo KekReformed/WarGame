@@ -8,9 +8,10 @@ let cityList = []
 let depotList = []
 let playerMoney = 0
 let playerFaction = "UK"
-let dragged = false
-let rectStartX = 0
-let rectStartY = 0
+
+var dragged = false
+var rectStartX = 0
+var rectStartY = 0
 
 function createUnit(name,height,width,h,s,l,xPos,yPos,list, strength = 100) {
     const unit = new Unit(name,height,width,h,s,l,xPos,yPos,list, strength)
@@ -31,7 +32,6 @@ setup = () => {
 }
 
 draw = () => {
-    console.log(dragged)
     frameRate(60)
     background(10, 10, 10);
 
@@ -100,9 +100,11 @@ draw = () => {
         noFill()
         rect(rectStartX, rectStartY, mouseX - rectStartX, mouseY - rectStartY)
     }
+
 }
 
 mousePressed = () => {
+    
     if (mouseButton === LEFT) {
         rectStartX = mouseX
         rectStartY = mouseY
@@ -136,13 +138,12 @@ mousePressed = () => {
 
 mouseReleased = () => {
     if (mouseButton !== LEFT) return;
-    console.log("released")
 
     for (const i in unitList) {
         let unit = unitList[i]
 
         //Check if a unit is within the rectangle
-        if (Math.min(rectStartX,mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX,mouseX) && Math.min(rectStartY,mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY,mouseY) && unit.faction === playerFaction){
+        if (Math.min(rectStartX,mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX,mouseX) && Math.min(rectStartY,mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY,mouseY)){
             unit.select()
         }
     }
@@ -156,7 +157,6 @@ mouseReleased = () => {
         }
     }
 
-    console.log(dragged)
     dragged = false
 }
 
