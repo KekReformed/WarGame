@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "npm run build:watch",
-    "build": "webpack",
+    "build": "webpack --mode=production",
     "build:watch": "webpack --watch"
   },
   "repository": {
