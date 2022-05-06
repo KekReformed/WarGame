@@ -1,7 +1,7 @@
 import Battle from "./Battle.js";
 
 class Unit {
-    constructor(faction, height, width, h, s, l, positionX, positionY, list, unitNumber, strength) {
+    constructor(faction, height, width, h, s, l, positionX, positionY, list, strength) {
         this.height = height
         this.width = width;
         this.h = h
