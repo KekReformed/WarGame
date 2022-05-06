@@ -1,21 +1,20 @@
+sprites = require('./Sprite')
+let p = undefined
+
 class Unit {
-    constructor(name, height, width, h, s, l, positionX, positionY, list, unitNumber, faction) {
+    constructor(name, height, width, color, positionX, positionY, list, unitNumber, faction) {
         this.height = height
         this.width = width;
-        this.h = h
-        this.s = s
-        this.l = l
         this.name = name
         this.unitNumber = unitNumber
         unitNumber++
         this.selected = false
         this.faction = faction
         this.strength = 100
-        this.sprite = createSprite(positionX, positionY, height, width)
+        this.sprite = new sprites.Sprite(positionX, positionY, width, height, 0, sprites.Anchor.top)
         this.goToPoint = this.sprite.position
-        this.sprite.shapeColor = `hsl(${h},${s}%,${l}%)`
-        this.sprite.rotateToDirection = true
-        this.sprite.setDefaultCollider()
+        this.sprite.color = color
+        this.sprite.velocityRotate = true
         this.inBattle = false
         list.push(this)
         console.log(this.unitNumber)
@@ -30,7 +29,7 @@ class Unit {
         for (const i in unitList) {
             let unit = unitList[i]
             if (this.sprite.overlap(unit.sprite)){
-
+                console.log(`overlap between ${unit.name} and ${this.name} domains`)
                 //If the unit we're colliding with is an enemy
                 if (unit.faction !== this.faction) {
 
@@ -44,30 +43,25 @@ class Unit {
                 }
 
                 else {
+                    
+            }
 
-                }
             }
         }
-
-        if (!this.sprite.overlap(allSprites) && this.inBattle) {
-            this.inBattle = false
-        }
-
-        this.sprite.mouseUpdate()
         
-        textSize(12)
-        textAlign(CENTER)
-        fill(255,255,255)
-        text(this.name,this.sprite.position.x,this.sprite.position.y)
-        textSize(8)
-        text(`Strength:${this.strength}`,this.sprite.position.x,this.sprite.position.y+10)
+        p.textSize(12)
+        p.textAlign(p.CENTER)
+        p.fill(255,255,255)
+        p.text(this.name,this.sprite.position.x,this.sprite.position.y)
+        p.textSize(8)
+        p.text(`Strength:${this.strength}`,this.sprite.position.x,this.sprite.position.y+10)
 
         //Move the unit if right click pressed whilst selected
-        if (this.selected && mouseWentUp(RIGHT)) {
+        if (this.selected && p.mouseWentUp(p.RIGHT)) {
 
-            let mousePos = createVector(mouseX, mouseY)
+            let mousePos = p.createVector(p.mouseX, p.mouseY)
 
-            if (mouseButton === RIGHT) {
+            if (p.mouseButton === p.RIGHT) {
                 this.goTo(mousePos, 5)
             }
         }
@@ -79,21 +73,25 @@ class Unit {
 
     selectUnit() {
         this.selected = true
-        this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,50%)`)
+        this.sprite.color = "#ff0000"
     }
 
     deselectUnit(){
         this.selected = false
-        this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,${this.l}%)`)
+        this.sprite.color = "#660000"
     }
 
     goTo(destination, speed = 1) {
-        this.goToPoint = createVector(destination.x,destination.y)
+        this.goToPoint = p.createVector(destination.x,destination.y)
         console.log(destination.x,destination.y)
-        this.vector = createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
+        this.vector = p.createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
         this.vector.normalize()
         this.vector.mult(speed)
         this.sprite.setVelocity(this.vector.x,this.vector.y)
     }
 }
 module.exports = Unit
+
+module.exports.initalizeUnits = (pInst) => {
+    p = pInst
+}

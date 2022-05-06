@@ -1,4 +1,6 @@
 Unit = require('./unit')
+sprites = require('./Sprite')
+p5 = require('p5')
 
 const damageInterval = 0.1
 let unitList = []
@@ -9,82 +11,89 @@ let rectStartX = 0
 let rectStartY = 0
 let timer = 0
 
-function createUnit(name,height,width,h,s,l,xPos,yPos,list, faction = "neutral") {
-    unit = new Unit(name,height,width,h,s,l,xPos,yPos,list,unitsCreated, faction)
+function createUnit(name,height,width,color,xPos,yPos,list, faction = "neutral") {
+    unit = new Unit(name,height,width,color,xPos,yPos,list,unitsCreated, faction)
     unitsCreated++
     return unit
 }
 
-setup = () => {
-    canvas = createCanvas(window.outerWidth, window.outerHeight);
-    jeff = createUnit("Jeff", 50, 50, 0, 100, 20, 300, 200, unitList, "USA")
-    dave = createUnit("Dave", 50, 50, 0, 100, 20, 200, 200, unitList, "USA")
-    derek = createUnit("Derek", 50, 50, 0, 100, 20, 400, 200, unitList, "UK")
-    john = createUnit("John", 50, 50, 0, 100, 20, 100, 200, unitList, "UK")
-}
-
-draw = () => {
-    frameRate(60)
-    background(10, 10, 10);
-    drawSprites();
-    timer+=deltaTime/1000
-
-    for (const i in unitList){
-        
-        unit = unitList[i]
-        unit.updateUnit(unitList)
-        
-        if (timer>damageInterval) {
-            if (unit.inBattle) unit.strength -= 1*unit.collisionCount;
+function sketch(p){
+    p.setup = () => {
+        sprites.initalizeSprites(p)
+        Unit.initalizeUnits(p)
+        canvas = p.createCanvas(window.innerWidth, window.innerHeight);
+        jeff = createUnit("Jeff", 50, 50, "#660000", 300, 200, unitList, "USA")
+        dave = createUnit("Dave", 50, 50, "#660000", 200, 200, unitList, "USA")
+        derek = createUnit("Derek", 50, 50, "#660000", 400, 200, unitList, "UK")
+        john = createUnit("John", 50, 50, "#660000", 100, 200, unitList, "UK")
+    }
+    
+    p.draw = () => {
+        p.frameRate(60)
+        p.background(10, 10, 10);
+        sprites.drawSprites();
+        timer+=p.deltaTime/1000
+    
+        for (const i in unitList){
+            
+            unit = unitList[i]
+            unit.updateUnit(unitList)
+            
+            if (timer>damageInterval) {
+                if (unit.inBattle) unit.strength -= 1*unit.collisionCount;
+            }
+    
+            if (unit.strength<=0) {
+                unit.sprite.remove()
+                unitList.splice(i,1)
+            } 
         }
-
-        if (unit.strength<=0) {
-            unit.sprite.remove()
-            unitList.splice(i,1)
-        } 
+        
+        if (timer>damageInterval) timer-=damageInterval;
+        
+        if (dragged === true) {
+            p.stroke("#03e3fc")
+            p.noFill()
+            box = p.rect(rectStartX, rectStartY, p.mouseX, p.mouseY)
+        }
     }
     
-    if (timer>damageInterval) timer-=damageInterval;
-    
-    if (dragged === true) {
-        stroke("#03e3fc")
-        noFill()
-        box = rect(rectStartX, rectStartY, mouseX - rectStartX, mouseY - rectStartY)
+    p.mousePressed = () => {
+        if (p.mouseButton === p.LEFT) {
+            rectStartX = p.mouseX
+            rectStartY = p.mouseY
+            
+            for (const i in unitList) {
+                unit.sprite.rotate(45)
+                unit = unitList[i]
+                if (unit.sprite.isMouseOver() && !unit.inBattle) {
+                    unit.selectUnit()
+                }
+                else {
+                    unit.deselectUnit()
+                }
+            }
+        }
     }
-}
-
-mousePressed = () => {
-    if (mouseButton === LEFT) {
-        rectStartX = mouseX
-        rectStartY = mouseY
-
+    
+    p.mouseReleased = () => {
+        if (p.mouseButton !== p.LEFT) return;
         for (const i in unitList) {
             unit = unitList[i]
-            if (unit.sprite.mouseIsOver && !unit.inBattle) {
+            //Check if a unit is within the box
+            if (Math.min(rectStartX,p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX,p.mouseX) && Math.min(rectStartY,p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY,p.mouseY) && !unit.inBattle){
                 unit.selectUnit()
             }
-            else {
-                unit.deselectUnit()
-            }
         }
+    
+        dragged = false
+        boxCreated = false
+    }
+    
+    p.mouseDragged = () => {
+        if (p.mouseButton !== p.LEFT) return;
+        dragged = true
     }
 }
 
-mouseReleased = () => {
-    if (mouseButton !== LEFT) return;
-    for (const i in unitList) {
-        unit = unitList[i]
-        //Check if a unit is within the box
-        if (Math.min(rectStartX,mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX,mouseX) && Math.min(rectStartY,mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY,mouseY) && !unit.inBattle){
-            unit.selectUnit()
-        }
-    }
-
-    dragged = false
-    boxCreated = false
-}
-
-mouseDragged = () => {
-    if (mouseButton !== LEFT) return;
-    dragged = true
-}
+let pInst = new p5(sketch)
