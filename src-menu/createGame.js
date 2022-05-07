@@ -16,9 +16,7 @@ createBtn.addEventListener("click", e => {
 })
 
 updateGameCreateButton()
-usernameInput.addEventListener('keyup', e => {
-    updateGameCreateButton()
-})
+usernameInput.addEventListener('keyup', e => updateGameCreateButton())
 
 gameCreateBtn.addEventListener('click', e => {
     if (gameCreateFormValid()) {

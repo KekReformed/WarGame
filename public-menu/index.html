@@ -9,7 +9,6 @@
     <script defer src="index.js"></script>
 </head>
 <body>
-    <script src="agar.js"></script>
     <div class="container">
         <section id="main">
             <h1>Wargame</h1>
@@ -29,6 +28,32 @@
 
         <section class="page" id="lobbies">
             <h1>Join Game</h1>
+
+            <div class="form">
+                <div class="tooltip">You must enter a username to join a game.</div>
+                <input class="input" id="join-game-u" type="text" placeholder="Username" %eval%|req.user ? `value="${req.user.username}"` : ``|>
+            </div>
+
+            <div class="games">
+                <div class="game">
+                    <p>Amelix's Game - 14 players</p>
+                    <div class="join-button invalid">
+                        Join
+                    </div>
+                </div>
+                <div class="game">
+                    <p>your mum's Game - 6 players</p>
+                    <div class="join-button invalid">
+                        Join
+                    </div>
+                </div>
+                <div class="game">
+                    <p>Jack's Game - 69 players</p>
+                    <div class="join-button valid">
+                        Join
+                    </div>
+                </div>
+            </div>
 
             <div class="buttons">
                 <div class="back button">
