@@ -15,8 +15,8 @@ class Rectangle {
     constructor(x, y, hw, hh) {
         this.x = x;
         this.y = y;
-        this.w = hw,
-            this.h = hh;
+        this.w = hw;
+        this.h = hh;
     }
 
     // check if a point is within this instance of a rectangle
@@ -69,7 +69,7 @@ class QuadTree {
     search(range) {
         let found = []
         if (!this.rect.intersects(range)) return found; // optamization
-        this.points.forEach(point =>{
+        this.points.forEach(point => {
             if (range.has(point)) found.push(point)
         })
         if (this.subdivided) {
@@ -117,7 +117,9 @@ class QuadTree {
             p.circle(point.x, point.y, 5)
         })
     }
-
+    /**
+     *          END OF DEBUG
+     */
 
 }
 
