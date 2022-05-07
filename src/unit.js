@@ -24,31 +24,6 @@ class Unit {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
         
-        this.collisionCount = 0
-
-        for (const i in unitList) {
-            let unit = unitList[i]
-            if (this.sprite.overlap(unit.sprite)){
-                console.log(`overlap between ${unit.name} and ${this.name} domains`)
-                //If the unit we're colliding with is an enemy
-                if (unit.faction !== this.faction) {
-
-                    this.collisionCount +=1
-                    if (!this.inBattle) {
-                        this.inBattle = true
-                        this.sprite.setVelocity(0,0)
-                        this.deselectUnit()
-                    }
-
-                }
-
-                else {
-                    
-            }
-
-            }
-        }
-        
         p.textSize(12)
         p.textAlign(p.CENTER)
         p.fill(255,255,255)
@@ -58,11 +33,22 @@ class Unit {
 
         //Move the unit if right click pressed whilst selected
         if (this.selected && p.mouseWentUp(p.RIGHT)) {
-
+            
             let mousePos = p.createVector(p.mouseX, p.mouseY)
-
+            
             if (p.mouseButton === p.RIGHT) {
                 this.goTo(mousePos, 5)
+            }
+        }
+
+        if (!this.sprite.isColliding) return; // after this it's for colliding only uwu
+        
+        //If the unit we're colliding with is an enemy
+        if (unitList[this.sprite.collisions[0].userData].faction !== this.faction) {
+            if (!this.inBattle) {
+                this.inBattle = true
+                this.sprite.setVelocity(0,0)
+                this.deselectUnit()
             }
         }
     }

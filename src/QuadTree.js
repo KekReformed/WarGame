@@ -1,12 +1,14 @@
 // this will not depend on p5.js for optimization purposes / being able to use this elsewhere if i want :3
 
-capacity = 0    // the capacity of the of the QuadTree (how many points each section / QuadTree can store)
-p = undefined
+capacity = 0;    // the capacity of the of the QuadTree (how many points each section / QuadTree can store)
+p = undefined;  // p5 instance (unique to this usecase)
 
 class Point {
-    constructor(x, y) {
+    constructor(x, y, unit) {
         this.x = x;
         this.y = y;
+        // unique to this usecase
+        this.unit = unit;
     }
 }
 
@@ -32,30 +34,31 @@ class Rectangle {
 
     // check if another rectangle intersects this one
     intersects(rect) {
+        // there you go amy
         return (
             rect.x - rect.w < this.x + this.w ||
             rect.x + rect.w > this.x - this.w ||
             rect.y - rect.h < this.y + this.h ||
             rect.y + rect.h > this.y - this.h
-        )
+        );
     }
 }
 
 class QuadTree {
     constructor(rect) {
-        this.rect = rect            // the rectangle the QuadTree instance represents 
-        this.points = []            // stores the points housed within the instance
-        this.subdivided = false     // this is to make sure we haven't already subdivided this instance of quadtree
+        this.rect = rect;            // the rectangle the QuadTree instance represents 
+        this.points = [];            // stores the points housed within the instance
+        this.subdivided = false;     // this is to make sure we haven't already subdivided this instance of quadtree
     }
 
     add(point) {
 
         if (!this.rect.has(point)) return false; // because i added the = for edge cases in the has function i need to make this false 
 
-        if (this.points.length < capacity - 1) {
-            this.points.push(point)
+        if (this.points.length < capacity) {
+            this.points.push(point);
         } else if (!this.subdivided) {
-            this.subdivide()        // split our rectangle
+            this.subdivide();        // split our rectangle
         } else {
             // random order of precidence doesn't really matter
             // if - else if to make sure the point only enters one QuadTree
@@ -69,16 +72,17 @@ class QuadTree {
     search(range) {
         let found = []
         if (!this.rect.intersects(range)) return found; // optamization
-        this.points.forEach(point => {
-            if (range.has(point)) found.push(point)
-        })
+        for (let i = 0; i < this.points.length; i++) {
+            let point = this.points[i] 
+            if ((point.x !== range.x && point.y !== range.y) && range.has(point)) found.push(point);
+        }
         if (this.subdivided) {
             found.push(...this.tr.search(range));
             found.push(...this.tl.search(range));
             found.push(...this.br.search(range));
             found.push(...this.bl.search(range));
         }
-        return found
+        return found;
     }
 
     subdivide() {
@@ -91,7 +95,7 @@ class QuadTree {
         this.br = new QuadTree(new Rectangle(this.rect.x + this.rect.w / 2, this.rect.y + this.rect.h / 2, this.rect.w / 2, this.rect.h / 2));   // bottom left
         this.bl = new QuadTree(new Rectangle(this.rect.x - this.rect.w / 2, this.rect.y + this.rect.h / 2, this.rect.w / 2, this.rect.h / 2));   // bottom right
 
-        this.subdivided = true
+        this.subdivided = true;
     }
 
     /**
@@ -100,22 +104,22 @@ class QuadTree {
      */
 
     draw() {
-        p.stroke(255)
-        p.noFill()
-        p.rectMode(p.CENTER)
-        p.rect(this.rect.x, this.rect.y, this.rect.w * 2, this.rect.h * 2)
-        p.rectMode(p.CORNERS)
+        p.stroke(255);
+        p.noFill();
+        p.rectMode(p.CENTER);
+        p.rect(this.rect.x, this.rect.y, this.rect.w * 2, this.rect.h * 2);
+        p.rectMode(p.CORNERS);
         if (this.subdivided) {
-            this.tr.draw()
-            this.tl.draw()
-            this.br.draw()
-            this.bl.draw()
+            this.tr.draw();
+            this.tl.draw();
+            this.br.draw();
+            this.bl.draw();
         }
-        p.fill(255)
-        p.noStroke()
-        this.points.forEach(point => {
-            p.circle(point.x, point.y, 5)
-        })
+        p.fill(255);
+        p.noStroke();
+        for (let i; i < this.points.length; i++){
+            p.circle(this.points[i].x, this.points[i].y, 5);
+        }
     }
     /**
      *          END OF DEBUG
@@ -128,7 +132,7 @@ module.exports.Point = Point
 module.exports.Rectangle = Rectangle
 
 module.exports.initalizeQuadTree = (cap, p5 = undefined) => { // a debug only instance of p5
-    capacity = cap
-    p = p5
+    capacity = cap;
+    p = p5;
 }
 
