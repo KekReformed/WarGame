@@ -4,9 +4,11 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "npm run build:watch",
+    "start": "webpack --watch",
+    "start:menu": "webpack --watch --config webpack.menu.config.js",
+
     "build": "webpack --mode=production",
-    "build:watch": "webpack --watch"
+    "build:menu": "webpack --mode=production --config webpack.menu.config.js"
   },
   "repository": {
     "type": "git",

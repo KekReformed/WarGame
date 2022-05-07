@@ -1,0 +1,151 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+div.container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+div.container section {
+  text-align: center;
+  position: absolute;
+
+  background-color: #000000e5;
+  border-radius: 20px;
+  width: 620px;
+
+  padding-bottom: 10px;
+}
+
+div.buttons {
+  margin: 30px 0 0px 0;
+}
+
+div.button {
+  cursor: pointer;
+  font-size: 20px;
+  color: antiquewhite;
+
+  border: 2px solid #111111;
+  border-left: none;
+  border-right: none;
+
+  padding: 30px;
+
+  user-select: none;
+}
+
+div.button:hover {
+  background-color: #b48b847e;
+}
+
+#game-create.valid {
+  background-color: #1a3a166b;
+}
+
+#game-create.valid:hover {
+  background-color: #2d7c238f;
+}
+
+#game-create.invalid {
+  cursor: default;
+  user-select: none;
+  background-color: #85232363;
+}
+
+h1, p {
+  user-select: none;
+}
+
+h1 {
+  font-size: 50px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: royalblue;
+}
+
+p {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: whitesmoke;
+  padding: 0 5px;
+}
+
+p.footer {
+  margin-top: 20px;
+  color: #c7c7c7;
+}
+
+p.error {
+  margin-top: 10px;
+  color: #971212
+}
+
+.page {
+  display: none;
+}
+
+#create-game h1 {
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  width: 60%;
+  margin: auto;
+  text-align: left;
+}
+
+.input { 
+  width: 100%; 
+  background: #0000004d;
+  margin: 5px 0 30px 0;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 13px;
+  color: #fff;
+  text-shadow: 1px 1px 1px #0000004d;
+  border: 1px solid #0000004d;
+  border-radius: 4px;
+  box-shadow: inset 0 -5px 45px #64646433, 0 1px 1px #ffffff33;
+  -webkit-transition: box-shadow .5s ease;
+  -moz-transition: box-shadow .5s ease;
+  -o-transition: box-shadow .5s ease;
+  -ms-transition: box-shadow .5s ease;
+  transition: box-shadow .5s ease;
+}
+
+.input:focus { box-shadow: inset 0 -5px 45px #64646466, 0 1px 1px #ffffff33; }
+
+.form-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px
+}
+
+.left {
+  display: flex;
+  flex-direction: row;
+  justify-content: left !important;
+  align-items: center;    
+}
+
+#public-label {
+  margin-left: 5px;
+}
+
+.tooltip {
+  font-size: 15px;
+  color:#aaaaaa;
+  max-width: 364px;
+}
