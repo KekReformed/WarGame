@@ -1,6 +1,6 @@
 import './agar.js'
 
-export const main = document.getElementById("main")
+const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")
 const pages = document.getElementsByClassName("page")
 const hostname = "wargame.amelix.xyz:7777/api"

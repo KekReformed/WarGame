@@ -152,9 +152,16 @@ p.error {
   max-width: 364px;
 }
 
-.games {
+#games {
+  color: white;
   width: 70%;
   margin: auto;
+}
+
+#games span {
+  cursor: pointer;
+  color: #6a6aff;
+  text-decoration: underline;
 }
 
 .game {
@@ -171,7 +178,7 @@ p.error {
 .game .join-button {
   cursor: pointer;
   color: antiquewhite;
-  padding: 4px 10px 4px 10px;
+  padding: 9px 20px 9px 20px;
   width: 70px;
 
   position: absolute;

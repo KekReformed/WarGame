@@ -34,32 +34,14 @@
                 <input class="input" id="join-game-u" type="text" placeholder="Username" %eval%|req.user ? `value="${req.user.username}"` : ``|>
             </div>
 
-            <div class="games">
-                <div class="game">
-                    <p>Amelix's Game - 14 players</p>
-                    <div class="join-button invalid">
-                        Join
-                    </div>
-                </div>
-                <div class="game">
-                    <p>your mum's Game - 6 players</p>
-                    <div class="join-button invalid">
-                        Join
-                    </div>
-                </div>
-                <div class="game">
-                    <p>Jack's Game - 69 players</p>
-                    <div class="join-button valid">
-                        Join
-                    </div>
-                </div>
-            </div>
+            <div id="games"></div>
 
             <div class="buttons">
                 <div class="back button">
                     Back
                 </div>
             </div>
+            <p class="footer">There's no need to refresh the page; games show up as soon as they become available, and player counts will update instantly too!</p>
         </section>
 
         <section class="page" id="create-game">
