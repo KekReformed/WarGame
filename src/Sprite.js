@@ -145,7 +145,7 @@ module.exports.drawSprites = () => {
 module.exports.Sprite = Sprite
 module.exports.Anchor = Anchor
 
-module.exports.initalizeSprites = (pInst) => {
+module.exports.initalize = (pInst) => {
     p = pInst
     p.rectMode(p.CORNERS)
     allSprites["layered"] = [[]]

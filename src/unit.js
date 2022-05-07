@@ -92,6 +92,6 @@ class Unit {
 }
 module.exports = Unit
 
-module.exports.initalizeUnits = (pInst) => {
+module.exports.initalize = (pInst) => {
     p = pInst
 }

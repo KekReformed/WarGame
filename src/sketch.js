@@ -23,8 +23,8 @@ function createUnit(name,height,width,color,xPos,yPos,list, faction = "neutral")
 
 function sketch(p){
     p.setup = () => {
-        sprites.initalizeSprites(p)
-        Unit.initalizeUnits(p)
+        sprites.initalize(p)    
+        Unit.initalize(p)
         initalizeQuadTree(4, p)
         canvas = p.createCanvas(window.innerWidth, window.innerHeight);
         qt = new QuadTree(new Rectangle(window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2))
