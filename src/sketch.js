@@ -1,3 +1,5 @@
+const { QuadTree, initalizeQuadTree, Rectangle, Point } = require('./QuadTree')
+
 Unit = require('./unit')
 sprites = require('./Sprite')
 p5 = require('p5')
@@ -11,6 +13,8 @@ let rectStartX = 0
 let rectStartY = 0
 let timer = 0
 
+let qt;
+
 function createUnit(name,height,width,color,xPos,yPos,list, faction = "neutral") {
     unit = new Unit(name,height,width,color,xPos,yPos,list,unitsCreated, faction)
     unitsCreated++
@@ -21,7 +25,13 @@ function sketch(p){
     p.setup = () => {
         sprites.initalizeSprites(p)
         Unit.initalizeUnits(p)
+        initalizeQuadTree(4, p)
         canvas = p.createCanvas(window.innerWidth, window.innerHeight);
+        qt = new QuadTree(new Rectangle(window.innerWidth/2, window.innerHeight/2, window.innerWidth/2, window.innerHeight/2))
+        for (let i = 0;i < 1000 ;i++) {
+            qt.add(new Point(p.random(window.innerWidth), p.random(window.innerHeight)))
+        }
+        console.log(qt)
         jeff = createUnit("Jeff", 50, 50, "#660000", 300, 200, unitList, "USA")
         dave = createUnit("Dave", 50, 50, "#660000", 200, 200, unitList, "USA")
         derek = createUnit("Derek", 50, 50, "#660000", 400, 200, unitList, "UK")
@@ -31,6 +41,19 @@ function sketch(p){
     p.draw = () => {
         p.frameRate(60)
         p.background(10, 10, 10);
+        p.stroke(0,0,255)
+        p.strokeWeight(5)
+        p.fill(0,0,255)
+        let range = new Rectangle(p.mouseX, p.mouseY, 100, 100)
+        let found = qt.search(range)
+        found.forEach(point => {
+            p.circle(point.x, point.y, 5)
+        })
+        p.noFill()
+        p.rect(p.mouseX - 100, p.mouseY - 100, p.mouseX + 100, p.mouseY+100)
+        p.strokeWeight(1)
+        p.noStroke()
+        qt.draw();
         sprites.drawSprites();
         timer+=p.deltaTime/1000
     
