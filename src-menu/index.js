@@ -1,3 +1,5 @@
+import './agar.js'
+
 const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")
 const pages = document.getElementsByClassName("page")
