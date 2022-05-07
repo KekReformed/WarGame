@@ -1,5 +1,5 @@
 import { createGame } from "./createGame.js";
-import { request } from "./index.js"
+import { request, socket } from "./index.js"
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")
@@ -24,7 +24,7 @@ joinBtn.addEventListener("click", async e => {
             
             if (games.length) {
                 for (const game of games) {
-                    gamesDiv.innerHTML += `<div class="game"><p>${game.creatorName}'s game - ${game.players} players</p><div class="join-button invalid">Join</div></div>`
+                    addGame(game)
                 }
             }
             else {
@@ -55,3 +55,15 @@ function updateJoinButtons() {
         button.className = className
     }
 }
+
+function addGame(game) {
+    gamesDiv.innerHTML += `<div class="game" id="${game.id}"><p>${game.creatorName}'s game - ${game.players} player${game.players.length > 1 ? 's' : ''}</p><div class="join-button invalid">Join</div></div>`
+
+    document.getElementById(game.id).children.item(1).addEventListener("click", e => joinGame(game.id))
+}
+
+function joinGame(id) {
+    console.log(`joining game ${id}...`)
+}
+
+socket.on('gameCreate', game => addGame(game))

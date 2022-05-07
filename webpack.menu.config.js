@@ -2,7 +2,7 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-  entry: './src-menu/',
+  entry: ['./src-menu/', './src-menu/joinGame.js'],
   mode: "development",
   output: {
     filename: 'index.js',

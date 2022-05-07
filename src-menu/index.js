@@ -1,9 +1,11 @@
+import { io } from 'socket.io-client'
 import './agar.js'
 
 const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")
 const pages = document.getElementsByClassName("page")
 const hostname = "wargame.amelix.xyz:7777/api"
+const socketPort = "4000"
 
 // Back button functionality
 for (let btn of backBtns) {
@@ -32,5 +34,6 @@ export async function request(method="GET", path, write, headers={}, hostOverwri
     else throw new Error(res.statusText)
 }
 
+export const socket = io("https://amelix.xyz:" + socketPort)
+
 import './createGame.js'
-import './joinGame.js'
