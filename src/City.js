@@ -1,3 +1,5 @@
+import Infantry from "./Infantry"
+
 class City {
 
     constructor(faction, cityName, positionX, positionY, value, cityList) {
@@ -21,7 +23,7 @@ class City {
         for (const i in unitList) {
             let unit = unitList[i]
 
-            if (this.sprite.overlap(unit.sprite) && unit.faction === this.faction && !unit.inCity){
+            if (this.sprite.overlap(unit.sprite) && unit.faction === this.faction && !unit.inCity && unit.type === "infantry"){
                 this.defenders += 1
                 unit.inCity = true
                 unit.strengthModifier += 1

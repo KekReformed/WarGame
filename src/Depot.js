@@ -1,14 +1,17 @@
 class Depot {
 
-    constructor(faction, positionX, positionY, depotList, city = "None",) {
-        this.faction = faction
-        this.sprite = createSprite(positionX, positionY, 20, 20)
-        this.city = city
+    constructor(depotData) {
+        this.faction = depotData.faction
+        this.sprite = createSprite(depotData.positionX, depotData.positionY, 20, 20)
+        this.city = depotData.city
         this.selected = false
         this.sprite.shapeColor = `rgb(200,200,200)`
-        depotList.push(this)
+        this.city = depotData.city
+        this.inCity = depotData.inCity
 
         if(this.city !== "None") this.inCity = true
+
+        depotData.depotList.push(this)
     }
 
     update(unitList) {
@@ -18,8 +21,9 @@ class Depot {
         for (const i in unitList) {
             let unit = unitList[i]
 
+            this.depotList
             //Oh noes! there is an enemy inside of me, now im gonna be captured!
-            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0) {
+            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && !this.inCity) {
                 this.faction = unit.faction
             }
         }
