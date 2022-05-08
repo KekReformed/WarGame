@@ -4,6 +4,12 @@ class Client {
         this.faction = faction
         this.money = money
         this.username = username
+
+        this.globalUnits = []
+        this.globalBattles = []
+        this.globalCities = []
+        this.globalDepots = []
+        this.globalUIComponents = []
     }
 }   
 

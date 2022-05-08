@@ -1,8 +1,8 @@
-import Infantry from "./Infantry"
+import { client } from "."
 
 class City {
 
-    constructor(faction, cityName, positionX, positionY, value, cityList) {
+    constructor(faction, cityName, positionX, positionY, value) {
 
         this.faction = faction
         this.cityName = cityName
@@ -12,16 +12,16 @@ class City {
         this.sprite = createSprite(positionX,positionY,80,80)
         this.sprite.depth = -1
         this.sprite.shapeColor = `rgb(0,50,255)`
-        cityList.push(this)
+        client.globalCities.push(this)
     }
 
-    update(unitList) {
+    update() {
         this.defenders = 0
         
 
         //Counts how many defenders there are 
-        for (const i in unitList) {
-            let unit = unitList[i]
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
 
             if (this.sprite.overlap(unit.sprite) && unit.faction === this.faction && !unit.inCity && unit.type === "infantry"){
                 this.defenders += 1
@@ -31,8 +31,8 @@ class City {
         }
 
 
-        for (const i in unitList) {
-            let unit = unitList[i]
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
 
             //Oh noes! there is an enemy inside of me, now im gonna be captured!
             if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0) {

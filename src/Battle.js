@@ -21,8 +21,6 @@ class Battle {
                 faction.totalStrength += faction.units[unitType]
             }
         }
-
-        console.log(this.factions)
     }
 
     update() {
@@ -37,7 +35,6 @@ class Battle {
 
                 let damage = Math.min(0.025 * (this.totalStrength - faction.totalStrength), 100)
 
-                console.log(Object.keys(faction.units))
                 
                 let uniqueUnitCount = Object.keys(faction.units).length
                 
@@ -45,12 +42,11 @@ class Battle {
                 faction.totalStrength -= damage
 
                 for (let unitType in faction.units) {
-                    console.log(uniqueUnitCount)
                     faction.units[unitType] -= damage / uniqueUnitCount
                 }
 
                 if (faction.totalStrength > this.winningStrength) {
-                    this.winningFaction = Object.keys(faction)[0];
+                    this.winningFaction = factionName
                     this.winningStrength = faction.totalStrength
                 }
             }
@@ -62,7 +58,7 @@ class Battle {
 
         //Creates the label overtop of the battle
         this.factionList = Object.keys(this.factions)
-        this.battleParticipantStr = this.factionList
+        this.battleParticipantStr = [...this.factionList]
         this.battleParticipantStr.splice(this.battleParticipantStr.length - 1, 1)
         if (this.factionList.length > 2) {
             this.battleParticipantStr = [this.battleParticipantStr.join(", ")]

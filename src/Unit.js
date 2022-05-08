@@ -1,4 +1,5 @@
 import Battle from "./Battle.js";
+import { client, unitTypeManager, unitTypes } from "./index.js";
 
 class Unit {
 
@@ -19,10 +20,10 @@ class Unit {
         this.sprite.shapeColor = `hsl(${unitData.h},${unitData.s}%,${unitData.l}%)`
         this.sprite.rotateToDirection = true
         this.sprite.setDefaultCollider()
-        unitData.unitList.push(this)
+        client.globalUnits.push(this)
     }
 
-    update(unitList, battleList) {
+    update() {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
 
@@ -30,60 +31,36 @@ class Unit {
 
         this.collisionCount = 0
 
-        for (const i in unitList) {
-            let unit = unitList[i]
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
 
             if (this.sprite.overlap(unit.sprite)) {
 
                 //If the unit we're colliding with is an enemy
                 if (unit.faction !== this.faction) {
-                    this.deselect()
-                    battleList.push(new Battle((this.sprite.position.x + unit.sprite.position.x) / 2,
-                        (this.sprite.position.y + unit.sprite.position.y) / 2,
-                        this,unit))
-                    this.strength = 0
-                    unit.strength = 0
+                    this.startBattle(unit)
                 }
             }
 
             //Unit Combining
             if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining) {
-                this.strength += unit.strength
-                unit.strength = 0
-                unit.combining = true
+                this.combine(unit)
             }
         }
 
         if (this.strength > 0) {
-            for (const i in battleList) {
-                let battle = battleList[i]
+            for (const i in client.globalBattles) {
+                let battle = client.globalBattles[i]
 
                 //If we touch a battle
                 if (this.sprite.overlap(battle.sprite)) {
-
-                    let factionExists
-
-                    for (const i in battle.factionList) {
-                        faction = factionList[i]
-
-                        if (Object.keys(faction)[0] === this.faction) {
-                            faction[this.type] += this.effectiveStrength
-                            factionExists = true
-                        }
-                    }
-
-                    if (!factionExists) {
-                        factionList.push({[this.faction]: {[this.type]: [this.effectiveStrength]}})
-                    }
-
-
-                    battle.factionList += this.effectiveStrength
-
-                    this.strength = 0
+                    this.joinBattle(battle)
                 }
             }
         }
 
+
+        //Unit Labels
         textSize(12)
         textAlign(CENTER)
         fill(255, 255, 255)
@@ -91,7 +68,7 @@ class Unit {
         textSize(8)
         text(`Strength:${this.effectiveStrength}`, this.sprite.position.x, this.sprite.position.y + 10)
         textSize(8)
-        text(`Infantry`, this.sprite.position.x, this.sprite.position.y + 20)
+        text(`${this.type[0].toUpperCase() + this.type.substring(1)}`, this.sprite.position.x, this.sprite.position.y + 20)
 
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
@@ -102,10 +79,10 @@ class Unit {
                 this.goTo(mousePos, this.speed)
             }
 
+
+            //Unit Splitting
             if (keyDown("s") && this.strength / 2 >= 100) {
-                new Unit(this.faction, this.height, this.width, this.h, this.s, this.l, this.sprite.position.x - 40, this.sprite.position.y, unitList, Math.floor(this.strength / 2))
-                new Unit(this.faction, this.height, this.width, this.h, this.s, this.l, this.sprite.position.x + 40, this.sprite.position.y, unitList, Math.floor(this.strength / 2))
-                this.strength = 0
+                this.split()
             }
         }
 
@@ -120,6 +97,71 @@ class Unit {
     deselect() {
         this.selected = false
         this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,${this.l}%)`)
+    }
+
+    startBattle(EnemyUnit) {
+        this.deselect()
+        client.globalBattles.push(new Battle((this.sprite.position.x + EnemyUnit.sprite.position.x) / 2, (this.sprite.position.y + EnemyUnit.sprite.position.y) / 2, this, EnemyUnit))
+        this.strength = 0
+        EnemyUnit.strength = 0
+    }
+
+    joinBattle(battle) {
+        let factionExists
+
+        for (const faction in battle.factions) {
+
+            if (faction === this.faction) {
+                battle.factions[faction].units[this.type] += this.effectiveStrength
+                battle.factions[faction].totalStrength += this.effectiveStrength
+                battle.totalStrength += this.effectiveStrength
+                factionExists = true
+            }
+        }
+
+        if (!factionExists) {
+            battle.factions[this.faction] = { 
+                units: {[this.type]: this.effectiveStrength },
+                totalStrength: this.effectiveStrength
+            }
+            battle.totalStrength += this.effectiveStrength
+            console.log(battle.factions)
+        }
+
+
+        battle.factionList += this.effectiveStrength
+
+        this.strength = 0
+    }
+
+    split() {
+        const data = {
+            faction: this.faction,
+            height: this.height,
+            width: this.width,
+            h: this.h,
+            s: this.s,
+            l: this.l,
+            positionX: this.sprite.position.x,
+            positionY: this.sprite.position.y,
+            strength: Math.floor(this.strength / 2),
+        }
+
+        data.positionX -= 30
+
+        new unitTypes[this.type](data)
+
+        data.positionX += 60
+
+        new unitTypes[this.type](data)
+
+        this.strength = 0
+    }
+
+    combine(unit) {
+        this.strength += unit.strength
+        unit.strength = 0
+        unit.combining = true
     }
 
     goTo(destination, speed = 1) {

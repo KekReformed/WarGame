@@ -1,3 +1,5 @@
+import { client, gameData } from "."
+
 class Depot {
 
     constructor(depotData) {
@@ -11,17 +13,16 @@ class Depot {
 
         if(this.city !== "None") this.inCity = true
 
-        depotData.depotList.push(this)
+        client.globalDepots.push(this)
     }
 
-    update(unitList) {
+    update() {
 
         if (this.inCity) this.faction = this.city.faction
 
-        for (const i in unitList) {
-            let unit = unitList[i]
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
 
-            this.depotList
             //Oh noes! there is an enemy inside of me, now im gonna be captured!
             if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && !this.inCity) {
                 this.faction = unit.faction
