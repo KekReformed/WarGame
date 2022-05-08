@@ -85,6 +85,7 @@ setup = () => {
     })
 
     const london = new City("UK", "London", 800, 400, 100)
+    const manchester = new City("Spain", "Manchester", 1200, 400, 100)
 
     const barracks = new ProductionDepot({
         faction: "UK",
@@ -136,6 +137,8 @@ draw = () => {
 
         let factionList = Object.keys(battle.factions)
 
+
+        //When a battle finishes
         if (factionList.length === 1) {
             battle.sprite.remove()
 
@@ -149,12 +152,14 @@ draw = () => {
                 s: 100,
                 l: 20,
                 positionX: battle.sprite.position.x-50*units.length,
-                positionY: battle.sprite.position.y,
-                strength: Math.round(battle.factions[factionList[0]].totalStrength)
+                positionY: battle.sprite.position.y
             }
 
             for (const i in units) {
                 let unitType = units[i]
+
+                unitData.strength = Math.round(battle.factions[factionList[0]].units[unitType])
+                
                 new unitTypes[unitType](unitData)
 
                 unitData.positionX += 50
@@ -219,7 +224,8 @@ mousePressed = () => {
         //Select a depot by clicking on it
         for (const i in client.globalDepots) {
             let depot = client.globalDepots[i]
-            if (depot.sprite.mouseIsOver && unit.faction === client.faction) {
+
+            if (depot.sprite.mouseIsOver && depot.faction === client.faction) {
                 depot.select()
             }
             else {
@@ -239,15 +245,6 @@ mouseReleased = () => {
         //Check if a unit is within the rectangle
         if (Math.min(rectStartX, mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, mouseY)) {
             unit.select()
-        }
-    }
-
-    for (const i in client.globalDepots) {
-        let depot = client.globalDepots[i]
-
-        //Check if a depot is within the rectangle
-        if (Math.min(rectStartX, mouseX) < depot.sprite.position.x && depot.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < depot.sprite.position.y && depot.sprite.position.y < Math.max(rectStartY, mouseY) && depot.faction === client.faction) {
-            depot.select()
         }
     }
 

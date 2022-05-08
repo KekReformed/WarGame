@@ -20,6 +20,8 @@ class Depot {
 
         if (this.inCity) this.faction = this.city.faction
 
+        this.sprite.mouseUpdate()
+
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
 

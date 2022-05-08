@@ -1,4 +1,5 @@
 import { client } from "."
+import Infantry from "./Infantry"
 
 class City {
 
@@ -35,7 +36,7 @@ class City {
             let unit = client.globalUnits[i]
 
             //Oh noes! there is an enemy inside of me, now im gonna be captured!
-            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0) {
+            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0 && unit.type === "infantry") {
                 this.faction = unit.faction
             }
         }

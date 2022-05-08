@@ -16,7 +16,7 @@ class ProductionDepot extends Depot {
             if (client.money >= 1000) {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
-    
+
                 new Infantry({
                     faction: this.faction,
                     height: 50,
@@ -28,7 +28,7 @@ class ProductionDepot extends Depot {
                     positionY: newUnitY,
                     strength: 100
                 })
-                
+
                 client.money -= 1000
             }
         })
@@ -37,7 +37,7 @@ class ProductionDepot extends Depot {
             if (client.money >= 1200) {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
-    
+
                 new Armour({
                     faction: this.faction,
                     height: 50,
@@ -49,12 +49,12 @@ class ProductionDepot extends Depot {
                     positionY: newUnitY,
                     strength: 100
                 })
-                
+
                 client.money -= 1200
             }
         })
 
-        this.panel = new PanelUI(color(25, 25, 25, 80), 500, 500, 100, 120, true, [this.infantryButton, this.tankButton])
+        this.panel = new PanelUI(color(25, 25, 25, 80), this.sprite.position.x + 60, this.sprite.position.y - 75, 100, 120, true, [this.infantryButton, this.tankButton])
     }
 
     select() {

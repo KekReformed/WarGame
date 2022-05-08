@@ -112,7 +112,19 @@ class Unit {
         for (const faction in battle.factions) {
 
             if (faction === this.faction) {
-                battle.factions[faction].units[this.type] += this.effectiveStrength
+                console.log(battle.factions[faction].units)
+
+                //If there is already units of our type in the battle then add on to that, otherwise add ourselves to it
+                if (battle.factions[faction].units[this.type]) {
+                    battle.factions[faction].units[this.type] += this.effectiveStrength
+                }
+                else {
+                    battle.factions[faction].units[this.type] = this.effectiveStrength
+                }
+
+                battle.factions[faction].units[this.type] = battle.factions[faction].units[this.type] ? battle.factions[faction].units[this.type] + this.effectiveStrength : this.effectiveStrength
+                
+                console.log(battle.factions[faction].units)
                 battle.factions[faction].totalStrength += this.effectiveStrength
                 battle.totalStrength += this.effectiveStrength
                 factionExists = true
@@ -125,7 +137,6 @@ class Unit {
                 totalStrength: this.effectiveStrength
             }
             battle.totalStrength += this.effectiveStrength
-            console.log(battle.factions)
         }
 
 
