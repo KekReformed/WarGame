@@ -43,7 +43,7 @@ class Unit {
             }
 
             //Unit Combining
-            if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining) {
+            if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining && this.type === unit.type) {
                 this.combine(unit)
             }
         }
@@ -53,22 +53,13 @@ class Unit {
                 let battle = client.globalBattles[i]
 
                 //If we touch a battle
-                if (this.sprite.overlap(battle.sprite)) {
+                if (this.sprite.overlap(battle.sprite) && this.terrainType !== "air") {
                     this.joinBattle(battle)
                 }
             }
         }
 
-
-        //Unit Labels
-        textSize(12)
-        textAlign(CENTER)
-        fill(255, 255, 255)
-        text(this.faction, this.sprite.position.x, this.sprite.position.y)
-        textSize(8)
-        text(`Strength:${this.effectiveStrength}`, this.sprite.position.x, this.sprite.position.y + 10)
-        textSize(8)
-        text(`${this.type[0].toUpperCase() + this.type.substring(1)}`, this.sprite.position.x, this.sprite.position.y + 20)
+        this.updateLabels()
 
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
@@ -91,11 +82,13 @@ class Unit {
 
     select() {
         this.selected = true
+        this.sprite.depth = 1
         this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,50%)`)
     }
 
     deselect() {
         this.selected = false
+        this.sprite.depth = 0
         this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,${this.l}%)`)
     }
 
@@ -143,6 +136,17 @@ class Unit {
         battle.factionList += this.effectiveStrength
 
         this.strength = 0
+    }
+
+    updateLabels() {
+        textSize(12)
+        textAlign(CENTER)
+        fill(255, 255, 255)
+        text(this.faction, this.sprite.position.x, this.sprite.position.y)
+        textSize(8)
+        text(`Strength:${this.effectiveStrength}`, this.sprite.position.x, this.sprite.position.y + 10)
+        textSize(8)
+        text(`${this.type[0].toUpperCase() + this.type.substring(1)}`, this.sprite.position.x, this.sprite.position.y + 20)
     }
 
     split() {

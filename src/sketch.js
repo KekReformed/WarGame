@@ -1,9 +1,8 @@
+const { default: Barracks } = require("./Barracks.js")
 const { client, unitTypes } = require("./index.js")
 const { default: Infantry } = require("./Infantry.js")
 
-const Unit = require("./Unit.js").default
 const City = require("./City.js").default
-const ProductionDepot = require("./ProductionDepot.js").default
 
 var dragged = false
 var rectStartX = 0
@@ -87,7 +86,7 @@ setup = () => {
     const london = new City("UK", "London", 800, 400, 100)
     const manchester = new City("Spain", "Manchester", 1200, 400, 100)
 
-    const barracks = new ProductionDepot({
+    const barracks = new Barracks({
         faction: "UK",
         positionX: 400,
         positionY: 600,
@@ -208,13 +207,17 @@ mousePressed = () => {
         rectStartX = mouseX
         rectStartY = mouseY
 
+        let unitSelected = false
 
         //Select a unit by clicking on it
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
-            if (unit.sprite.mouseIsOver && unit.faction === client.faction) {
+
+            if (unit.sprite.mouseIsOver && unit.faction === client.faction && unitSelected === false) {
                 unit.select()
+                unitSelected = true
             }
+
             else {
                 unit.deselect()
             }
@@ -243,7 +246,7 @@ mouseReleased = () => {
         let unit = client.globalUnits[i]
 
         //Check if a unit is within the rectangle
-        if (Math.min(rectStartX, mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, mouseY)) {
+        if (Math.min(rectStartX, mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, mouseY) && client.faction === unit.faction) {
             unit.select()
         }
     }
