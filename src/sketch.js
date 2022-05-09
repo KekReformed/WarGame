@@ -50,7 +50,7 @@ setup = () => {
         strength: 2000
     })
 
-    const john = new Fighter({
+    const john = new Infantry({
         faction: "UK",
         height: 50,
         width: 50,
@@ -153,8 +153,7 @@ draw = () => {
         //When a battle finishes
         if (factionList.length === 1) {
             battle.sprite.remove()
-
-            let units = Object.keys(battle.factions[factionList[0]].units)
+            let units = battle.factions[factionList[0]].units
 
             let unitData = {
                 faction: factionList[0],
@@ -163,19 +162,19 @@ draw = () => {
                 h: 0,
                 s: 100,
                 l: 20,
-                positionX: battle.sprite.position.x-50*units.length,
+                positionX: battle.sprite.position.x,
                 positionY: battle.sprite.position.y
             }
 
-            for (const i in units) {
-                let unitType = units[i]
 
-                unitData.strength = Math.round(battle.factions[factionList[0]].units[unitType])
-                
-                new unitTypes[unitType](unitData)
-
-                unitData.positionX += 50
+            for (const unitTerrainType in units) {
+                for (const unitType in units[unitTerrainType]) {
+                    unitData.strength = Math.round(units[unitTerrainType][unitType])
+                    
+                    new unitTypes[unitType](unitData)
+                }
             }
+            
             client.globalBattles.splice(i, 1)
         }
     }
@@ -259,7 +258,7 @@ mouseReleased = () => {
         let unit = client.globalUnits[i]
 
         //Check if a unit is within the rectangle
-        if (Math.min(rectStartX, mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, mouseY) && client.faction === unit.faction) {
+        if (Math.min(rectStartX, mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, mouseY)) {
             unit.select()
         }
     }

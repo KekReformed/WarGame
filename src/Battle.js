@@ -3,23 +3,38 @@ class Battle {
     constructor(positionX, positionY, firstUnit, secondUnit) {
         this.positionX = positionX
         this.positionY = positionY
-        this.factions = { [firstUnit.faction]: {
-            units: {[firstUnit.type]: firstUnit.effectiveStrength}}, [secondUnit.faction]: { units: {[secondUnit.type]: secondUnit.effectiveStrength} }}
+        this.factions = {
+            [firstUnit.faction]: {
+                units: { [firstUnit.terrainType]: { [firstUnit.type]: firstUnit.effectiveStrength } }
+            },
+            [secondUnit.faction]: { units: { [secondUnit.terrainType]: { [secondUnit.type]: secondUnit.effectiveStrength } } }
+        }
+
         this.totalStrength = 0
+        this.land = 0
+        this.air = 0
         this.sprite = createSprite(positionX, positionY, 100, 100)
         this.sprite.depth = -1
         this.sprite.setDefaultCollider()
         this.sprite.shapeColor = `rgb(0,0,255)`
         this.damageInterval = 0.1
         this.timer = 0
-        
+        this.factionList = Object.keys(this.factions)
+
         for (const factionName in this.factions) {
             let faction = this.factions[factionName]
             faction.totalStrength = 0
+            faction.land = 0
+            faction.air = 0
 
-            for (const unitType in faction.units) {
-                this.totalStrength += faction.units[unitType]
-                faction.totalStrength += faction.units[unitType]
+            for (const unitTerrainType in faction.units) {
+
+                for (const unitType in faction.units[unitTerrainType]) {
+                    this[unitTerrainType] += faction.units[unitTerrainType][unitType]
+                    faction[unitTerrainType] += faction.units[unitTerrainType][unitType]
+                    faction.totalStrength += faction.units[unitTerrainType][unitType]
+                    this.totalStrength += faction.units[unitTerrainType][unitType]
+                }
             }
         }
     }
@@ -31,28 +46,57 @@ class Battle {
             this.winningStrength = 0
 
             let totalDamage = 0
+            let totalAirDamage = 0
+
             for (const factionName in this.factions) {
                 let faction = this.factions[factionName]
+                faction.uniqueLandUnits = 0
+                faction.uniqueAirUnits = 0
 
                 let damage = Math.min(0.025 * (this.totalStrength - faction.totalStrength), 100)
+                let airDamage = Math.min(0.025 * (this.air - faction.air), 100) 
 
-                
-                let uniqueUnitCount = Object.keys(faction.units).length
-                
-                totalDamage += damage
-                faction.totalStrength -= damage
+                for (const unitTerrainType in faction.units) {
+                    if (unitTerrainType === "land") faction.uniqueLandUnits += 1
+                    if (unitTerrainType === "air") faction.uniqueAirUnits += 1
+                }
 
-                for (let unitType in faction.units) {
-                    faction.units[unitType] -= damage / uniqueUnitCount
+                for (const unitTerrainType in faction.units) {
+
+                    if (unitTerrainType === "land") {
+                        for (const unitType in faction.units[unitTerrainType]) {
+                            let dividedDamage = damage / faction.uniqueLandUnits
+
+                            faction.units.land[unitType] -= dividedDamage
+                            faction.land -= dividedDamage
+                            faction.totalStrength -= dividedDamage
+                            totalDamage += damage
+                        }
+                    }
+
+                    //Air units only take damage from other air units which is calculated in air damage
+                    if(unitTerrainType === "air") {
+                        for (const unitType in faction.units[unitTerrainType]) {
+                            let dividedDamage = airDamage / faction.uniqueAirUnits
+
+                            faction.units.air[unitType] -= dividedDamage
+                            faction.air -= dividedDamage
+                            faction.totalStrength -= dividedDamage
+                            totalAirDamage += dividedDamage
+                        }
+                    }
                 }
 
                 if (faction.totalStrength > this.winningStrength) {
                     this.winningFaction = factionName
                     this.winningStrength = faction.totalStrength
                 }
+                console.log(faction)
             }
 
             this.totalStrength -= totalDamage
+            this.land -= totalDamage
+            this.air -= totalAirDamage
         }
 
         if (this.timer > this.damageInterval) this.timer -= this.damageInterval;

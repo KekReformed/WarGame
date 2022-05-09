@@ -23,7 +23,7 @@ class Unit {
         client.globalUnits.push(this)
     }
 
-    
+
     update() {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
@@ -32,10 +32,22 @@ class Unit {
 
         this.collisionCount = 0
 
+        if (this.goingToUnit) this.goTo(this.goingToUnit.sprite.position, this.speed)
+
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
 
-            if (this.sprite.overlap(unit.sprite)) {
+            let mousePos = createVector(mouseX, mouseY)
+
+            if (this.selected && longClick(RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
+                this.joiningBattle = true
+                this.goingToBattle = true
+                this.goingToUnit = client.globalUnits[i]
+                this.goTo(unit.sprite.position, this.speed)
+            }
+
+            //If were touching a unit and we're not an air unit or we're joining the battle
+            if (this.sprite.overlap(unit.sprite) && (this.terrainType !== "air" && unit.terrainType !== "air" || this.joiningBattle)) {
 
                 //If the unit we're colliding with is an enemy
                 if (unit.faction !== this.faction) {
@@ -52,7 +64,7 @@ class Unit {
         if (this.strength > 0) {
             for (const i in client.globalBattles) {
                 let battle = client.globalBattles[i]
-                let mousePos = createVector(mouseX, mouseY) 
+                let mousePos = createVector(mouseX, mouseY)
 
                 if (this.selected && longClick(RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
                     this.joiningBattle = true
@@ -69,10 +81,10 @@ class Unit {
 
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
-            console.log(this.goingToBattle)
+
             if (mouseWentUp(RIGHT)) {
                 let mousePos = createVector(mouseX, mouseY)
-                
+
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
 
                 this.goTo(mousePos, this.speed)
@@ -115,29 +127,33 @@ class Unit {
         for (const faction in battle.factions) {
 
             if (faction === this.faction) {
-                console.log(battle.factions[faction].units)
+
+                if (!battle.factions[faction].units[this.terrainType]) {
+                    battle.factions[faction].units[this.terrainType] = {}
+                }
 
                 //If there is already units of our type in the battle then add on to that, otherwise add ourselves to it
-                if (battle.factions[faction].units[this.type]) {
-                    battle.factions[faction].units[this.type] += this.effectiveStrength
+                if (battle.factions[faction].units[this.terrainType][this.type]) {
+                    battle.factions[faction].units[this.terrainType][this.type] += this.effectiveStrength
                 }
+
                 else {
-                    battle.factions[faction].units[this.type] = this.effectiveStrength
+                    battle.factions[faction].units[this.terrainType][this.type] = this.effectiveStrength
                 }
 
-                battle.factions[faction].units[this.type] = battle.factions[faction].units[this.type] ? battle.factions[faction].units[this.type] + this.effectiveStrength : this.effectiveStrength
-
-                console.log(battle.factions[faction].units)
                 battle.factions[faction].totalStrength += this.effectiveStrength
+                battle.factions[faction][this.terrainType] += this.effectiveStrength
                 battle.totalStrength += this.effectiveStrength
+                battle[this.terrainType] += this.effectiveStrength
                 factionExists = true
             }
         }
 
         if (!factionExists) {
             battle.factions[this.faction] = {
-                units: { [this.type]: this.effectiveStrength },
-                totalStrength: this.effectiveStrength
+                units: { [this.terrainType]: { [this.type]: this.effectiveStrength } },
+                totalStrength: this.effectiveStrength,
+                [this.terrainType]: this.effectiveStrength,
             }
             battle.totalStrength += this.effectiveStrength
         }

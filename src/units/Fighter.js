@@ -30,6 +30,7 @@ class Fighter extends Unit {
         if (this.closestAirstrip.sprite.position.dist(this.sprite.position) - 10 > this.closestAirstrip.range / 2) {
             this.goTo(this.closestAirstrip.sprite.position, this.speed)
         }
+        
         else if (this.closestAirstrip.sprite.position.dist(this.sprite.position) > this.closestAirstrip.range / 2 && this.goToClosestAirstrip.sprite.position.dist(this.goToPoint) > this.goToClosestAirstrip.range / 2) {
             this.sprite.setVelocity(0,0)
         }

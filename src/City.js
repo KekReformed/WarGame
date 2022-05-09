@@ -1,5 +1,4 @@
 import { client } from "."
-import Infantry from "./units/Infantry"
 
 class City {
 
