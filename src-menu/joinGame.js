@@ -70,8 +70,9 @@ function addGame(game) {
 }
 
 function editGame(game) {
-    console.log(game)
-    document.getElementById(game.id).children.item(0).innerHTML = createGameString(game)
+    const element = document.getElementById(game.id)
+    if (element) element.children.item(0).innerHTML = createGameString(game)
+    else addGame(game)
 }
 
 function createGameString(game) {
@@ -107,5 +108,5 @@ async function joinGame(id) {
     }
 }
 
-socket.on('gameCreate', game => addGame(game))
-socket.on('playerJoinPublic', game => editGame(game))
+socket.on('gameCreate', addGame)
+socket.on('publicGameEdit', editGame)
