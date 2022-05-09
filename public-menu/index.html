@@ -9,7 +9,6 @@
     <script defer src="index.js"></script>
 </head>
 <body>
-    <script src="agar.js"></script>
     <div class="container">
         <section id="main">
             <h1>Wargame</h1>
@@ -28,13 +27,22 @@
         </section>
 
         <section class="page" id="lobbies">
-            <h1>Public lobbies</h1>
+            <h1>Join Game</h1>
+
+            <div class="form">
+                <div class="tooltip">You must enter a username to join a game.</div>
+                <input class="input" id="join-game-u" type="text" placeholder="Username" %eval%|req.user ? `value="${req.user.username}"` : ``|>
+                <p class="error" id="username-taken"></p>
+            </div>
+
+            <div id="games"></div>
 
             <div class="buttons">
                 <div class="back button">
                     Back
                 </div>
             </div>
+            <p class="footer">There's no need to refresh the page; games show up as soon as they become available, and player counts will update instantly too!</p>
         </section>
 
         <section class="page" id="create-game">
