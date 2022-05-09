@@ -85,7 +85,11 @@ p.footer {
 
 p.error {
   margin-top: 10px;
-  color: #971212
+  color: #971212;
+}
+
+p.error#username-taken {
+  margin-top: 0px;
 }
 
 .page {
@@ -128,6 +132,10 @@ p.error {
 
 .input:focus { box-shadow: inset 0 -5px 45px #64646466, 0 1px 1px #ffffff33; }
 
+.input#join-game-u {
+  margin-bottom: 5px;
+}
+
 .form-section {
   display: flex;
   justify-content: space-between;
@@ -156,6 +164,7 @@ p.error {
   color: white;
   width: 70%;
   margin: auto;
+  margin-top: 30px;
 }
 
 #games span {

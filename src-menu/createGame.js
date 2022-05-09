@@ -26,7 +26,7 @@ gameCreateBtn.addEventListener('click', e => {
             // go to a new page (page where the game takes place) and show the lobby
         })
         .catch((err) => {
-            createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${err}`
+            createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${err.message}`
         })
     }
     else {

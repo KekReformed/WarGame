@@ -1,23 +1,28 @@
 import { createGame } from "./createGame.js";
-import { request, socket } from "./index.js"
+import { delay, request, socket } from "./index.js"
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")
+/** @type {HTMLCollectionOf<Element>} */
 let joinButtons; 
 
 const input = document.getElementById("join-game-u")
+let inputBlinking = false
 
 const gamesDiv = document.getElementById("games")
 
 let games;
+
+const usernameError = document.getElementById("username-taken")
 
 joinBtn.addEventListener("click", async e => {
     main.style.display = "none"
     lobbies.style.display = "block"
 
     if (!games) {
+        gamesDiv.innerHTML = ""
         // Load games
-        await request("GET", "/games")
+        request("GET", "/games")
         .then(res => {
             games = res.body
             gamesDiv.innerHTML = ""
@@ -47,6 +52,7 @@ joinBtn.addEventListener("click", async e => {
 input.addEventListener("keyup", e => updateJoinButtons())
 
 function updateJoinButtons() {
+    usernameError.innerHTML = ""
     const className = input.value.length > 0 
         ? "join-button valid" 
         : "join-button invalid"
@@ -57,13 +63,49 @@ function updateJoinButtons() {
 }
 
 function addGame(game) {
-    gamesDiv.innerHTML += `<div class="game" id="${game.id}"><p>${game.creatorName}'s game - ${game.players} player${game.players.length > 1 ? 's' : ''}</p><div class="join-button invalid">Join</div></div>`
-
-    document.getElementById(game.id).children.item(1).addEventListener("click", e => joinGame(game.id))
+    const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button invalid">Join</div></div>`, 'text/html').activeElement.children.item(0)
+    console.log(element)
+    gamesDiv.appendChild(element)
+    element.children.item(1).addEventListener("click", e => joinGame(game.id))
 }
 
-function joinGame(id) {
-    console.log(`joining game ${id}...`)
+function editGame(game) {
+    console.log(game)
+    document.getElementById(game.id).children.item(0).innerHTML = createGameString(game)
+}
+
+function createGameString(game) {
+    return `<p>${game.creatorName}'s game - ${game.players} player${game.players > 1 ? 's' : ''}</p>`
+}
+
+async function joinGame(id) {
+    if (input.value.length > 0) {
+        request("POST", `/games/${id}/join`, { name: input.value })
+        .then(res => {
+            const game = res.body
+            
+            // go to lobby with game data or something idk
+        })
+        .catch(e => {
+            if (e.statusCode === 409) {
+                usernameError.innerHTML = 'Sorry, this username has alreaday been taken by someone in that game!'
+            }
+            else usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
+        })
+    }
+    else {
+        if (!inputBlinking) {
+            inputBlinking = true
+            for (let i=0; i<4; i++) {
+                input.style.border = "1px solid #ff3d3d"
+                await delay(0.3)
+                input.style.border = null
+                await delay(0.3)
+            }
+            inputBlinking = false
+        }
+    }
 }
 
 socket.on('gameCreate', game => addGame(game))
+socket.on('playerJoinPublic', game => editGame(game))

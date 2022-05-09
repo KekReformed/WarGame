@@ -4,6 +4,7 @@ import './agar.js'
 const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")
 const pages = document.getElementsByClassName("page")
+
 const hostname = "wargame.amelix.xyz:7777/api"
 const socketPort = "4000"
 
@@ -17,7 +18,7 @@ for (let btn of backBtns) {
     })
 }
 
-export async function request(method="GET", path, write, headers={}, hostOverwrite) {
+export async function request(method, path, write, headers={}, hostOverwrite) {
     if (typeof write === "object") write = JSON.stringify(write);
 
     const res = await fetch(`https://` + (hostOverwrite || hostname) + path, {
@@ -31,7 +32,11 @@ export async function request(method="GET", path, write, headers={}, hostOverwri
         try { body = JSON.parse(body) } catch {}
         return { ...res, body }
     }
-    else throw new Error(res.statusText)
+    else throw { message: res.statusText, statusCode: res.status }
+}
+
+export async function delay(seconds) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
 }
 
 export const socket = io("https://amelix.xyz:" + socketPort)
