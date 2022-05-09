@@ -1,4 +1,4 @@
-import { client } from ".";
+import { client } from "..";
 import Unit from "./Unit";
 
 class Infantry extends Unit {

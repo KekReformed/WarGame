@@ -1,4 +1,4 @@
-import { client, gameData } from "."
+import { client } from ".."
 
 class Depot {
 

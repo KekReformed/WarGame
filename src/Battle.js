@@ -7,6 +7,7 @@ class Battle {
             units: {[firstUnit.type]: firstUnit.effectiveStrength}}, [secondUnit.faction]: { units: {[secondUnit.type]: secondUnit.effectiveStrength} }}
         this.totalStrength = 0
         this.sprite = createSprite(positionX, positionY, 100, 100)
+        this.sprite.depth = -1
         this.sprite.setDefaultCollider()
         this.sprite.shapeColor = `rgb(0,0,255)`
         this.damageInterval = 0.1

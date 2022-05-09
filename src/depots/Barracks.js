@@ -1,14 +1,15 @@
-import ProductionDepot from "./ProductionDepot";
-import { client, randomInt } from ".";
-import Armour from "./Armour";
-import Button from "./Button";
-import Infantry from "./Infantry";
-import PanelUI from "./PanelUI";
+import ProductionDepot from "../depots/ProductionDepot";
+import { client, randomInt } from "..";
+import Armour from "../units/Armour";
+import Button from "../ui/Button";
+import Infantry from "../units/Infantry";
+import PanelUI from "../ui/PanelUI";
 
 
 class Barracks extends ProductionDepot {
     constructor(depotData) {
         super(depotData)
+        this.type = "barracks"
 
         this.infantryButton = new Button(color(50, 50, 50, 80), 0, -30, 80, 50, "Create infantry \n Cost: 1B", true, () => {
             if (client.money >= 1000) {

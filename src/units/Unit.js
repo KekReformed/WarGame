@@ -1,5 +1,5 @@
-import Battle from "./Battle.js";
-import { client, unitTypeManager, unitTypes } from "./index.js";
+import Battle from "../Battle.js";
+import { client, longClick, unitTypes } from "../index.js";
 
 class Unit {
 
@@ -23,6 +23,7 @@ class Unit {
         client.globalUnits.push(this)
     }
 
+    
     update() {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
@@ -51,21 +52,28 @@ class Unit {
         if (this.strength > 0) {
             for (const i in client.globalBattles) {
                 let battle = client.globalBattles[i]
+                let mousePos = createVector(mouseX, mouseY) 
+
+                if (this.selected && longClick(RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
+                    this.joiningBattle = true
+                    this.goingToBattle = true
+                    this.goTo(battle.sprite.position, this.speed)
+                }
 
                 //If we touch a battle
-                if (this.sprite.overlap(battle.sprite) && this.terrainType !== "air") {
+                if (this.sprite.overlap(battle.sprite) && (this.terrainType !== "air" || this.joiningBattle)) {
                     this.joinBattle(battle)
                 }
             }
         }
 
-        this.updateLabels()
-
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
-
+            console.log(this.goingToBattle)
             if (mouseWentUp(RIGHT)) {
                 let mousePos = createVector(mouseX, mouseY)
+                
+                this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
 
                 this.goTo(mousePos, this.speed)
             }
@@ -76,6 +84,8 @@ class Unit {
                 this.split()
             }
         }
+
+        this.updateLabels()
 
         this.effectiveStrength = this.strength * this.strengthModifier
     }
@@ -116,7 +126,7 @@ class Unit {
                 }
 
                 battle.factions[faction].units[this.type] = battle.factions[faction].units[this.type] ? battle.factions[faction].units[this.type] + this.effectiveStrength : this.effectiveStrength
-                
+
                 console.log(battle.factions[faction].units)
                 battle.factions[faction].totalStrength += this.effectiveStrength
                 battle.totalStrength += this.effectiveStrength
@@ -125,8 +135,8 @@ class Unit {
         }
 
         if (!factionExists) {
-            battle.factions[this.faction] = { 
-                units: {[this.type]: this.effectiveStrength },
+            battle.factions[this.faction] = {
+                units: { [this.type]: this.effectiveStrength },
                 totalStrength: this.effectiveStrength
             }
             battle.totalStrength += this.effectiveStrength

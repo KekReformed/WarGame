@@ -1,6 +1,9 @@
-const { default: Barracks } = require("./Barracks.js")
+const { default: Airstrip } = require("./depots/Airstrip.js")
+const { default: Aviation } = require("./depots/Aviation.js")
+const { default: Barracks } = require("./depots/Barracks.js")
+const { default: Fighter } = require("./units/Fighter.js")
 const { client, unitTypes } = require("./index.js")
-const { default: Infantry } = require("./Infantry.js")
+const { default: Infantry } = require("./units/Infantry.js")
 
 const City = require("./City.js").default
 
@@ -47,7 +50,7 @@ setup = () => {
         strength: 2000
     })
 
-    const john = new Infantry({
+    const john = new Fighter({
         faction: "UK",
         height: 50,
         width: 50,
@@ -86,9 +89,17 @@ setup = () => {
     const london = new City("UK", "London", 800, 400, 100)
     const manchester = new City("Spain", "Manchester", 1200, 400, 100)
 
-    const barracks = new Barracks({
+    const barracks = new Aviation({
         faction: "UK",
         positionX: 400,
+        positionY: 600,
+        city: "None",
+        inCity: false
+    })
+
+    const airstrip = new Airstrip({
+        faction: "UK",
+        positionX: 600,
         positionY: 600,
         city: "None",
         inCity: false
@@ -98,6 +109,8 @@ setup = () => {
 draw = () => {
     frameRate(60)
     background(10, 10, 10);
+
+    
 
     textSize(12)
     textAlign(CENTER)
