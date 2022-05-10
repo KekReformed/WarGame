@@ -27,10 +27,10 @@ function sketch(p) {
         Unit.initalize(p)
         initalizeQuadTree(1, p)
         canvas = p.createCanvas(window.innerWidth, window.innerHeight);
-        jeff = createUnit("Jeff", 50, 50, "#660000", 300, 200, unitList, "USA")
-        dave = createUnit("Dave", 50, 50, "#660000", 200, 200, unitList, "USA")
-        derek = createUnit("Derek", 50, 50, "#660000", 400, 200, unitList, "UK")
-        john = createUnit("John", 50, 50, "#660000", 100, 200, unitList, "UK")
+        createUnit("Jeff", 50, 50, "#660000", 300, 200, unitList, "USA")
+        createUnit("Dave", 50, 50, "#660000", 200, 200, unitList, "USA")
+        createUnit("Derek", 50, 50, "#660000", 400, 200, unitList, "UK")
+        createUnit("John", 50, 50, "#660000", 100, 200, unitList, "UK")
     }
 
     p.draw = () => {
