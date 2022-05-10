@@ -3,4 +3,7 @@
 ## Getting Started
 - Run `npm i`
 - Run `npm start`
-- Serve `public/index.html` in any way you like - I recommend a live server as then the html will refresh when you make changes.
+- Your browser will open, serving the game.
+
+### Other Projects
+- The main menu can be started with `npm run start:menu`.
