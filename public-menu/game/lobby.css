@@ -1,0 +1,93 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: black;
+    height: 100%
+}
+
+#lobby {
+    height: 90%;
+    width: 55%;
+    margin: 20px 0 0 50px
+}
+
+.lobby-container {
+    /* temp border: 2px dotted white; */
+    display: flex;
+    height: 90%
+}
+
+.title {
+    padding-left: 15px;
+    border: 2px solid grey;
+    width: 70%
+}
+
+.title p {
+    font-size: 20px;
+    color: #9974ff;
+}
+
+#left {
+    position: relative;
+    width: 70%;
+    height: 90%;
+}
+
+.players {
+    border: 2px solid grey;
+    height: 100%;
+}
+
+.player {
+    margin: 10px 0 0 10px;
+}
+
+#right {
+    position: relative;
+    height: 90%;
+    border: 2px solid grey;
+    margin-left: 2%;
+    width: 28%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.settings {
+    margin-top: 10px;
+    border: 2px solid grey;
+    border-radius: 15px;
+    width: 90%;
+    height: 85%
+}
+
+.settings h1 {
+    text-align: center;
+    font-size: 30px;
+}
+
+.lobby-button {
+    border-radius: 15px;
+    border: 2px solid grey;
+    padding: 10px
+}
+
+.lobby-button p {
+    font-size: 20px;
+}
+
+#start {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+}
+
+#leave {
+    position: absolute;
+    bottom: 12px;
+    left: 12px
+}

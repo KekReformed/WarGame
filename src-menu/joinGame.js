@@ -82,9 +82,8 @@ async function joinGame(id) {
     if (input.value.length > 0) {
         request("POST", `/games/${id}/join`, { name: input.value })
         .then(res => {
-            const game = res.body
-            
-            // go to lobby with game data or something idk
+            localStorage.game = JSON.stringify(res.body)
+            location.pathname = "/game"
         })
         .catch(e => {
             if (e.statusCode === 409) {
