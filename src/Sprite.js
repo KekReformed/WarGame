@@ -58,8 +58,8 @@ class Sprite {
 
     update() {
         this.position.set(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
-        unit.sprite.collisions = []
-        unit.sprite.isColliding = false
+        this.collisions = []
+        this.isColliding = false
     }
 
     draw() {
@@ -128,6 +128,7 @@ class Sprite {
     }
 
     addCollision(sp) {
+        alert('collision')
         this.color = "#ffffff"
         sp.color = "#fffffff"
         this.isColliding = true;

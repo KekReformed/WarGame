@@ -34,7 +34,7 @@ function sketch(p) {
     }
 
     p.draw = () => {
-        timer += p.deltaTime / 1000
+        // timer += p.deltaTime / 1000
         // note for later if we experience extremely daunting performance issues make it so the Point gets updated rather than being re-inserted
         qt = new QuadTree(new Rectangle(window.innerWidth / 2, window.innerHeight / 2, window.innerWidth / 2, window.innerHeight / 2))
         p.frameRate(60)
@@ -60,6 +60,8 @@ function sketch(p) {
             // reduced sample size
             if (others.length) for (u of others) {
                 unit.sprite.collisionDetection(u.unit.sprite)
+                console.log(u.unit.sprite)
+                console.log(unit.sprite)
             }
 
             if (unit.strength <= 0) {
@@ -68,7 +70,7 @@ function sketch(p) {
             }
         }
 
-        if (timer > damageInterval) timer -= damageInterval;
+        // if (timer > damageInterval) timer -= damageInterval;
 
         if (dragged === true) {
             p.stroke("#03e3fc")

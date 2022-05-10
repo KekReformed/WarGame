@@ -41,16 +41,16 @@ class Unit {
             }
         }
 
-        if (!this.sprite.isColliding) return; // after this it's for colliding only uwu
+        // if (!this.sprite.isColliding) return; // after this it's for colliding only uwu
         
         //If the unit we're colliding with is an enemy
-        if (unitList[this.sprite.collisions[0].userData].faction !== this.faction) {
-            if (!this.inBattle) {
-                this.inBattle = true
-                this.sprite.setVelocity(0,0)
-                this.deselectUnit()
-            }
-        }
+        // if (unitList[this.sprite.collisions[0].userData].faction !== this.faction) {
+        //     if (!this.inBattle) {
+        //         this.inBattle = true
+        //         this.sprite.setVelocity(0,0)
+        //         this.deselectUnit()
+        //     }
+        // }
     }
 
     bark(){
