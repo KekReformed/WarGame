@@ -47,7 +47,7 @@ function sketch(p) {
             u.updateUnit(unitList)
             qt.add(new Point(u.sprite.position.x, u.sprite.position.y, u))
         }
-        qt.draw(); // debug
+        // qt.draw(); // debug
         for (const i in unitList) {
 
             unit = unitList[i]
@@ -56,7 +56,7 @@ function sketch(p) {
             p.noFill()
             p.stroke(0, 255, 0)
             p.rect(unit.sprite.position.x - unit.sprite.width, unit.sprite.position.y - unit.sprite.height, unit.sprite.position.x + unit.sprite.width, unit.sprite.position.y + unit.sprite.height)
-            others.length && console.log(others)
+            // others.length && console.log(others)
             // reduced sample size
             if (others.length) for (u of others) {
                 unit.sprite.collisionDetection(u.unit.sprite)

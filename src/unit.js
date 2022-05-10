@@ -69,7 +69,6 @@ class Unit {
 
     goTo(destination, speed = 1) {
         this.goToPoint = p.createVector(destination.x,destination.y)
-        console.log(destination.x,destination.y)
         this.vector = p.createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
         this.vector.normalize()
         this.vector.mult(speed)

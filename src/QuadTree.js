@@ -103,24 +103,25 @@ class QuadTree {
      *     should be commented
      */
 
-    draw() {
-        p.stroke(255);
-        p.noFill();
-        p.rectMode(p.CENTER);
-        p.rect(this.rect.x, this.rect.y, this.rect.w * 2, this.rect.h * 2);
-        p.rectMode(p.CORNERS);
-        if (this.subdivided) {
-            this.tr.draw();
-            this.tl.draw();
-            this.br.draw();
-            this.bl.draw();
-        }
-        p.fill(255);
-        p.noStroke();
-        for (let i; i < this.points.length; i++){
-            p.circle(this.points[i].x, this.points[i].y, 5);
-        }
-    }
+    // draw() {
+    //     p.stroke(255);
+    //     p.noFill();
+    //     p.rectMode(p.CENTER);
+    //     p.rect(this.rect.x, this.rect.y, this.rect.w * 2, this.rect.h * 2);
+    //     p.rectMode(p.CORNERS);
+    //     if (this.subdivided) {
+    //         this.tr.draw();
+    //         this.tl.draw();
+    //         this.br.draw();
+    //         this.bl.draw();
+    //     }
+    //     p.fill(255);
+    //     p.noStroke();
+    //     for (let i; i < this.points.length; i++){
+    //         p.circle(this.points[i].x, this.points[i].y, 5);
+    //     }
+    // }
+    
     /**
      *          END OF DEBUG
      */

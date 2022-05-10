@@ -64,9 +64,9 @@ class Sprite {
 
     draw() {
         this.update()
-        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
-        p.stroke(255)
-        p.line(this.position.x, this.position.y, mouse.x, mouse.y)
+        // let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
+        // p.stroke(255)
+        // p.line(this.position.x, this.position.y, mouse.x, mouse.y)
         p.translate(this.position.x, this.position.y)
         p.rotate(this.rad)
         p.translate(-this.position.x, -this.position.y)
