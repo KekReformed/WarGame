@@ -20,7 +20,7 @@ joinBtn.addEventListener("click", async e => {
     lobbies.style.display = "block"
 
     if (!games) {
-        gamesDiv.innerHTML = ""
+        gamesDiv.innerHTML = "Fetching games..."
         // Load games
         request("GET", "/games")
         .then(res => {
@@ -44,7 +44,7 @@ joinBtn.addEventListener("click", async e => {
             updateJoinButtons()
         })
         .catch(e => 
-            gamesDiv.innerHTML = `Failed to load games due to an unexpected error. Please report this to the developers.<br><br>${e}`
+            gamesDiv.innerHTML = `Failed to load games due to an unexpected error. Please report this to the developers.<br><br>${e}<br><br>You can try fetching games again by clicking the back button below, then coming back to this page.`
         )
     }
 });
@@ -64,7 +64,6 @@ function updateJoinButtons() {
 
 function addGame(game) {
     const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button invalid">Join</div></div>`, 'text/html').activeElement.children.item(0)
-    console.log(element)
     gamesDiv.appendChild(element)
     element.children.item(1).addEventListener("click", e => joinGame(game.id))
 }
@@ -89,7 +88,7 @@ async function joinGame(id) {
         })
         .catch(e => {
             if (e.statusCode === 409) {
-                usernameError.innerHTML = 'Sorry, this username has alreaday been taken by someone in that game!'
+                usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
             }
             else usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
         })
