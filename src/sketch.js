@@ -25,7 +25,7 @@ function sketch(p) {
     p.setup = () => {
         sprites.initalize(p)
         Unit.initalize(p)
-        initalizeQuadTree(1, p)
+        initalizeQuadTree(2, p)
         canvas = p.createCanvas(window.innerWidth, window.innerHeight);
         createUnit("Jeff", 50, 50, "#660000", 300, 200, unitList, "USA")
         createUnit("Dave", 50, 50, "#660000", 200, 200, unitList, "USA")
