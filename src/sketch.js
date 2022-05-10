@@ -40,13 +40,14 @@ function sketch(p) {
         p.frameRate(60)
         p.background(10, 10, 10);
 
+        sprites.drawSprites(); // make sure to draw the sprites before collision checks
+
         for (const i in unitList) {
             let u = unitList[i]
             u.updateUnit(unitList)
             qt.add(new Point(u.sprite.position.x, u.sprite.position.y, u))
         }
         qt.draw(); // debug
-        sprites.drawSprites(); // make sure to draw the sprites before collision checks
         for (const i in unitList) {
 
             unit = unitList[i]
@@ -55,9 +56,9 @@ function sketch(p) {
             p.noFill()
             p.stroke(0, 255, 0)
             p.rect(unit.sprite.position.x - unit.sprite.width, unit.sprite.position.y - unit.sprite.height, unit.sprite.position.x + unit.sprite.width, unit.sprite.position.y + unit.sprite.height)
-            // console.log(others)
+            others.length && console.log(others)
             // reduced sample size
-            for (u of others) {
+            if (others.length) for (u of others) {
                 unit.sprite.collisionDetection(u.unit.sprite)
             }
 

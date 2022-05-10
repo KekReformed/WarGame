@@ -36,10 +36,10 @@ class Rectangle {
     intersects(rect) {
         // there you go amy
         return (
-            rect.x - rect.w < this.x + this.w ||
-            rect.x + rect.w > this.x - this.w ||
-            rect.y - rect.h < this.y + this.h ||
-            rect.y + rect.h > this.y - this.h
+            rect.x - rect.w <= this.x + this.w ||
+            rect.x + rect.w >= this.x - this.w ||
+            rect.y - rect.h <= this.y + this.h ||
+            rect.y + rect.h >= this.y - this.h
         );
     }
 }
@@ -71,10 +71,10 @@ class QuadTree {
 
     search(range) {
         let found = []
-        if (!this.rect.intersects(range)) return found; // optamization
+        if (!this.rect.intersects(range)) return found;
         for (let i = 0; i < this.points.length; i++) {
-            let point = this.points[i] 
-            if ((point.x !== range.x && point.y !== range.y) && range.has(point)) found.push(point);
+            let point = this.points[i]
+            if ((!(point.x === range.x && point.y === range.y)) && range.has(point)) found.push(point);
         }
         if (this.subdivided) {
             found.push(...this.tr.search(range));

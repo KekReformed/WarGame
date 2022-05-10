@@ -19,11 +19,11 @@ function rotateVector(x, y, rad, org = p.createVector(0, 0)) {
 }
 
 function distance(v1, v2) {
-    return Math.sqrt((v1.x - v2.x)**2 + (v1.y - v2.y)**2)
+    return Math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2)
 }
 
 class Sprite {
-    constructor(x, y, width, height, userData,  layer = 0, anchor = Anchor.top, image, velocity) {
+    constructor(x, y, width, height, userData, layer = 0, anchor = Anchor.top, image, velocity) {
         this.position = p.createVector(x, y)
         this.velocity = velocity || p.createVector(0, 0)
         this.height = height
@@ -62,7 +62,7 @@ class Sprite {
         unit.sprite.isColliding = false
     }
 
-    draw() {    
+    draw() {
         this.update()
         let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
         p.stroke(255)
@@ -86,124 +86,50 @@ class Sprite {
     }
 
     collisionDetection(sp) {
+        if (this.collisions.includes(sp)) return;
 
-        console.log("i exist")
-        // console.log(this, sp)
-        let w = this.width / 2, h = this.height / 2,
-            spw = sp.width / 2, sph = sp.height / 2
-        // i had to do this because jack wanted centered anchors for shit
-        let pos = [p.createVector(this.position.x - w, this.position.y - h), p.createVector(this.position.x + w, this.position.y - h), p.createVector(this.position.x + w, this.position.y + h), p.createVector(this.position.x - w, this.position.y + h)]
-        let spos = [p.createVector(sp.position.x - spw, sp.position.y - sph), p.createVector(sp.position.x + spw, sp.position.y - sph), p.createVector(sp.position.x + spw, sp.position.y + sph), p.createVector(sp.position.x - spw, sp.position.y + sph)]
-        if (distance(this.position, sp.position) < (Math.min(w, h) + Math.min(spw, sph))/100) return this.addCollision(sp) // check if the smallest possible distance between them has been crossed
-        
-        let dx = sp.position.x - this.position.x // distance between their mid-sections
-        let dy = sp.position.y - this.position.y
-        
-        let dxcol = false, dycol = false;
-        if (dx > 0) { // checking which one is further from (0,y)
-            //sp right -    since sp is on the right the vectors we need to worry about are only the vectors to it's left
-            // this left -  since this is on the left the vectors we need to worry about are only the vectors to it's right
-            console.log("sp right - this left")
-            for (let i = 0; i < 4; i++) { // looping through the vectors for the spos / sp
-                let spoints = []
-                let points = []
-                let spoint, point;
-                if (spos[i].x < sp.position.x) { // if the vector is to the left of sp which is on the right then this vector concerns us
-                    spoints.push(spos[i])
-                    if (spoints.length > 1) {
-                        spoint = spoints[0] > spoints[1] ? spoints[0] : spoints[1]
-                    }
-                }
-                if (pos[i].x > this.position) {
-                    points.push(pos[i])
-                    if (points.length > 1) {
-                        point = points[0] > points[1] ? points[0] : points[1]
-                    }
-                }
-                if(!spoint) spoint = spoints[0]
-                if(!point) point = points[0]
-                if(spoint - point >= dx) dxcol = true;
+        let w = this.width/2, h = this.height/2, spw = sp.width/2, sph = sp.height/2;
+
+        let pos = [
+            rotateVector(this.position.x - w, this.position.y - h, this.rad, { x: this.position.x, y: this.position.y }),
+            rotateVector(this.position.x + w, this.position.y - h, this.rad, { x: this.position.x, y: this.position.y }),
+            rotateVector(this.position.x + w, this.position.y + h, this.rad, { x: this.position.x, y: this.position.y }),
+            rotateVector(this.position.x - w, this.position.y + h, this.rad, { x: this.position.x, y: this.position.y })
+        ]
+        let spos = [
+            rotateVector(sp.position.x - spw, sp.position.y - sph, sp.rad, { x: sp.position.x, y: sp.position.y }),
+            rotateVector(sp.position.x + spw, sp.position.y - sph, sp.rad, { x: sp.position.x, y: sp.position.y }),
+            rotateVector(sp.position.x + spw, sp.position.y + sph, sp.rad, { x: sp.position.x, y: sp.position.y }),
+            rotateVector(sp.position.x - spw, sp.position.y + sph, sp.rad, { x: sp.position.x, y: sp.position.y })
+        ]
+
+        let vecs = [...pos, ...spos];
+        let collision = true;
+
+        // axis
+        let axes = [
+            { x: pos[1].x - pos[0].x, y: pos[1].y - pos[0].y },
+            { x: pos[1].x - pos[2].x, y: pos[1].y - pos[2].y },
+            { x: spos[0].x - spos[3].x, y: spos[0].y - spos[3].y },
+            { x: spos[0].x - spos[1].x, y: spos[0].y - spos[1].y },
+        ]
+        for (let i = 0; i < 4; i++) {
+            let scalars = [[],[]]; // projection array   
+            let axis = axes[i]; // axis to project to
+            // projecting
+            for(let j = 0; j < 8; j++) {
+                let vec = vecs[j]
+                let c = (vec.x * axis.x + vec.y * axis.y) / axis.x**2 + axis.y**2 // 90 deg projection
+                scalars[p.round(j/7)].push({x: c*(axis.x**2), y: c*(axis.y**2)})
             }
-        } else if (dx < 0) {
-            console.log("sp left - this right")
-             //sp left -    since sp is on the left the vectors we need to worry about are only the vectors to it's right
-            // this right -  since this is on the right the vectors we need to worry about are only the vectors to it's left
-            for (let i = 0; i < 4; i++) { // looping through the vectors for the spos / sp
-                let spoints = []
-                let points = []
-                let spoint, point;
-                if (spos[i].x > sp.position.x) { // if the vector is to the right of sp which is on the left then this vector concerns us
-                    spoints.push(spos[i])
-                    if (spoints.length > 1) {
-                        spoint = spoints[0] > spoints[1] ? spoints[0] : spoints[1]
-                    }
-                }
-                if (pos[i].x < this.position.x) {
-                    points.push(pos[i])
-                    if (points.length > 1) {
-                        point = points[0] > points[1] ? points[0] : points[1]
-                    }
-                }
-                if(!spoint) spoint = spoints[0]
-                if(!point) point = points[0]
-                if(point - spoint >= dx) dxcol = true;
-            }
+            if(Math.min(scalars[1]) >= Math.max(scalars[0] || Math.max(scalars[1]) <= Math.min(scalars[0]))) return collision = false
         }
-        if (dy > 0) { // checking which one is further from (0,y)
-            console.log("sp above - this below")
-            // sp above
-            // this below 
-            for (let i = 0; i < 4; i++) { // looping through the vectors for the spos / sp
-                let spoints = []
-                let points = []
-                let spoint, point;
-                if (spos[i].y > sp.position.y) { // if the vector is below sp which is at the top then this vector concerns us
-                    spoints.push(spos[i])
-                    if (spoints.length > 1) {
-                        spoint = spoints[0] > spoints[1] ? spoints[0] : spoints[1]
-                    }
-                }
-                if (pos[i].y < this.position.y) {
-                    points.push(pos[i])
-                    if (points.length > 1) {
-                        point = points[0] > points[1] ? points[0] : points[1]
-                    }
-                }
-                console.log(spoints, points)
-                if(!spoint) spoint = spoints[0]
-                if(!point) point = points[0]
-                if(point - spoint >= dy) dycol = true;
-            }
-        } else if (dy < 0) {
-            console.log("sp below - this above")
-            // sp below
-            // this above 
-            for (let i = 0; i < 4; i++) { // looping through the vectors for the spos / sp
-                let spoints = []
-                let points = []
-                let spoint, point;
-                if (spos[i].y < sp.position.y) { // if the vector is above sp which is at the bottom then this vector concerns us
-                    spoints.push(spos[i])
-                    if (spoints.length > 1) {
-                        spoint = spoints[0] > spoints[1] ? spoints[0] : spoints[1]
-                    }
-                }
-                if (pos[i].y > this.position.y) {
-                    points.push(pos[i])
-                    if (points.length > 1) {
-                        point = points[0] > points[1] ? points[0] : points[1]
-                    }
-                }
-                if(!spoint) spoint = spoints[0]
-                if(!point) point = points[0]
-                if(spoint - point >= dy) dycol = true;
-            }
-        }
-        console.log(dxcol, dycol)
-        if(dycol && dxcol) return this.addCollision(sp)
+        if(collision) this.addCollision(sp)
     }
 
     addCollision(sp) {
+        this.color = "#ffffff"
+        sp.color = "#fffffff"
         this.isColliding = true;
         this.collisions.push(sp)
         return true
@@ -211,9 +137,17 @@ class Sprite {
 }
 
 module.exports.drawSprites = () => {
-    allSprites.layered.forEach(layer => {
+    allSprites.layered.forEach(layer => { // change from foreach
         layer.forEach(sprite => {
             sprite.draw()
+        })
+    })
+}
+
+module.exports.updateSprites = () => { // change from foreach
+    allSprites.layered.forEach(layer => {
+        layer.forEach(sprite => {
+            sprite.update()
         })
     })
 }
