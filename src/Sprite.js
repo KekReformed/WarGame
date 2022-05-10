@@ -128,7 +128,7 @@ class Sprite {
     }
 
     addCollision(sp) {
-        alert('collision')
+        console.log("collision")
         this.color = "#ffffff"
         sp.color = "#fffffff"
         this.isColliding = true;
