@@ -1,10 +1,17 @@
 // this will not depend on p5.js for optimization purposes / being able to use this elsewhere if i want :3
 
-capacity = 0;    // the capacity of the of the QuadTree (how many points each section / QuadTree can store)
-p = undefined;  // p5 instance (unique to this usecase)
+import p5 from "p5";
+// import { p } from "./sketch"; // debug
+import Unit from "./units/Unit";
 
-class Point {
-    constructor(x, y, unit) {
+let capacity: number = 0;    // the capacity of the of the QuadTree (how many points each section / QuadTree can store)
+
+export class Point {
+    x: number
+    y: number
+    unit: Unit
+
+    constructor(x: number, y: number, unit: Unit) {
         this.x = x;
         this.y = y;
         // unique to this usecase
@@ -12,9 +19,13 @@ class Point {
     }
 }
 
-class Rectangle {
+export class Rectangle {
+    x: number
+    y: number
+    w: number
+    h: number
     // a modification of p5's corner mode (width and height rather than another vector) that has half the width and height instead so that this is centered around it's x and y
-    constructor(x, y, hw, hh) {
+    constructor(x: number, y: number, hw: number, hh: number) {
         this.x = x;
         this.y = y;
         this.w = hw;
@@ -22,7 +33,7 @@ class Rectangle {
     }
 
     // check if a point is within this instance of a rectangle
-    has(p) {
+    has(p: Point) {
         // there you go amy
         return ( // making it = in case we get a point at the exact corner
             p.x >= this.x - this.w &&
@@ -33,7 +44,7 @@ class Rectangle {
     }
 
     // check if another rectangle intersects this one
-    intersects(rect) {
+    intersects(rect: Rectangle) {
         // there you go amy
         return (
             rect.x - rect.w <= this.x + this.w ||
@@ -44,14 +55,21 @@ class Rectangle {
     }
 }
 
-class QuadTree {
-    constructor(rect) {
+export class QuadTree {
+    rect: Rectangle
+    points: Point[]
+    subdivided: Boolean
+    tr: QuadTree
+    tl: QuadTree
+    br: QuadTree
+    bl: QuadTree
+    constructor(rect: Rectangle) {
         this.rect = rect;            // the rectangle the QuadTree instance represents 
         this.points = [];            // stores the points housed within the instance
         this.subdivided = false;     // this is to make sure we haven't already subdivided this instance of quadtree
     }
 
-    add(point) {
+    add(point: Point) {
 
         if (!this.rect.has(point)) return false; // because i added the = for edge cases in the has function i need to make this false 
 
@@ -69,8 +87,8 @@ class QuadTree {
         }
     }
 
-    search(range) {
-        let found = []
+    search(range: Rectangle) {
+        let found: Point[] = []
         if (!this.rect.intersects(range)) return found;
         for (let i = 0; i < this.points.length; i++) {
             let point = this.points[i]
@@ -121,19 +139,14 @@ class QuadTree {
     //         p.circle(this.points[i].x, this.points[i].y, 5);
     //     }
     // }
-    
+
     /**
      *          END OF DEBUG
      */
 
 }
 
-module.exports.QuadTree = QuadTree
-module.exports.Point = Point
-module.exports.Rectangle = Rectangle
-
-module.exports.initalizeQuadTree = (cap, p5 = undefined) => { // a debug only instance of p5
+export const initalizeQuadTree = (cap: number) => { // a debug only instance of p5
     capacity = cap;
-    p = p5;
 }
 

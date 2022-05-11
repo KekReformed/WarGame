@@ -7,7 +7,7 @@ module.exports = {
   entry: ['./src-menu/', './src-menu/joinGame.js'],
   mode: "development",
   output: {
-    filename: 'index.js',
+    filename: 'index.ts',
     path: serveDirectory,
   },
   optimization: {

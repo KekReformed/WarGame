@@ -1,11 +1,11 @@
 import p5 from 'p5'
 import Airstrip from "./depots/Airstrip.js"
 import Fighter from "./units/Fighter.js"
-import { client, unitTypes } from "./index.js"
+import { client, unitTypes } from "./index"
 import Infantry from "./units/Infantry.js"
 import Bomber from "./units/Bomber.js"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
-import * as sprites from  './Sprite.js'
+import * as sprites from  './Sprite'
 import City from "./City.js"
 
 var dragged = false
@@ -15,8 +15,8 @@ let qt;
 
 function sketch(p: p5) {
     p.setup = () => {
-        sprites.initalize(p)
-        initalizeQuadTree(2, p)
+        sprites.initalize()
+        initalizeQuadTree(2)
         const canvas = p.createCanvas(window.outerWidth, window.outerHeight);
         const jeff = new Infantry({
             faction: "USA",

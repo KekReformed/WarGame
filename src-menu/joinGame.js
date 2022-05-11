@@ -1,5 +1,5 @@
 import { createGame } from "./createGame.js";
-import { delay, request, socket } from "./index.js"
+import { delay, request, socket } from "./index"
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")

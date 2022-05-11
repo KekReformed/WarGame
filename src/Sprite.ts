@@ -18,10 +18,8 @@ let allSprites: Scene = {
     layered: [[]],
     sprites: []
 }
-let allCollisions = []
-let allDomainOverlaps = []
 
-function rotateVector(x: number, y: number, rad: number, org = p.createVector(0, 0)) {
+function rotateVector(x: number, y: number, rad: number, org: {x:number, y:number}) {
     const rotatedX = (x - org.x) * Math.cos(rad) - (y - org.y) * Math.sin(rad)
     const rotatedY = (x - org.x) * Math.sin(rad) + (y - org.y) * Math.cos(rad)
     return p.createVector(org.x + rotatedX, org.y + rotatedY)
@@ -146,7 +144,7 @@ export class Sprite {
                 let c = (vec.x * axis.x + vec.y * axis.y) / axis.x**2 + axis.y**2 // 90 deg projection
                 scalars[p.round(j/7)].push(c*(axis.x**2) + c*(axis.y**2))
             }
-            if(Math.min(scalars[1]) >= Math.max(scalars[0] || Math.max(scalars[1]) <= Math.min(scalars[0]))) return collision = false
+            if(p.min(scalars[1]) >= p.max(scalars[0]) || p.max(scalars[1]) <= p.min(scalars[0])) return collision = false
         }
         if(collision) this.addCollision(sp)
     }

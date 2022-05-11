@@ -28,7 +28,3 @@ export function longClick(mouseButton: any) {
         return false
     }
 }
-
-document.body.oncontextmenu = (e) => {
-    e.preventDefault();
-}

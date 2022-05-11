@@ -1,8 +1,8 @@
 import p5, { Vector } from "p5";
 import Battle from "../Battle.js";
-import { client, longClick, unitTypes } from "../index.js";
-import { p } from "../sketch.js";
-import { Anchor, Sprite } from "../Sprite.js";
+import { client, longClick, unitTypes } from "../index";
+import { p } from "../sketch";
+import { Anchor, Sprite } from "../Sprite";
 
 class Unit {
     height: number
