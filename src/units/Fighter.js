@@ -7,6 +7,7 @@ class Fighter extends Unit {
         this.type = "fighter jet"
         this.terrainType = "air"
         this.speed = 5
+        this.rangeModifier = 1
     }
 
     update() {
@@ -26,12 +27,15 @@ class Fighter extends Unit {
             }
         }
 
+        this.range = this.closestAirstrip.range * this.rangeModifier / 2 
+        if (this.goToClosestAirstrip) this.goToRange = this.goToClosestAirstrip.range * this.rangeModifier / 2 
+
         //If we are out of range of the closest airstrip go to it
-        if (this.closestAirstrip.sprite.position.dist(this.sprite.position) - 10 > this.closestAirstrip.range / 2) {
+        if (this.closestAirstrip.sprite.position.dist(this.sprite.position) - 10 > this.range) {
             this.goTo(this.closestAirstrip.sprite.position, this.speed)
         }
         
-        else if (this.closestAirstrip.sprite.position.dist(this.sprite.position) > this.closestAirstrip.range / 2 && this.goToClosestAirstrip.sprite.position.dist(this.goToPoint) > this.goToClosestAirstrip.range / 2) {
+        else if (this.closestAirstrip.sprite.position.dist(this.sprite.position) > this.range / 2 && this.goToClosestAirstrip && this.goToClosestAirstrip.sprite.position.dist(this.goToPoint) > this.goToRange) {
             this.sprite.setVelocity(0,0)
         }
     }
@@ -51,7 +55,6 @@ class Fighter extends Unit {
                 lowestDist = dist
             }
         }
-        console.log("Going")
     }
 }
 

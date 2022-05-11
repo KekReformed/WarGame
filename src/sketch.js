@@ -4,6 +4,7 @@ const { default: Barracks } = require("./depots/Barracks.js")
 const { default: Fighter } = require("./units/Fighter.js")
 const { client, unitTypes } = require("./index.js")
 const { default: Infantry } = require("./units/Infantry.js")
+const { default: Bomber } = require("./units/Bomber.js")
 
 const City = require("./City.js").default
 
@@ -74,7 +75,7 @@ setup = () => {
         strength: 2000
     })
 
-    const jimbo = new Fighter({
+    const jimbo = new Bomber({
         faction: "Spain",
         height: 50,
         width: 50,
