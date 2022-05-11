@@ -38,7 +38,7 @@ class Unit {
             let unit = client.globalUnits[i]
 
             let mousePos = createVector(mouseX, mouseY)
-
+            console.log(this.selected, longClick(RIGHT), unit.sprite.position.dist(mousePos))
             if (this.selected && longClick(RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
                 this.joiningBattle = true
                 this.goingToBattle = true
@@ -50,7 +50,7 @@ class Unit {
             if (this.sprite.overlap(unit.sprite) && (this.terrainType !== "air" && unit.terrainType !== "air" || this.joiningBattle)) {
 
                 //If the unit we're colliding with is an enemy
-                if (unit.faction !== this.faction) {
+                if (unit.faction !== this.faction && unit.terrainType !== "air") {
                     this.startBattle(unit)
                 }
             }
@@ -86,7 +86,7 @@ class Unit {
                 let mousePos = createVector(mouseX, mouseY)
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
-
+                this.goingToUnit = null
                 this.goTo(mousePos, this.speed)
             }
 

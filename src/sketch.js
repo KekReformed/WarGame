@@ -50,7 +50,7 @@ setup = () => {
         strength: 2000
     })
 
-    const john = new Infantry({
+    const john = new Fighter({
         faction: "UK",
         height: 50,
         width: 50,
@@ -74,7 +74,7 @@ setup = () => {
         strength: 2000
     })
 
-    const jimbo = new Infantry({
+    const jimbo = new Fighter({
         faction: "Spain",
         height: 50,
         width: 50,
@@ -89,8 +89,8 @@ setup = () => {
     const london = new City("UK", "London", 800, 400, 100)
     const manchester = new City("Spain", "Manchester", 1200, 400, 100)
 
-    const barracks = new Aviation({
-        faction: "UK",
+    const barracks = new Airstrip({
+        faction: "Spain",
         positionX: 400,
         positionY: 600,
         city: "None",

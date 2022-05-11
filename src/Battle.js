@@ -70,19 +70,26 @@ class Battle {
                             faction.units.land[unitType] -= dividedDamage
                             faction.land -= dividedDamage
                             faction.totalStrength -= dividedDamage
-                            totalDamage += damage
+                            totalDamage += dividedDamage
                         }
                     }
 
-                    //Air units only take damage from other air units which is calculated in air damage
+                    //Air units only take damage from other air units which is calculated in air damage unless they are the only unit in combat
                     if(unitTerrainType === "air") {
                         for (const unitType in faction.units[unitTerrainType]) {
-                            let dividedDamage = airDamage / faction.uniqueAirUnits
+                            let dividedDamage;
+                            if (faction.uniqueLandUnits < 1) {
+                                dividedDamage = damage / faction.uniqueAirUnits
+                                totalDamage += dividedDamage
+                            }
+                            else {
+                                dividedDamage = airDamage / faction.uniqueAirUnits
+                                totalAirDamage += dividedDamage
+                            }
 
                             faction.units.air[unitType] -= dividedDamage
                             faction.air -= dividedDamage
                             faction.totalStrength -= dividedDamage
-                            totalAirDamage += dividedDamage
                         }
                     }
                 }
@@ -91,7 +98,6 @@ class Battle {
                     this.winningFaction = factionName
                     this.winningStrength = faction.totalStrength
                 }
-                console.log(faction)
             }
 
             this.totalStrength -= totalDamage

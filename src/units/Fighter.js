@@ -20,7 +20,7 @@ class Fighter extends Unit {
 
             dist = depot.sprite.position.dist(this.sprite.position)
 
-            if (depot.type === "airstrip" && dist <= lowestDist) {
+            if (depot.type === "airstrip" && dist <= lowestDist && depot.faction === this.faction) {
                 this.closestAirstrip = depot
                 lowestDist = dist
             }
@@ -51,6 +51,7 @@ class Fighter extends Unit {
                 lowestDist = dist
             }
         }
+        console.log("Going")
     }
 }
 
