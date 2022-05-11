@@ -1,29 +1,53 @@
-const { QuadTree, initalizeQuadTree, Rectangle, Point } = require('./QuadTree')
+import p5, { Image, Vector } from 'p5'
+import { initalizeQuadTree } from './QuadTree'
+import { p } from './sketch'
 
-Anchor = {
-    top: 0,
-    right: 1,
-    bottom: 2,
-    left: 3
+export enum Anchor {
+    top,
+    right,
+    bottom,
+    left
 }
 
-let allSprites = {}
-let p = undefined
+interface Scene {
+    layered: Sprite[][]
+    sprites: Sprite[]
+}
+
+let allSprites: Scene = {
+    layered: [[]],
+    sprites: []
+}
 let allCollisions = []
 let allDomainOverlaps = []
 
-function rotateVector(x, y, rad, org = p.createVector(0, 0)) {
+function rotateVector(x: number, y: number, rad: number, org = p.createVector(0, 0)) {
     const rotatedX = (x - org.x) * Math.cos(rad) - (y - org.y) * Math.sin(rad)
     const rotatedY = (x - org.x) * Math.sin(rad) + (y - org.y) * Math.cos(rad)
     return p.createVector(org.x + rotatedX, org.y + rotatedY)
 }
 
-function distance(v1, v2) {
+function distance(v1: Vector, v2: Vector) {
     return Math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2)
 }
 
-class Sprite {
-    constructor(x, y, width, height, userData, layer = 0, anchor = Anchor.top, image, velocity) {
+export class Sprite {
+    position: Vector
+    height: number
+    width: number
+    layer: number
+    anchor: Anchor
+    userData: any
+    color: string
+    isColliding: boolean
+    velocityRotate: boolean
+    rad: number
+    id: number
+    collisions: Sprite[]
+    image?: Image
+    velocity?: Vector
+
+    constructor(x: number, y: number, width: number, height: number, userData: any, layer = 0, anchor = Anchor.top, image?: Image, velocity?: Vector) {
         this.position = p.createVector(x, y)
         this.velocity = velocity || p.createVector(0, 0)
         this.height = height
@@ -77,15 +101,15 @@ class Sprite {
         p.translate(-this.position.x, -this.position.y)
     }
 
-    rotate(deg) {
+    rotate(deg: number) {
         this.rad = (deg * Math.PI) / 180
     }
 
-    setVelocity(x, y) {
+    setVelocity(x: number, y: number) {
         this.velocity.set(x, y)
     }
 
-    collisionDetection(sp) {
+    collisionDetection(sp: Sprite) {
         if (this.collisions.includes(sp)) return;
 
         let w = this.width/2, h = this.height/2, spw = sp.width/2, sph = sp.height/2;
@@ -114,20 +138,20 @@ class Sprite {
             { x: spos[0].x - spos[1].x, y: spos[0].y - spos[1].y },
         ]
         for (let i = 0; i < 4; i++) {
-            let scalars = [[],[]]; // projection array   
+            let scalars: [number[], number[]] = [[],[]]; // projection array   
             let axis = axes[i]; // axis to project to
             // projecting
             for(let j = 0; j < 8; j++) {
                 let vec = vecs[j]
                 let c = (vec.x * axis.x + vec.y * axis.y) / axis.x**2 + axis.y**2 // 90 deg projection
-                scalars[p.round(j/7)].push({x: c*(axis.x**2), y: c*(axis.y**2)})
+                scalars[p.round(j/7)].push(c*(axis.x**2) + c*(axis.y**2))
             }
             if(Math.min(scalars[1]) >= Math.max(scalars[0] || Math.max(scalars[1]) <= Math.min(scalars[0]))) return collision = false
         }
         if(collision) this.addCollision(sp)
     }
 
-    addCollision(sp) {
+    addCollision(sp: Sprite) {
         console.log("collision")
         this.color = "#ffffff"
         sp.color = "#fffffff"
@@ -137,7 +161,7 @@ class Sprite {
     }
 }
 
-module.exports.drawSprites = () => {
+export const drawSprites = () => {
     allSprites.layered.forEach(layer => { // change from foreach
         layer.forEach(sprite => {
             sprite.draw()
@@ -145,7 +169,7 @@ module.exports.drawSprites = () => {
     })
 }
 
-module.exports.updateSprites = () => { // change from foreach
+export const updateSprites = () => { // change from foreach
     allSprites.layered.forEach(layer => {
         layer.forEach(sprite => {
             sprite.update()
@@ -153,13 +177,7 @@ module.exports.updateSprites = () => { // change from foreach
     })
 }
 
-module.exports.Sprite = Sprite
-module.exports.Anchor = Anchor
-
-module.exports.initalize = (pInst) => {
-    p = pInst
+export const initalize = () => {
     p.rectMode(p.CORNERS)
-    allSprites["layered"] = [[]]
-    allSprites["sprites"] = []
     initalizeQuadTree(4)
 }
