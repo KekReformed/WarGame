@@ -5,15 +5,23 @@ const { default: Fighter } = require("./units/Fighter.js")
 const { client, unitTypes } = require("./index.js")
 const { default: Infantry } = require("./units/Infantry.js")
 const { default: Bomber } = require("./units/Bomber.js")
+const { QuadTree, initalizeQuadTree, Rectangle, Point } = require('./QuadTree')
+sprites = require('./Sprite')
+p5 = require('p5')
 
 const City = require("./City.js").default
 
 var dragged = false
 var rectStartX = 0
 var rectStartY = 0
+let qt;
 
-setup = () => {
-    angleMode(DEGREES)
+
+function sketch(p) {
+    p.setup = () => {
+        sprites.initalize(p)
+        Unit.initalize(p)
+        initalizeQuadTree(2, p)
     const canvas = createCanvas(window.outerWidth, window.outerHeight);
     const jeff = new Infantry({
         faction: "USA",
@@ -107,31 +115,33 @@ setup = () => {
     })
 }
 
-draw = () => {
-    frameRate(60)
-    background(10, 10, 10);
+    p.draw = () => {
+        // note for later if we experience extremely daunting performance issues make it so the Point gets updated rather than being re-inserted
+        qt = new QuadTree(new Rectangle(window.innerWidth / 2, window.innerHeight / 2, window.innerWidth / 2, window.innerHeight / 2))
+        p.frameRate(60)
+        p.background(10, 10, 10);
+        textSize(12)
+        textAlign(CENTER)
+        fill(255, 255, 255)
+        noStroke()
+        let roundedPlayerMoney = Math.round(client.money)
+        text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, canvas.width / 2, 20)
 
-    
-
-    textSize(12)
-    textAlign(CENTER)
-    fill(255, 255, 255)
-    noStroke()
-    let roundedPlayerMoney = Math.round(client.money)
-    text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, canvas.width / 2, 20)
-
-    drawSprites();
-
+        sprites.drawSprites(); // make sure to draw the sprites before collision checks
     //Update units
     for (const i in client.globalUnits) {
         let unit = client.globalUnits[i]
         unit.update()
-
+            qt.add(new Point(u.sprite.position.x, u.sprite.position.y, u))
         if (unit.strength <= 0) {
             unit.sprite.remove()
             client.globalUnits.splice(i, 1)
         }
-    }
+            others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width, unit.sprite.height))
+            // reduced sample size
+            if (others.length) for (u of others) {
+                unit.sprite.collisionDetection(u.unit.sprite)
+            }
 
     //Update battles
     for (const i in client.globalBattles) {
@@ -212,16 +222,14 @@ draw = () => {
         stroke("#03e3fc")
         noFill()
         rect(rectStartX, rectStartY, mouseX - rectStartX, mouseY - rectStartY)
-    }
-}
 
-mousePressed = () => {
-    if (mouseButton === LEFT) {
-        rectStartX = mouseX
-        rectStartY = mouseY
+    p.mousePressed = () => {
+        if (p.mouseButton === p.LEFT) {
+            rectStartX = p.mouseX
+            rectStartY = p.mouseY
+        
 
         let unitSelected = false
-
         //Select a unit by clicking on it
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
@@ -235,8 +243,6 @@ mousePressed = () => {
                 unit.deselect()
             }
         }
-
-
         //Select a depot by clicking on it
         for (const i in client.globalDepots) {
             let depot = client.globalDepots[i]
@@ -248,26 +254,26 @@ mousePressed = () => {
                 depot.deselect()
             }
         }
-
-    }
-}
-
-mouseReleased = () => {
-    if (mouseButton !== LEFT) return;
-
-    for (const i in client.globalUnits) {
-        let unit = client.globalUnits[i]
-
-        //Check if a unit is within the rectangle
-        if (Math.min(rectStartX, mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, mouseX) && Math.min(rectStartY, mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, mouseY)) {
-            unit.select()
         }
     }
+    p.mouseReleased = () => {
+        if (p.mouseButton !== p.LEFT) return;
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
+            
+            //Check if a unit is within the rectangle
+            if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY) && !unit.inBattle) {
+                unit.select()
+            }
+        }
+        dragged = false
+    }
 
+    p.mouseDragged = () => {
+        if (p.mouseButton !== LEFT) return;
+        dragged = true
+    }
     dragged = false
 }
 
-mouseDragged = () => {
-    if (mouseButton !== LEFT) return;
-    dragged = true
-}
+let pInst = new p5(sketch)

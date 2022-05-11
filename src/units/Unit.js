@@ -1,5 +1,7 @@
 import Battle from "../Battle.js";
 import { client, longClick, unitTypes } from "../index.js";
+let p;
+sprites = require('./Sprite')
 
 class Unit {
 
@@ -15,22 +17,17 @@ class Unit {
         this.effectiveStrength = unitData.strength
         this.strengthModifier = 1
         this.speed = 1
-        this.sprite = createSprite(unitData.positionX, unitData.positionY, unitData.height, unitData.width)
         this.goToPoint = this.sprite.position
-        this.sprite.shapeColor = `hsl(${unitData.h},${unitData.s}%,${unitData.l}%)`
-        this.sprite.rotateToDirection = true
-        this.sprite.setDefaultCollider()
         client.globalUnits.push(this)
+        this.sprite = new sprites.Sprite(positionX, positionY, width, height, 0, sprites.Anchor.top)
+        this.sprite.color = color
+        this.sprite.velocityRotate = true
     }
 
 
     update() {
 
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
-
-        this.sprite.mouseUpdate()
-
-        this.collisionCount = 0
 
         if (this.goingToUnit) this.goTo(this.goingToUnit.sprite.position, this.speed)
 
@@ -104,14 +101,12 @@ class Unit {
 
     select() {
         this.selected = true
-        this.sprite.depth = 1
-        this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,50%)`)
+        this.sprite.color = "#ff0000"
     }
 
     deselect() {
         this.selected = false
-        this.sprite.depth = 0
-        this.sprite.shapeColor = color(`hsl(${this.h},${this.s}%,${this.l}%)`)
+        this.sprite.color = "#660000"
     }
 
     startBattle(EnemyUnit) {
@@ -206,8 +201,8 @@ class Unit {
     }
 
     goTo(destination, speed = 1) {
-        this.goToPoint = createVector(destination.x, destination.y)
-        this.vector = createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
+        this.goToPoint = p.createVector(destination.x, destination.y)
+        this.vector = p.createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
         this.vector.normalize()
         this.vector.mult(speed)
         this.sprite.setVelocity(this.vector.x, this.vector.y)
@@ -215,3 +210,7 @@ class Unit {
 }
 
 export default Unit
+
+module.exports.initalize = (pInst) => {
+    p = pInst
+}
