@@ -36,6 +36,10 @@ class UIComponent {
     unhide() {
         this.hidden = false
     }
+
+    update() {
+        
+    }
 }
 
 export default UIComponent

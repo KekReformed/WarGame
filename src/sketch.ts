@@ -1,12 +1,12 @@
 import p5 from 'p5'
-import { client, unitTypes } from "./index"
+import { client, keyDown, keyWentDown, unitTypes } from "./index"
 import { UnitData } from './units/Unit'
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
 import Bomber from "./units/Bomber"
 import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
-import * as sprites from  './Sprite'
+import * as sprites from './Sprite'
 import City from "./City"
 
 var dragged = false
@@ -124,6 +124,7 @@ function sketch(p: p5) {
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 20)
 
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
+
         //Update units
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
@@ -138,139 +139,140 @@ function sketch(p: p5) {
             if (others.length) for (let point of others) {
                 point.unit.sprite.collisionDetection(point.unit.sprite)
             }
+        }
 
-            //Update battles
-            for (const i in client.globalBattles) {
+        //Update battles
+        for (const i in client.globalBattles) {
 
-                let battle = client.globalBattles[i]
-                battle.update()
+            let battle = client.globalBattles[i]
+            battle.update()
 
-                for (const factionName in battle.factions) {
-                    let faction = battle.factions[factionName]
+            for (const factionName in battle.factions) {
+                let faction = battle.factions[factionName]
 
-                    if (faction.totalStrength <= 1) {
-                        delete battle.factions[factionName]
-                        break
-                    }
-                }
-
-                let factionList = Object.keys(battle.factions)
-
-
-                //When a battle finishes
-                if (factionList.length === 1) {
-                    // battle.sprite.remove()
-                    let units = battle.factions[factionList[0]].units
-
-                    let unitData: UnitData = {
-                        faction: factionList[0],
-                        height: 50,
-                        width: 50,
-                        h: 0,
-                        s: 100,
-                        l: 20,
-                        positionX: battle.sprite.position.x,
-                        positionY: battle.sprite.position.y
-                    }
-
-                    for (const unitTerrainType in units) {
-                        for (const unitType in units[unitTerrainType]) {
-                            unitData.strength = Math.round(units[unitTerrainType][unitType])
-
-                            new unitTypes[unitType](unitData)
-                        }
-                    }
-
-                    client.globalBattles.splice(parseInt(i), 1)
+                if (faction.totalStrength <= 1) {
+                    delete battle.factions[factionName]
+                    break
                 }
             }
 
-            //Update cities
-            for (const i in client.globalCities) {
+            let factionList = Object.keys(battle.factions)
 
-                let city = client.globalCities[i]
 
-                city.update()
+            //When a battle finishes
+            if (factionList.length === 1) {
+                // battle.sprite.remove()
+                let units = battle.factions[factionList[0]].units
 
-                if (city.faction === client.faction) {
-                    client.money += city.value / 365 * 1000
+                let unitData: UnitData = {
+                    faction: factionList[0],
+                    height: 50,
+                    width: 50,
+                    h: 0,
+                    s: 100,
+                    l: 20,
+                    positionX: battle.sprite.position.x,
+                    positionY: battle.sprite.position.y
                 }
-            }
 
-            //Update depots
-            for (const i in client.globalDepots) {
+                for (const unitTerrainType in units) {
+                    for (const unitType in units[unitTerrainType]) {
+                        unitData.strength = Math.round(units[unitTerrainType][unitType])
 
-                let depot = client.globalDepots[i]
-
-                depot.update()
-            }
-
-            //Update UI elements
-            for (const i in client.globalUIComponents) {
-
-                let UIComponent = client.globalUIComponents[i]
-
-                UIComponent.update()
-            }
-
-            if (dragged === true) {
-                p.stroke("#03e3fc")
-                p.noFill()
-                p.rect(rectStartX, rectStartY, p.mouseX - rectStartX, p.mouseY - rectStartY)
-
-                p.mousePressed = () => {
-                    if (p.mouseButton === p.LEFT) {
-                        rectStartX = p.mouseX
-                        rectStartY = p.mouseY
-
-
-                        let unitSelected = false
-                        //Select a unit by clicking on it
-                        for (const i in client.globalUnits) {
-                            let unit = client.globalUnits[i]
-
-                            if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
-                                unit.select()
-                                unitSelected = true
-                            }
-
-                            else {
-                                unit.deselect()
-                            }
-                        }
-                        //Select a depot by clicking on it
-                        for (const i in client.globalDepots) {
-                            let depot = client.globalDepots[i]
-
-                            if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
-                                depot.select()
-                            }
-                            else {
-                                depot.deselect()
-                            }
-                        }
+                        new unitTypes[unitType](unitData)
                     }
                 }
-                p.mouseReleased = () => {
-                    if (p.mouseButton !== p.LEFT) return;
-                    for (const i in client.globalUnits) {
-                        let unit = client.globalUnits[i]
 
-                        //Check if a unit is within the rectangle
-                        if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY)) {
-                            unit.select()
-                        }
-                    }
-                    dragged = false
-                }
+                client.globalBattles.splice(parseInt(i), 1)
+            }
+        }
 
-                p.mouseDragged = () => {
-                    if (p.mouseButton !== p.LEFT) return;
-                    dragged = true
-                }
-                dragged = false
+        //Update cities
+        for (const i in client.globalCities) {
+
+            let city = client.globalCities[i]
+
+            city.update()
+
+            if (city.faction === client.faction) {
+                client.money += city.value / 365 * 1000
+            }
+        }
+
+        //Update depots
+        for (const i in client.globalDepots) {
+
+            let depot = client.globalDepots[i]
+
+            depot.update()
+        }
+
+        //Update UI elements
+        for (const i in client.globalUIComponents) {
+
+            let UIComponent = client.globalUIComponents[i]
+
+            UIComponent.update()
+        }
+
+        if (dragged === true) {
+            p.stroke("#03e3fc")
+            p.noFill()
+            p.rect(rectStartX, rectStartY, p.mouseX, p.mouseY)
+        }
+    }
+
+    p.mousePressed = () => {
+        if (p.mouseButton === p.LEFT) {
+            rectStartX = p.mouseX
+            rectStartY = p.mouseY
+        }
+
+        let unitSelected = false
+        //Select a unit by clicking on it
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
+
+            if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
+                unit.select()
+                unitSelected = true
+            }
+
+            else {
+                unit.deselect()
+            }
+        }
+        //Select a depot by clicking on it
+        for (const i in client.globalDepots) {
+            let depot = client.globalDepots[i]
+
+            if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
+                depot.select()
+            }
+            else {
+                depot.deselect()
             }
         }
     }
+
+    p.mouseReleased = () => {
+        if (p.mouseButton !== p.LEFT) return;
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
+
+            //Check if a unit is within the rectangle
+            if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY)) {
+                unit.select()
+            }
+        }
+        dragged = false
+    }
+
+    p.mouseDragged = () => {
+        if (p.mouseButton !== p.LEFT) return;
+        dragged = true
+    }
+    dragged = false
 }
+
 export const p = new p5(sketch)

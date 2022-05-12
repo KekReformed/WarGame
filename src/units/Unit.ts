@@ -70,7 +70,7 @@ class Unit {
             let unit = client.globalUnits[i]
             
             let mousePos = p.createVector(p.mouseX, p.mouseY)
-            console.log(this.selected, longClick(p.RIGHT), unit.sprite.position.dist(mousePos))
+            
             // Requires p5.play.js
             // if (this.selected && longClick(p.RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
                 //     this.joiningBattle = true
