@@ -2,8 +2,6 @@ import Armour from "./units/Armour";
 import Client from "./client";
 import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
-import { p } from "./sketch";
-import { AnyUnit } from "./units/Unit";
 
 let timeHeld = 0
 

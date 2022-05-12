@@ -1,7 +1,7 @@
-import Unit from "./Unit";
+import Unit, { UnitData } from "./Unit";
 
 class Armour extends Unit {
-    constructor(unitData: {[k: string]: any}) {
+    constructor(unitData: {[k: string]: any} & UnitData) {
         super(unitData)
         this.type = "armour"
         this.terrainType = "land"

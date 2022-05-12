@@ -1,10 +1,10 @@
 import { client } from "..";
-import Unit from "./Unit";
+import Unit, { UnitData } from "./Unit";
 
 class Infantry extends Unit {
     inCity: boolean
 
-    constructor(unitData: {[k: string]: any}) {
+    constructor(unitData: {[k: string]: any} & UnitData) {
         super(unitData)
         this.type = "infantry"
         this.terrainType = "land"

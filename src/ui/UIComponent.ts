@@ -1,6 +1,10 @@
 import { Color } from "p5"
 import { client } from ".."
 import { p } from "../sketch"
+import Button from "./Button"
+import PanelUI from "./PanelUI"
+
+export type AnyUIComponent = Button | PanelUI
 
 class UIComponent {
     posX: number
@@ -17,6 +21,7 @@ class UIComponent {
         this.height = height
         this.colour = colour
         this.hidden = hidden
+        // @ts-ignore
         client.globalUIComponents.push(this)
     }
 

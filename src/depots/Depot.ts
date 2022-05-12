@@ -10,7 +10,7 @@ export type AnyDepot = Airstrip | Aviation | Barracks | Depot
 
 class Depot {
     type: string
-    faction: string
+    faction: string | "None"
     sprite: Sprite
     city: City
     inCity: boolean

@@ -1,19 +1,19 @@
 import Battle from "./Battle"
 import City from "./City"
-import Depot, { AnyDepot } from "./depots/Depot"
-import UIComponent from "./ui/UIComponent"
-import Unit from "./units/Unit"
+import { AnyDepot } from "./depots/Depot"
+import { AnyUIComponent } from "./ui/UIComponent"
+import { AnyUnit } from "./units/Unit"
 
 class Client {  
     faction: string
     money: number
     name: string
 
-    globalUnits: Unit[]
+    globalUnits: AnyUnit[]
     globalBattles: Battle[]
     globalCities: City[]
     globalDepots: AnyDepot[]
-    globalUIComponents: UIComponent[]
+    globalUIComponents: AnyUIComponent[]
 
     constructor(faction: string, money: number, name: string) {
         this.faction = faction

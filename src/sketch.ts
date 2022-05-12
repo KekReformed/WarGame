@@ -1,12 +1,13 @@
 import p5 from 'p5'
-import Airstrip from "./depots/Airstrip.js"
-import Fighter from "./units/Fighter.js"
 import { client, unitTypes } from "./index"
-import Infantry from "./units/Infantry.js"
-import Bomber from "./units/Bomber.js"
+import { UnitData } from './units/Unit'
+import Airstrip from "./depots/Airstrip"
+import Infantry from "./units/Infantry"
+import Bomber from "./units/Bomber"
+import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from  './Sprite'
-import City from "./City.js"
+import City from "./City"
 
 var dragged = false
 var rectStartX = 0
@@ -129,13 +130,13 @@ function sketch(p: p5) {
             unit.update()
             qt.add(new Point(unit.sprite.position.x, unit.sprite.position.y, unit))
             if (unit.strength <= 0) {
-                unit.sprite.remove()
+                // unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
             }
             const others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width, unit.sprite.height))
             // reduced sample size
-            if (others.length) for (unit of others) {
-                unit.sprite.collisionDetection(unit.unit.sprite)
+            if (others.length) for (let point of others) {
+                point.unit.sprite.collisionDetection(point.unit.sprite)
             }
 
             //Update battles
@@ -158,10 +159,10 @@ function sketch(p: p5) {
 
                 //When a battle finishes
                 if (factionList.length === 1) {
-                    battle.sprite.remove()
+                    // battle.sprite.remove()
                     let units = battle.factions[factionList[0]].units
 
-                    let unitData = {
+                    let unitData: UnitData = {
                         faction: factionList[0],
                         height: 50,
                         width: 50,
@@ -180,7 +181,7 @@ function sketch(p: p5) {
                         }
                     }
 
-                    client.globalBattles.splice(i, 1)
+                    client.globalBattles.splice(parseInt(i), 1)
                 }
             }
 
@@ -228,7 +229,7 @@ function sketch(p: p5) {
                         for (const i in client.globalUnits) {
                             let unit = client.globalUnits[i]
 
-                            if (unit.sprite.mouseIsOver && unit.faction === client.faction && unitSelected === false) {
+                            if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
                                 unit.select()
                                 unitSelected = true
                             }
@@ -241,7 +242,7 @@ function sketch(p: p5) {
                         for (const i in client.globalDepots) {
                             let depot = client.globalDepots[i]
 
-                            if (depot.sprite.mouseIsOver && depot.faction === client.faction) {
+                            if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
                                 depot.select()
                             }
                             else {
@@ -256,7 +257,7 @@ function sketch(p: p5) {
                         let unit = client.globalUnits[i]
 
                         //Check if a unit is within the rectangle
-                        if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY) && !unit.inBattle) {
+                        if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY)) {
                             unit.select()
                         }
                     }

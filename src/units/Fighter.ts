@@ -1,16 +1,16 @@
 import { Vector } from "p5";
 import { client } from "..";
 import Airstrip from "../depots/Airstrip";
-import Unit from "./Unit";
+import Unit, { UnitData } from "./Unit";
 
 class Fighter extends Unit {
     range: number
     goToRange: number
     rangeModifier: number
-    closestAirstrip: Airstrip
+    closestAirstrip?: Airstrip
     goToClosestAirstrip: Airstrip
 
-    constructor(unitData: {[k: string]: any}) {
+    constructor(unitData: {[k: string]: any} & UnitData) {
         super(unitData)
         this.type = "fighter jet"
         this.terrainType = "air"
@@ -34,6 +34,7 @@ class Fighter extends Unit {
             }
         }
 
+        if (!this.closestAirstrip) return
         this.range = this.closestAirstrip.range * this.rangeModifier / 2 
         if (this.goToClosestAirstrip) this.goToRange = this.goToClosestAirstrip.range * this.rangeModifier / 2 
 
