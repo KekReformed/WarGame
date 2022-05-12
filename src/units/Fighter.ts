@@ -1,8 +1,16 @@
+import { Vector } from "p5";
 import { client } from "..";
+import Airstrip from "../depots/Airstrip";
 import Unit from "./Unit";
 
 class Fighter extends Unit {
-    constructor(unitData) {
+    range: number
+    goToRange: number
+    rangeModifier: number
+    closestAirstrip: Airstrip
+    goToClosestAirstrip: Airstrip
+
+    constructor(unitData: {[k: string]: any}) {
         super(unitData)
         this.type = "fighter jet"
         this.terrainType = "air"
@@ -12,16 +20,15 @@ class Fighter extends Unit {
 
     update() {
         super.update()
-        let dist = 0
         let lowestDist = Infinity
 
         //Find the closest airstrip
         for (const i in client.globalDepots) {
             let depot = client.globalDepots[i]
 
-            dist = depot.sprite.position.dist(this.sprite.position)
+            let dist = depot.sprite.position.dist(this.sprite.position)
 
-            if (depot.type === "airstrip" && dist <= lowestDist && depot.faction === this.faction) {
+            if (depot.is<Airstrip>("airstrip") && dist <= lowestDist && depot.faction === this.faction) {
                 this.closestAirstrip = depot
                 lowestDist = dist
             }
@@ -40,22 +47,20 @@ class Fighter extends Unit {
         }
     }
 
-    goTo(destination, speed = 1) {
+    goTo(destination: Vector, speed = 1) {
         super.goTo(destination, speed)
         let dist = 0
         let lowestDist = Infinity
 
         for (const i in client.globalDepots) {
             let depot = client.globalDepots[i]
-
             dist = depot.sprite.position.dist(this.goToPoint)
 
-            if (depot.type === "airstrip" && dist <= lowestDist) {
+            if (depot.is<Airstrip>("airstrip") && dist <= lowestDist) {
                 this.goToClosestAirstrip = depot
                 lowestDist = dist
             }
         }
     }
 }
-
 export default Fighter

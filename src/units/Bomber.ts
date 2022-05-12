@@ -1,7 +1,7 @@
 import Fighter from "./Fighter";
 
 class Bomber extends Fighter {
-    constructor(unitData) {
+    constructor(unitData: {[k: string]: any}) {
         super(unitData)
         this.type === "bomber"
         this.rangeModifier = 3

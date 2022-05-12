@@ -1,8 +1,10 @@
+import PanelUI from "../ui/PanelUI";
 import Depot from "./Depot";
 
 class ProductionDepot extends Depot {
+    panel: PanelUI
 
-    constructor(depotData) {
+    constructor(depotData: {[k: string]: any}) {
         super(depotData)
     }
 

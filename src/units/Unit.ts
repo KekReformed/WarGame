@@ -3,6 +3,13 @@ import Battle from "../Battle.js";
 import { client, longClick, unitTypes } from "../index";
 import { p } from "../sketch";
 import { Anchor, Sprite } from "../Sprite";
+import Armour from "./Armour.js";
+import Bomber from "./Bomber.js";
+import Fighter from "./Fighter.js";
+import Infantry from "./Infantry.js";
+
+export type AnyUnit = Infantry | Armour | Fighter | Bomber
+export type Terrain = "land" | "air"
 
 class Unit {
     height: number
@@ -22,11 +29,11 @@ class Unit {
     goingToUnit: Unit
     joiningBattle: boolean
     goingToBattle: boolean
-    terrainType: "land" | "air"
+    terrainType: Terrain
     combining: boolean
     type: string
 
-    constructor(unitData: { [k: string]: any }) {
+    constructor(unitData: {[k: string]: any}) {
         this.height = unitData.height
         this.width = unitData.width;
         this.h = unitData.h
@@ -45,6 +52,9 @@ class Unit {
         this.sprite.velocityRotate = true
     }
 
+    is<UnitType>(type: string): this is UnitType {
+        return this.type === type
+    }
 
     update() {
         if (this.sprite.position.dist(this.goToPoint) < 3) this.sprite.setVelocity(0, 0);
@@ -56,12 +66,13 @@ class Unit {
 
             let mousePos = p.createVector(p.mouseX, p.mouseY)
             console.log(this.selected, longClick(p.RIGHT), unit.sprite.position.dist(mousePos))
-            if (this.selected && longClick(p.RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
-                this.joiningBattle = true
-                this.goingToBattle = true
-                this.goingToUnit = client.globalUnits[i]
-                this.goTo(unit.sprite.position, this.speed)
-            }
+            // Requires p5.play.js
+            // if (this.selected && longClick(p.RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
+            //     this.joiningBattle = true
+            //     this.goingToBattle = true
+            //     this.goingToUnit = client.globalUnits[i]
+            //     this.goTo(unit.sprite.position, this.speed)
+            // }
 
             //If were touching a unit and we're not an air unit or we're joining the battle
             if (this.sprite.collisions.includes(unit.sprite) && (this.terrainType !== "air" && unit.terrainType !== "air" || this.joiningBattle)) {
@@ -83,11 +94,12 @@ class Unit {
                 let battle = client.globalBattles[i]
                 let mousePos = p.createVector(p.mouseX, p.mouseY)
 
-                if (this.selected && longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
-                    this.joiningBattle = true
-                    this.goingToBattle = true
-                    this.goTo(battle.sprite.position, this.speed)
-                }
+                // Requires p5.play.js
+                // if (this.selected && longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
+                //     this.joiningBattle = true
+                //     this.goingToBattle = true
+                //     this.goTo(battle.sprite.position, this.speed)
+                // }
 
                 //If we touch a battle
                 if (this.sprite.collisions.includes(battle.sprite) && (this.terrainType !== "air" || this.joiningBattle)) {
@@ -99,19 +111,18 @@ class Unit {
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
 
-            if (mouseWentUp(p.RIGHT)) {
-                let mousePos = p.createVector(mouseX, mouseY)
+            // if (mouseWentUp(p.RIGHT)) {
+            //     let mousePos = p.createVector(p.mouseX, p.mouseY)
 
-                this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
-                this.goingToUnit = null
-                this.goTo(mousePos, this.speed)
-            }
-
+            //     this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
+            //     this.goingToUnit = null
+            //     this.goTo(mousePos, this.speed)
+            // }
 
             //Unit Splitting
-            if (keyDown("s") && this.strength / 2 >= 100) {
-                this.split()
-            }
+            // if (keyDown("s") && this.strength / 2 >= 100) {
+            //     this.split()
+            // }
         }
 
         this.updateLabels()

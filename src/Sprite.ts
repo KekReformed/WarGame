@@ -45,7 +45,7 @@ export class Sprite {
     image?: Image
     velocity?: Vector
 
-    constructor(x: number, y: number, width: number, height: number, userData: any, layer = 0, anchor = Anchor.top, image?: Image, velocity?: Vector) {
+    constructor(x: number, y: number, width: number, height: number, userData?: any, layer = 0, anchor = Anchor.top, image?: Image, velocity?: Vector) {
         this.position = p.createVector(x, y)
         this.velocity = velocity || p.createVector(0, 0)
         this.height = height

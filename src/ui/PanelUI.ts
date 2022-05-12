@@ -1,8 +1,17 @@
+import { Color } from "p5"
+import { p } from "../sketch"
 import UIComponent from "./UIComponent"
 
 class PanelUI extends UIComponent {
+    colour: Color
+    posX: number
+    posY: number
+    width: number
+    height: number
+    hidden: boolean
+    UIComponents: UIComponent[]
 
-    constructor(colour, posX, posY, width, height, hidden, UIComponents) {
+    constructor(colour: Color, posX: number, posY: number, width: number, height: number, hidden: boolean, UIComponents: UIComponent[]) {
         super(posX, posY, width, height, colour, hidden)
 
         for (const i in UIComponents) {
@@ -16,9 +25,9 @@ class PanelUI extends UIComponent {
     update() {
         if (this.hidden) return
 
-        fill(this.colour)
-        noStroke()
-        rect(this.posX, this.posY, this.width, this.height)
+        p.fill(this.colour)
+        p.noStroke()
+        p.rect(this.posX, this.posY, this.width, this.height)
     }
 
     hide() {

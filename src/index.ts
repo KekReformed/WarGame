@@ -3,14 +3,20 @@ import Client from "./client";
 import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
 import { p } from "./sketch";
+import { AnyUnit } from "./units/Unit";
 
 let timeHeld = 0
 
 export const client = new Client("UK", 0, "SexyLad")
-export const unitTypes = {
-    "infantry" : Infantry,
-    "armour" : Armour,
-    "fighter jet" : Fighter,
+
+interface UnitTypes {
+    [type: string]: any
+}
+
+export const unitTypes: UnitTypes = {
+    "infantry": Infantry,
+    "armour": Armour,
+    "fighter jet": Fighter,
 }
 
 export function randomInt(min: number, max: number) {
@@ -18,13 +24,18 @@ export function randomInt(min: number, max: number) {
 }
 
 export function longClick(mouseButton: any) {
-    timeHeld = mouseDown(mouseButton) ? timeHeld + p.deltaTime : 0
+    // can't type - p5.play.js
+    // timeHeld = mouseDown(mouseButton) ? timeHeld + p.deltaTime : 0
 
-    if (timeHeld > 800) {
-        timeHeld = 0
-        return true
-    }
-    else {
-        return false
-    }
+    // if (timeHeld > 800) {
+    //     timeHeld = 0
+    //     return true
+    // }
+    // else {
+    //     return false
+    // }
+}
+
+document.body.oncontextmenu = (e) => {
+    e.preventDefault();
 }

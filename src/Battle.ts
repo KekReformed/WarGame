@@ -1,6 +1,40 @@
-class Battle {
+import { p } from "./sketch"
+import { Sprite } from "./Sprite"
+import Unit from "./units/Unit"
 
-    constructor(positionX, positionY, firstUnit, secondUnit) {
+interface Factions {
+    [factionName: string]: {
+        units: {
+            [terrainType: string]: {
+                [type: string]: number
+            }
+        }
+        totalStrength?: number
+        land?: number
+        air?: number
+        uniqueLandUnits?: number
+        uniqueAirUnits?: number
+    }
+}
+
+class Battle {
+    positionX: number
+    positionY: number
+    firstUnit: Unit
+    secondUnit: Unit
+    factions: Factions
+    totalStrength: number
+    winningStrength: number
+    winningFaction: string
+    land: number
+    air: number
+    sprite: Sprite
+    damageInterval: number
+    timer: number
+    factionList: string[]
+    battleParticipants: string[]
+ 
+    constructor(positionX: number, positionY: number, firstUnit: Unit, secondUnit: Unit) {
         this.positionX = positionX
         this.positionY = positionY
         this.factions = {
@@ -13,10 +47,8 @@ class Battle {
         this.totalStrength = 0
         this.land = 0
         this.air = 0
-        this.sprite = createSprite(positionX, positionY, 100, 100)
-        this.sprite.depth = -1
-        this.sprite.setDefaultCollider()
-        this.sprite.shapeColor = `rgb(0,0,255)`
+        this.sprite = new Sprite(positionX, positionY, 100, 100)
+        this.sprite.color = `rgb(0,0,255)`
         this.damageInterval = 0.1
         this.timer = 0
         this.factionList = Object.keys(this.factions)
@@ -30,7 +62,9 @@ class Battle {
             for (const unitTerrainType in faction.units) {
 
                 for (const unitType in faction.units[unitTerrainType]) {
+                    // @ts-ignore yeah I'm not making typescript allow this it basically just picks "air" or "land" (or "naval" later in this class)
                     this[unitTerrainType] += faction.units[unitTerrainType][unitType]
+                    // @ts-ignore ^^
                     faction[unitTerrainType] += faction.units[unitTerrainType][unitType]
                     faction.totalStrength += faction.units[unitTerrainType][unitType]
                     this.totalStrength += faction.units[unitTerrainType][unitType]
@@ -40,7 +74,7 @@ class Battle {
     }
 
     update() {
-        this.timer += deltaTime / 1000
+        this.timer += p.deltaTime / 1000
 
         if (this.timer > this.damageInterval) {
             this.winningStrength = 0
@@ -109,21 +143,21 @@ class Battle {
 
         //Creates the label overtop of the battle
         this.factionList = Object.keys(this.factions)
-        this.battleParticipantStr = [...this.factionList]
-        this.battleParticipantStr.splice(this.battleParticipantStr.length - 1, 1)
+        this.battleParticipants = [...this.factionList]
+        this.battleParticipants.splice(this.battleParticipants.length - 1, 1)
         if (this.factionList.length > 2) {
-            this.battleParticipantStr = [this.battleParticipantStr.join(", ")]
+            this.battleParticipants = [this.battleParticipants.join(", ")]
         }
-        this.battleParticipantStr.push(this.factionList[this.factionList.length - 1])
+        this.battleParticipants.push(this.factionList[this.factionList.length - 1])
 
 
-        textSize(12)
-        textAlign(CENTER)
-        fill(255, 255, 255)
-        noStroke()
-        text(`Battle between ${this.battleParticipantStr.join(" and ")}`, this.sprite.position.x, this.sprite.position.y)
-        text(`Total Strength:${Math.round(this.totalStrength)}`, this.sprite.position.x, this.sprite.position.y + 20)
-        text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left`, this.sprite.position.x, this.sprite.position.y + 40)
+        p.textSize(12)
+        p.textAlign(p.CENTER)
+        p.fill(255, 255, 255)
+        p.noStroke()
+        p.text(`Battle between ${this.battleParticipants.join(" and ")}`, this.sprite.position.x, this.sprite.position.y)
+        p.text(`Total Strength:${Math.round(this.totalStrength)}`, this.sprite.position.x, this.sprite.position.y + 20)
+        p.text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left`, this.sprite.position.x, this.sprite.position.y + 40)
     }
 }
 

@@ -1,8 +1,16 @@
+import { Color } from "p5"
 import { client } from ".."
+import { p } from "../sketch"
 
 class UIComponent {
+    posX: number
+    posY: number
+    width: number
+    height: number
+    colour: Color
+    hidden: boolean
 
-    constructor(posX, posY, width, height, colour, hidden) {
+    constructor(posX: number, posY: number, width: number, height: number, colour: Color, hidden: boolean) {
         this.posX = posX - width / 2
         this.posY = posY - height / 2
         this.width = width
@@ -17,7 +25,7 @@ class UIComponent {
     }
 
     mouseOver() {
-        return mouseX > this.posX && mouseX < this.posX + this.width && mouseY > this.posY && mouseY < this.posY + this.height
+        return p.mouseX > this.posX && p.mouseX < this.posX + this.width && p.mouseY > this.posY && p.mouseY < this.posY + this.height
     }
 
     unhide() {
