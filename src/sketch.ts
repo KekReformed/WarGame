@@ -8,11 +8,19 @@ import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
-
+let timeHeld = 0
 var dragged = false
 var rectStartX = 0
 var rectStartY = 0
 let qt;
+
+// interface MouseState {
+//     "right": Boolean
+//     "left": Boolean
+//     "center": Boolean
+// }
+
+export let mouseState : {[k:string] : Boolean} = {"right": false, "left": false, "center": false};
 
 function sketch(p: p5) {
     p.setup = () => {
@@ -122,6 +130,7 @@ function sketch(p: p5) {
         p.noStroke()
         let roundedPlayerMoney = Math.round(client.money)
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 20)
+        p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
 
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
 
@@ -131,7 +140,7 @@ function sketch(p: p5) {
             unit.update()
             qt.add(new Point(unit.sprite.position.x, unit.sprite.position.y, unit))
             if (unit.strength <= 0) {
-                // unit.sprite.remove()
+                unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
             }
             const others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width, unit.sprite.height))
@@ -161,7 +170,7 @@ function sketch(p: p5) {
 
             //When a battle finishes
             if (factionList.length === 1) {
-                // battle.sprite.remove()
+                battle.sprite.remove()
                 let units = battle.factions[factionList[0]].units
 
                 let unitData: UnitData = {
@@ -223,39 +232,41 @@ function sketch(p: p5) {
     }
 
     p.mousePressed = () => {
+        mouseState[p.mouseButton] = true;
         if (p.mouseButton === p.LEFT) {
             rectStartX = p.mouseX
             rectStartY = p.mouseY
+
+            let unitSelected = false
+            //Select a unit by clicking on it
+            for (const i in client.globalUnits) {
+                let unit = client.globalUnits[i]
+                if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
+                    unit.select()
+                    unitSelected = true
+                }
+                
+                else {
+                    unit.deselect()
+                }
+            }
+            //Select a depot by clicking on it
+            for (const i in client.globalDepots) {
+                let depot = client.globalDepots[i]
+    
+                if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
+                    depot.select()
+                }
+                else {
+                    depot.deselect()
+                }
+            }
         }
 
-        let unitSelected = false
-        //Select a unit by clicking on it
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
-
-            if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
-                unit.select()
-                unitSelected = true
-            }
-
-            else {
-                unit.deselect()
-            }
-        }
-        //Select a depot by clicking on it
-        for (const i in client.globalDepots) {
-            let depot = client.globalDepots[i]
-
-            if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
-                depot.select()
-            }
-            else {
-                depot.deselect()
-            }
-        }
     }
 
     p.mouseReleased = () => {
+        mouseState[p.mouseButton] = false;
         if (p.mouseButton !== p.LEFT) return;
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
@@ -273,6 +284,24 @@ function sketch(p: p5) {
         dragged = true
     }
     dragged = false
+}
+
+
+export function longClick(mouseButton: any) {
+
+    timeHeld = mouseDown(mouseButton) ? timeHeld + p.deltaTime : 0
+
+    if (timeHeld > 800) {
+        timeHeld = 0
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+export function mouseDown(mouseButton: any) {
+    return mouseState[mouseButton]
 }
 
 export const p = new p5(sketch)

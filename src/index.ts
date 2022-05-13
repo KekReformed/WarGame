@@ -1,10 +1,7 @@
 import Armour from "./units/Armour";
-import p5 from "p5"
 import Client from "./client";
 import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
-
-let timeHeld = 0
 let keysPressed: string[] = []
 let keysHeld: string[] = []
 
@@ -24,18 +21,6 @@ export function randomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function longClick(mouseButton: any) {
-    // can't type - p5.play.js
-    // timeHeld = mouseDown(mouseButton) ? timeHeld + p.deltaTime : 0
-
-    // if (timeHeld > 800) {
-    //     timeHeld = 0
-    //     return true
-    // }
-    // else {
-    //     return false
-    // }
-}
 
 document.body.oncontextmenu = (e) => {
     e.preventDefault();

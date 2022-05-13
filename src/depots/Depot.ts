@@ -18,7 +18,7 @@ class Depot {
     
     constructor(depotData: {[k: string]: any}) {
         this.faction = depotData.faction
-        this.sprite = new Sprite(depotData.positionX, depotData.positionY, 20, 20) // "userData" is supposed to be at the end of this but like what the fuck is that ?
+        this.sprite = new Sprite(depotData.positionX, depotData.positionY, 20, 20, this, 0) // "userData" is supposed to be at the end of this but like what the fuck is that ?
         this.city = depotData.city
         this.selected = false
         this.sprite.color = `rgb(200,200,200)`
@@ -40,7 +40,7 @@ class Depot {
             let unit = client.globalUnits[i]
 
             //Oh noes! there is an enemy inside of me, now im gonna be captured!
-            if (/* this.sprite.overlap(unit.sprite) && */ this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && !this.inCity) {
+            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && !this.inCity) {
                 this.faction = unit.faction
             }
         }

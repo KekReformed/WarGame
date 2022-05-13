@@ -7,7 +7,6 @@ module.exports = {
   entry: [
     'p5',
     './src/sketch.ts',
-    './src',
   ],
   mode: "development",
 

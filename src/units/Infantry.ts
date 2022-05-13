@@ -18,7 +18,7 @@ class Infantry extends Unit {
         for (const i in client.globalCities) {
             let city = client.globalCities[i]
 
-            if (this.inCity /* && !this.sprite.overlap(city.sprite) */) {
+            if (this.inCity && !this.sprite.overlap(city.sprite)) {
                 this.inCity = false
                 this.strengthModifier -= 1
             }

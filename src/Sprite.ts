@@ -25,6 +25,11 @@ function rotateVector(x: number, y: number, rad: number, org: {x:number, y:numbe
     return p.createVector(org.x + rotatedX, org.y + rotatedY)
 }
 
+function normalizeVector(x: number, y: number) {
+    const n = distance(p.createVector(x, y), p.createVector(0, 0))
+    return {x: x/n, y: y/n}
+}
+
 function distance(v1: Vector, v2: Vector) {
     return Math.sqrt((v1.x - v2.x) ** 2 + (v1.y - v2.y) ** 2)
 }
@@ -65,14 +70,13 @@ export class Sprite {
     }
 
     isMouseOver() {
-        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
+        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, {x:this.position.x, y:this.position.y})
         if (
             mouse.x <= this.position.x + (this.width / 2) &&
             mouse.x >= this.position.x - (this.width / 2) &&
             mouse.y <= this.position.y + (this.height / 2) &&
             mouse.y >= this.position.y - (this.height / 2)
         ) {
-            // console.log("mouseOver "+this.id)
             return true
         }
         return false
@@ -80,8 +84,6 @@ export class Sprite {
 
     update() {
         this.position.set(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
-        this.collisions = []
-        this.isColliding = false
     }
 
     draw() {
@@ -105,6 +107,23 @@ export class Sprite {
 
     setVelocity(x: number, y: number) {
         this.velocity.set(x, y)
+        if (this.velocityRotate) this.rad = p.atan2(y, x) || 0;
+    }
+
+    remove() {
+        allSprites.layered[this.layer] = allSprites.layered[this.layer].filter((x)=> {if (x.id !== this.id) return x})
+        delete allSprites.sprites[this.id - 1];
+    }
+
+    overlap(sp: Sprite) {
+        console.log(this.isColliding)
+        if (!this.isColliding) return false;
+        for(let i = 0; i < this.collisions.length; i++){
+            console.log(this.collisions[i])
+            if(this.collisions[i].id === sp.id) return true;
+        }
+        console.log("no overlap")
+        return false;
     }
 
     collisionDetection(sp: Sprite) {
@@ -147,12 +166,14 @@ export class Sprite {
             if(p.min(scalars[1]) >= p.max(scalars[0]) || p.max(scalars[1]) <= p.min(scalars[0])) return collision = false
         }
         if(collision) this.addCollision(sp)
+        else{
+            this.collisions = this.collisions.filter((x)=> {if(x.id !== sp.id) return x})
+            this.isColliding = !!this.collisions
+        }
     }
 
     addCollision(sp: Sprite) {
         console.log("collision")
-        this.color = "#ffffff"
-        sp.color = "#fffffff"
         this.isColliding = true;
         this.collisions.push(sp)
         return true
