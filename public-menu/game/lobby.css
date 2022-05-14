@@ -42,7 +42,30 @@ body {
 }
 
 .player {
-    margin: 10px 0 0 10px;
+    display: flex;
+    position: relative;
+    border: 2px solid #161616;
+    background-color: #070606;
+    margin: 10px 10px 0 10px;
+}
+
+.player p {
+    padding: 10px;
+}
+
+.faction {
+    display: flex;
+    position: absolute;
+    right: 0;
+    background-color: #0a0a0a;
+    border: 2px solid #0e0d0d;
+    text-align: left;
+    width: fit-content;
+}
+
+.player-colour {
+    background-color: #0e4d0e;
+    width: 70px;
 }
 
 #right {
