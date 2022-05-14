@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "p5": "^1.4.1",
-    "p5.play": "^2.1.3",
     "socket.io-client": "^4.5.0"
   }
 }
