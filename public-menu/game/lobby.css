@@ -128,5 +128,12 @@ h1, p {
 #leave {
     position: absolute;
     bottom: 12px;
-    left: 12px
+    left: 12px;
+    transition: 400ms;
+}
+
+#leave:hover {
+    cursor: pointer;
+    background-color: #6d0101;
+    transition: 300ms;
 }

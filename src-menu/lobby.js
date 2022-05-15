@@ -20,12 +20,18 @@ const players = document.getElementById("players");
         const titleString = `${game.players[0].name}'s Game`
         document.title = titleString + " | Wargame"
         title.innerHTML = `<p>${titleString}</p>`
-        
+
         for (let player of game.players) {
             addPlayer(player)
         }
     }
 })()
+
+const leaveBtn = document.getElementById("leave")
+leaveBtn.addEventListener("click", async e => {
+    const res = request("POST", "/game/leave");
+    location.pathname = ""
+})
 
 function addPlayer(player) {
     const element = new DOMParser().parseFromString(
