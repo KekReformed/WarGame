@@ -30,7 +30,7 @@ const secret = localStorage.secret;
 
 const leaveBtn = document.getElementById("leave")
 leaveBtn.addEventListener("click", async e => {
-    request("POST", "/game/leave", undefined, {authorization: secret});
+    await request("POST", "/game/leave", undefined, {authorization: secret});
     localStorage.clear()
     location.pathname = ""
 })
