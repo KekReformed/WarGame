@@ -75,6 +75,10 @@ function editGame(game) {
     else addGame(game)
 }
 
+function deleteGame(id) {
+    document.getElementById(id)?.remove()
+}
+
 function createGameString(game) {
     return `<p>${game.creatorName}'s game - ${game.players} player${game.players > 1 ? 's' : ''}</p>`
 }
@@ -114,3 +118,4 @@ async function joinGame(id) {
 
 socket.on('gameCreate', addGame)
 socket.on('publicGameEdit', editGame)
+socket.on('gameDelete', deleteGame)
