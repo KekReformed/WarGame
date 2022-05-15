@@ -6,7 +6,6 @@ const serveDirectory = path.resolve(__dirname, 'public')
 module.exports = {
   entry: [
     'p5',
-    './node_modules/p5.play/lib/p5.play.js',
     './src',
     './src/sketch.js'
   ],

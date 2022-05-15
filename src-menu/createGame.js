@@ -1,4 +1,4 @@
-import { request } from "./index.js"
+import { request } from "./api.js"
 
 export const createGame = document.getElementById("create-game")
 

@@ -19,13 +19,14 @@ body {
     height: 90%
 }
 
-.title {
-    padding-left: 15px;
+#title {
+    padding-left: 10px;
     border: 2px solid grey;
     width: 70%
 }
 
-.title p {
+#title p {
+    padding: 5px;
     font-size: 20px;
     color: #9974ff;
 }
@@ -36,7 +37,7 @@ body {
     height: 90%;
 }
 
-.players {
+#players {
     border: 2px solid grey;
     height: 100%;
 }
@@ -58,7 +59,6 @@ body {
     position: absolute;
     right: 0;
     background-color: #0a0a0a;
-    border: 2px solid #0e0d0d;
     text-align: left;
     width: fit-content;
 }
