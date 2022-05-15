@@ -8,7 +8,7 @@ import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
-import { setOffset, worldToScreen } from './Util'
+import { scaleBy, setOffset, worldToScreen } from './Util'
 let timeHeld = 0
 var dragged = false
 var rectStartX = 0
@@ -289,7 +289,15 @@ function sketch(p: p5) {
         if (p.mouseButton === p.RIGHT) return;
         dragged = true
     }
+    
+    p.mouseWheel = (event) => {
+        //@ts-ignore
+        scaleBy(event.delta > 0 ? 1.05 : 0.95)
+    }
+    
     dragged = false
+
+
 }
 
 

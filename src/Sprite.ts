@@ -1,7 +1,7 @@
 import p5, { Image, Vector } from 'p5'
 import { initalizeQuadTree } from './QuadTree'
 import { p } from './sketch'
-import { worldToScreen } from './Util'
+import { specificScaleOf, worldToScreen } from './Util'
 
 export enum Anchor {
     top,
@@ -20,7 +20,7 @@ let allSprites: Scene = {
     sprites: []
 }
 
-function rotateVector(x: number, y: number, rad: number, org: {x:number, y:number}) {
+function rotateVector(x: number, y: number, rad: number, org: { x: number, y: number }) {
     const rotatedX = (x - org.x) * Math.cos(rad) - (y - org.y) * Math.sin(rad)
     const rotatedY = (x - org.x) * Math.sin(rad) + (y - org.y) * Math.cos(rad)
     return p.createVector(org.x + rotatedX, org.y + rotatedY)
@@ -28,7 +28,7 @@ function rotateVector(x: number, y: number, rad: number, org: {x:number, y:numbe
 
 function normalizeVector(x: number, y: number) {
     const n = distance(p.createVector(x, y), p.createVector(0, 0))
-    return {x: x/n, y: y/n}
+    return { x: x / n, y: y / n }
 }
 
 function distance(v1: Vector, v2: Vector) {
@@ -50,12 +50,14 @@ export class Sprite {
     collisions: Sprite[]
     image?: Image
     velocity?: Vector
+    scaled: { w: number, h: number }
 
     constructor(x: number, y: number, width: number, height: number, userData?: any, layer = 0, anchor = Anchor.top, image?: Image, velocity?: Vector) {
         this.position = p.createVector(x, y)
         this.velocity = velocity || p.createVector(0, 0)
         this.height = height
         this.width = width
+        this.scaled = { w: width, h: height }
         this.layer = layer
         this.anchor = anchor
         this.image = image
@@ -71,13 +73,13 @@ export class Sprite {
     }
 
     isMouseOver() {
-        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, {x:this.position.x, y:this.position.y})
+        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, { x: this.position.x, y: this.position.y })
         let pos = worldToScreen(this.position.x, this.position.y)
         if (
-            mouse.x <= pos.x + (this.width / 2) &&
-            mouse.x >= pos.x - (this.width / 2) &&
-            mouse.y <= pos.y + (this.height / 2) &&
-            mouse.y >= pos.y - (this.height / 2)
+            mouse.x <= pos.x + (this.scaled.w / 2) &&
+            mouse.x >= pos.x - (this.scaled.w / 2) &&
+            mouse.y <= pos.y + (this.scaled.h / 2) &&
+            mouse.y >= pos.y - (this.scaled.h / 2)
         ) {
             return true
         }
@@ -85,6 +87,9 @@ export class Sprite {
     }
 
     update() {
+        let temp = specificScaleOf(this.width, this.height);
+        this.scaled.w = temp.w;
+        this.scaled.h = temp.h;
         this.position.set(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
     }
 
@@ -98,7 +103,7 @@ export class Sprite {
         p.rotate(this.rad)
         p.translate(-pos.x, -pos.y)
         p.fill(this.color)
-        p.rect(pos.x - (this.width / 2), pos.y - (this.height / 2), pos.x + (this.width / 2), pos.y + (this.height / 2))
+        p.rect(pos.x - (this.scaled.w / 2), pos.y - (this.scaled.h / 2), pos.x + (this.scaled.w / 2), pos.y + (this.scaled.h / 2))
         p.translate(pos.x, pos.y)
         p.rotate(-this.rad)
         p.translate(-pos.x, -pos.y)
@@ -114,15 +119,15 @@ export class Sprite {
     }
 
     remove() {
-        allSprites.layered[this.layer] = allSprites.layered[this.layer].filter((x)=> {if (x.id !== this.id) return x})
+        allSprites.layered[this.layer] = allSprites.layered[this.layer].filter((x) => { if (x.id !== this.id) return x })
         delete allSprites.sprites[this.id - 1];
     }
 
     overlap(sp: Sprite) {
         if (!this.isColliding) return false;
-        for(let i = 0; i < this.collisions.length; i++){
+        for (let i = 0; i < this.collisions.length; i++) {
             // console.log(this, this.collisions[i])
-            if(this.collisions[i].id === sp.id) return true;
+            if (this.collisions[i].id === sp.id) return true;
         }
         // console.log("no overlap")
         return false;
@@ -131,7 +136,7 @@ export class Sprite {
     collisionDetection(sp: Sprite) {
         if (this.collisions.filter(x => x.id == this.id).length >= 1) return;
 
-        let w = this.width/2, h = this.height/2, spw = sp.width/2, sph = sp.height/2;
+        let w = this.width / 2, h = this.height / 2, spw = sp.width / 2, sph = sp.height / 2;
 
         let pos = [
             rotateVector(this.position.x - w, this.position.y - h, this.rad, { x: this.position.x, y: this.position.y }),
@@ -157,19 +162,19 @@ export class Sprite {
             { x: spos[0].x - spos[1].x, y: spos[0].y - spos[1].y },
         ]
         for (let i = 0; i < 4; i++) {
-            let scalars: [number[], number[]] = [[],[]]; // projection array   
+            let scalars: [number[], number[]] = [[], []]; // projection array   
             let axis = axes[i]; // axis to project to
             // projecting
-            for(let j = 0; j < 8; j++) {
+            for (let j = 0; j < 8; j++) {
                 let vec = vecs[j]
-                let c = (vec.x * axis.x + vec.y * axis.y) / axis.x**2 + axis.y**2 // 90 deg projection
-                scalars[p.round(j/7)].push(c*(axis.x**2) + c*(axis.y**2))
+                let c = (vec.x * axis.x + vec.y * axis.y) / axis.x ** 2 + axis.y ** 2 // 90 deg projection
+                scalars[p.round(j / 7)].push(c * (axis.x ** 2) + c * (axis.y ** 2))
             }
-            if(p.min(scalars[1]) >= p.max(scalars[0]) || p.max(scalars[1]) <= p.min(scalars[0])) return collision = false
+            if (p.min(scalars[1]) >= p.max(scalars[0]) || p.max(scalars[1]) <= p.min(scalars[0])) return collision = false
         }
-        if(collision) this.addCollision(sp)
-        else{
-            this.collisions = this.collisions.filter((x)=> {if(x.id !== sp.id) return x})
+        if (collision) this.addCollision(sp)
+        else {
+            this.collisions = this.collisions.filter((x) => { if (x.id !== sp.id) return x })
             this.isColliding = !!this.collisions
         }
     }
