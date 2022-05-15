@@ -1,4 +1,4 @@
-import { request } from "./api.js";
+import { request, socket } from "./api.js";
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
@@ -36,10 +36,17 @@ function addPlayer(player) {
                     `<p>${player.faction.name}</p>
                      <div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
                      :
-                    `<p class="no-faction">No faction selected</p>
+                    `<p>No faction selected</p>
                     <div class="player-colour" style="background-color: gray"></div>`
                 }
             </div>
         </div>`, 'text/html').activeElement.children.item(0)
     players.appendChild(element)
 }
+
+function removePlayer(index) {
+    players.children.item(index).remove()
+}
+
+socket.on('playerJoin', addPlayer)
+socket.on('playerLeave', removePlayer)
