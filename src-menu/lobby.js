@@ -3,17 +3,18 @@ import { request, socket } from "./api.js";
 const title = document.getElementById("title");
 const players = document.getElementById("players");
 
+const secret = localStorage.secret;
+
 (async () => {
     let game;
     if (localStorage.game) {
         game = JSON.parse(localStorage.game)
     }
     else {
-        const res = await request("GET", "/game")
-        if (res.ok) game = res.body
-        else {
-            title.innerHTML = `<p>Failed to load a game: ${res.statusText}</p>`
-        }
+        const res = await request("GET", "/game", undefined, {authorization: secret}).catch(e => {
+            title.innerHTML = `<p>Failed to load a game: ${e.message}</p>`
+        })
+        if (res) game = res.body
     }
 
     if (game) {
@@ -29,7 +30,8 @@ const players = document.getElementById("players");
 
 const leaveBtn = document.getElementById("leave")
 leaveBtn.addEventListener("click", async e => {
-    const res = request("POST", "/game/leave");
+    request("POST", "/game/leave", undefined, {authorization: secret});
+    localStorage.clear()
     location.pathname = ""
 })
 

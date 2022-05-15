@@ -22,9 +22,14 @@ gameCreateBtn.addEventListener('click', e => {
     if (gameCreateFormValid()) {
         createGameError.innerHTML = ""
         request("POST", "/games", { name: usernameInput.value, public: publicCheckbox.checked})
-        .then((res) => {
-            localStorage.game = JSON.stringify(res.body)
-            location.pathname = "/game"
+        .then(res => {
+            if (typeof res.body === "string") {
+                localStorage.secret = res.body
+            }
+            else {
+                localStorage.game = JSON.stringify(res.body)
+            }
+            location.pathname = "/game/"
         })
         .catch((err) => {
             createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${err.message}`

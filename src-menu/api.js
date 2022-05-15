@@ -20,4 +20,6 @@ export async function request(method, path, write, headers={}, hostOverwrite) {
     else throw { message: res.statusText, statusCode: res.status }
 }
 
-export const socket = io("https://amelix.xyz:" + socketPort)
+let socketOptions;
+if (localStorage.secret) socketOptions = { query: { secret: localStorage.secret }}
+export const socket = io("https://amelix.xyz:" + socketPort, socketOptions)

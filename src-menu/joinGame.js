@@ -83,8 +83,13 @@ async function joinGame(id) {
     if (input.value.length > 0) {
         request("POST", `/games/${id}/join`, { name: input.value })
         .then(res => {
-            localStorage.game = JSON.stringify(res.body)
-            location.pathname = "/game"
+            if (typeof res.body === "string") {
+                localStorage.secret = res.body
+            }
+            else {
+                localStorage.game = JSON.stringify(res.body)
+            }
+            location.pathname = "/game/"
         })
         .catch(e => {
             if (e.statusCode === 409) {
