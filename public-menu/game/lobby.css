@@ -7,14 +7,30 @@ body {
     height: 100%
 }
 
+h1, p {
+    user-select: auto;
+}
+
 #lobby {
     height: 90%;
-    width: 55%;
+    width: 65%;
     margin: 20px 0 0 50px
 }
 
+@media (max-width: 1600px) {
+    #lobby {
+        width: 80%;
+    }
+}
+
+@media (max-width: 1000px) {
+    #lobby {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
 .lobby-container {
-    /* temp border: 2px dotted white; */
     display: flex;
     height: 90%
 }
