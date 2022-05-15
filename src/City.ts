@@ -2,6 +2,7 @@ import { client } from "."
 import { p } from "./sketch"
 import { Sprite } from "./Sprite"
 import Infantry from "./units/Infantry"
+import { worldToScreen } from "./Util"
 
 class City {
     faction: string
@@ -49,13 +50,13 @@ class City {
                 this.faction = unit.faction
             }
         }
-        
+        let pos = worldToScreen(this.sprite.position.x, this.sprite.position.y)
         p.textSize(12)
         p.textAlign(p.CENTER)
         p.fill(255,255,255)
         p.noStroke()
-        p.text(`${this.cityName}: £${this.value}B/yr`,this.sprite.position.x, this.sprite.position.y)
-        p.text(`Owned by: ${this.faction}`,this.sprite.position.x, this.sprite.position.y+10)
+        p.text(`${this.cityName}: £${this.value}B/yr`,pos.x, pos.y)
+        p.text(`Owned by: ${this.faction}`,pos.x, pos.y+10)
     }
 }
 export default City

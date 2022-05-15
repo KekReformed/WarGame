@@ -8,24 +8,24 @@ import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
+import { setOffset, worldToScreen } from './Util'
 let timeHeld = 0
 var dragged = false
 var rectStartX = 0
 var rectStartY = 0
 let qt;
-
 // interface MouseState {
 //     "right": Boolean
 //     "left": Boolean
 //     "center": Boolean
 // }
 
-export let mouseState : {[k:string] : Boolean} = {"right": false, "left": false, "center": false};
+export let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 
 function sketch(p: p5) {
     p.setup = () => {
         sprites.initalize()
-        initalizeQuadTree(2)
+        initalizeQuadTree(3)
         const canvas = p.createCanvas(window.outerWidth, window.outerHeight);
         const jeff = new Infantry({
             faction: "USA",
@@ -143,10 +143,10 @@ function sketch(p: p5) {
                 unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
             }
-            const others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width, unit.sprite.height))
+            const others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width * 2, unit.sprite.height * 2))
             // reduced sample size
             if (others.length) for (let point of others) {
-                point.unit.sprite.collisionDetection(point.unit.sprite)
+                unit.sprite.collisionDetection(point.unit.sprite)
             }
         }
 
@@ -245,7 +245,7 @@ function sketch(p: p5) {
                     unit.select()
                     unitSelected = true
                 }
-                
+
                 else {
                     unit.deselect()
                 }
@@ -253,7 +253,7 @@ function sketch(p: p5) {
             //Select a depot by clicking on it
             for (const i in client.globalDepots) {
                 let depot = client.globalDepots[i]
-    
+
                 if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
                     depot.select()
                 }
@@ -270,9 +270,10 @@ function sketch(p: p5) {
         if (p.mouseButton !== p.LEFT) return;
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
-
+            
+            let pos = worldToScreen(unit.sprite.position.x, unit.sprite.position.y)
             //Check if a unit is within the rectangle
-            if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY)) {
+            if (Math.min(rectStartX, p.mouseX) < pos.x && pos.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < pos.y && pos.y < Math.max(rectStartY, p.mouseY)) {
                 unit.select()
             }
         }
@@ -280,7 +281,12 @@ function sketch(p: p5) {
     }
 
     p.mouseDragged = () => {
-        if (p.mouseButton !== p.LEFT) return;
+        if (p.mouseButton === p.CENTER || (p.mouseButton === p.LEFT && keyDown("ControlLeft"))) {
+            setOffset((p.mouseX - rectStartX), (p.mouseY - rectStartY))
+            rectStartX = p.mouseX;
+            rectStartY = p.mouseY;
+        }
+        if (p.mouseButton === p.RIGHT) return;
         dragged = true
     }
     dragged = false

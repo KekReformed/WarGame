@@ -1,6 +1,7 @@
 import p5, { Image, Vector } from 'p5'
 import { initalizeQuadTree } from './QuadTree'
 import { p } from './sketch'
+import { worldToScreen } from './Util'
 
 export enum Anchor {
     top,
@@ -71,11 +72,12 @@ export class Sprite {
 
     isMouseOver() {
         let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, {x:this.position.x, y:this.position.y})
+        let pos = worldToScreen(this.position.x, this.position.y)
         if (
-            mouse.x <= this.position.x + (this.width / 2) &&
-            mouse.x >= this.position.x - (this.width / 2) &&
-            mouse.y <= this.position.y + (this.height / 2) &&
-            mouse.y >= this.position.y - (this.height / 2)
+            mouse.x <= pos.x + (this.width / 2) &&
+            mouse.x >= pos.x - (this.width / 2) &&
+            mouse.y <= pos.y + (this.height / 2) &&
+            mouse.y >= pos.y - (this.height / 2)
         ) {
             return true
         }
@@ -91,14 +93,15 @@ export class Sprite {
         // let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, this.position)
         // p.stroke(255)
         // p.line(this.position.x, this.position.y, mouse.x, mouse.y)
-        p.translate(this.position.x, this.position.y)
+        let pos = worldToScreen(this.position.x, this.position.y)
+        p.translate(pos.x, pos.y)
         p.rotate(this.rad)
-        p.translate(-this.position.x, -this.position.y)
+        p.translate(-pos.x, -pos.y)
         p.fill(this.color)
-        p.rect(this.position.x - (this.width / 2), this.position.y - (this.height / 2), this.position.x + (this.width / 2), this.position.y + (this.height / 2))
-        p.translate(this.position.x, this.position.y)
+        p.rect(pos.x - (this.width / 2), pos.y - (this.height / 2), pos.x + (this.width / 2), pos.y + (this.height / 2))
+        p.translate(pos.x, pos.y)
         p.rotate(-this.rad)
-        p.translate(-this.position.x, -this.position.y)
+        p.translate(-pos.x, -pos.y)
     }
 
     rotate(deg: number) {
@@ -116,18 +119,17 @@ export class Sprite {
     }
 
     overlap(sp: Sprite) {
-        console.log(this.isColliding)
         if (!this.isColliding) return false;
         for(let i = 0; i < this.collisions.length; i++){
-            console.log(this.collisions[i])
+            // console.log(this, this.collisions[i])
             if(this.collisions[i].id === sp.id) return true;
         }
-        console.log("no overlap")
+        // console.log("no overlap")
         return false;
     }
 
     collisionDetection(sp: Sprite) {
-        if (this.collisions.includes(sp)) return;
+        if (this.collisions.filter(x => x.id == this.id).length >= 1) return;
 
         let w = this.width/2, h = this.height/2, spw = sp.width/2, sph = sp.height/2;
 

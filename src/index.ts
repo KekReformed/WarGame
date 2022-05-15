@@ -30,7 +30,7 @@ document.onkeydown = addKey
 document.onkeyup = removeKey
 
 function addKey(keyHeld: KeyboardEvent) {
-    let keyHeldChar = keyHeld.code.replace("Key","")
+    let keyHeldChar = keyHeld.code.replace("Key","").toLowerCase()
 
     if (!keysPressed.includes(keyHeldChar)) {
         keysPressed.push(keyHeldChar)
@@ -52,7 +52,7 @@ function removeKey(keyReleased: KeyboardEvent) {
 
 
 export function keyDown(key: string) {
-    return keysPressed.includes(key.toUpperCase())
+    return keysPressed.includes(key.toLowerCase()) // yeah bud no
 }
 
 export function keyWentDown(key: string) {

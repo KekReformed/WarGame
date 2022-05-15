@@ -7,6 +7,7 @@ import Armour from "./Armour.js";
 import Bomber from "./Bomber.js";
 import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
+import { screenToWorld, worldToScreen } from "../Util";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -15,6 +16,8 @@ export interface UnitData extends Partial<Unit> {
     positionX: number
     positionY: number
 }
+
+// let pos: Vector;
 
 class Unit {
     height: number
@@ -116,7 +119,8 @@ class Unit {
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
             if (mouseDown(p.RIGHT)) {
-                let mousePos = p.createVector(p.mouseX, p.mouseY)
+                let temp = screenToWorld(p.mouseX, p.mouseY)
+                let mousePos = p.createVector(temp.x, temp.y)
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 this.goingToUnit = null
@@ -195,14 +199,15 @@ class Unit {
     }
 
     updateLabels() {
+        let pos = worldToScreen(this.sprite.position.x, this.sprite.position.y)
         p.textSize(12)
         p.textAlign(p.CENTER)
         p.fill(255, 255, 255)
-        p.text(this.faction, this.sprite.position.x, this.sprite.position.y)
+        p.text(this.faction, pos.x, pos.y)
         p.textSize(8)
-        p.text(`Strength:${this.effectiveStrength}`, this.sprite.position.x, this.sprite.position.y + 10)
+        p.text(`Strength:${this.effectiveStrength}`, pos.x, pos.y + 10)
         p.textSize(8)
-        p.text(`${this.type[0].toUpperCase() + this.type.substring(1)}`, this.sprite.position.x, this.sprite.position.y + 20)
+        p.text(`${this.type[0].toUpperCase() + this.type.substring(1)}`, pos.x, pos.y + 20)
     }
 
     split() {
