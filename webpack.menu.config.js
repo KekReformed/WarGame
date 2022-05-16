@@ -6,7 +6,7 @@ const serveDirectory = path.resolve(__dirname, 'public-menu')
 module.exports = {
   entry: {
     index: ['./src-menu/', './src-menu/joinGame.js'],
-    lobby: './src-menu/lobby.js'
+    lobby: './src-menu/lobby/lobby.js'
   },
   mode: "development",
   output: {

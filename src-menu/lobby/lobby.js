@@ -1,4 +1,4 @@
-import { request, socket } from "./api.js";
+import { request, socket } from "../shared/api.js";
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
