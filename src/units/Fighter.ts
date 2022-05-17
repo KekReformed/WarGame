@@ -34,7 +34,7 @@ class Fighter extends Unit {
             }
         }
 
-        if (!this.closestAirstrip && !this.goToClosestAirstrip) return
+        if (!this.closestAirstrip && !this.goToClosestAirstrip) return;
 
         this.range = this.closestAirstrip.range * this.rangeModifier / 2 
         console.log(this.sprite.collisions)
