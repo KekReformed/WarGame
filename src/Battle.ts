@@ -44,7 +44,6 @@ class Battle {
             },
             [secondUnit.faction]: { units: { [secondUnit.terrainType]: { [secondUnit.type]: secondUnit.effectiveStrength } } }
         }
-
         this.totalStrength = 0
         this.land = 0
         this.air = 0

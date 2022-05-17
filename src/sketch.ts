@@ -1,5 +1,5 @@
 import p5 from 'p5'
-import { client, keyDown, keyWentDown, unitTypes } from "./index"
+import { client, unitTypes } from "./index"
 import { UnitData } from './units/Unit'
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
@@ -14,13 +14,11 @@ var dragged = false
 var rectStartX = 0
 var rectStartY = 0
 let qt;
-// interface MouseState {
-//     "right": Boolean
-//     "left": Boolean
-//     "center": Boolean
-// }
 
-export let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
+let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
+let mouseUpState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
+
+
 
 function sketch(p: p5) {
     p.setup = () => {
@@ -229,6 +227,11 @@ function sketch(p: p5) {
             p.noFill()
             p.rect(rectStartX, rectStartY, p.mouseX, p.mouseY)
         }
+
+        //Reset the mouse up status so it doesn't fire forever
+        if (mouseUpState[p.RIGHT]) mouseUpState[p.RIGHT] = false;
+        if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;
+        if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;
     }
 
     p.mousePressed = () => {
@@ -267,17 +270,18 @@ function sketch(p: p5) {
 
     p.mouseReleased = () => {
         mouseState[p.mouseButton] = false;
-        if (p.mouseButton !== p.LEFT) return;
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
-            
-            let pos = worldToScreen(unit.sprite.position.x, unit.sprite.position.y)
-            //Check if a unit is within the rectangle
-            if (Math.min(rectStartX, p.mouseX) < pos.x && pos.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < pos.y && pos.y < Math.max(rectStartY, p.mouseY)) {
-                unit.select()
+        mouseUpState[p.mouseButton] = true
+        if (p.mouseButton === p.LEFT) {
+            for (const i in client.globalUnits) {
+                let unit = client.globalUnits[i]
+
+                //Check if a unit is within the rectangle
+                if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY)) {
+                    unit.select()
+                }
             }
+            dragged = false
         }
-        dragged = false
     }
 
     p.mouseDragged = () => {
@@ -312,6 +316,10 @@ export function longClick(mouseButton: any) {
     else {
         return false
     }
+}
+
+export function mouseUp(mouseButton: any) {
+    return mouseUpState[mouseButton]
 }
 
 export function mouseDown(mouseButton: any) {

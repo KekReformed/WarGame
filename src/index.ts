@@ -40,8 +40,6 @@ function addKey(keyHeld: KeyboardEvent) {
         keysHeld.push(keyHeldChar)
         keysPressed.splice(keysPressed.findIndex(element => element === keyHeldChar),1)
     }
-
-    console.log(keysHeld,keysPressed)
 }
 
 function removeKey(keyReleased: KeyboardEvent) {
@@ -53,8 +51,4 @@ function removeKey(keyReleased: KeyboardEvent) {
 
 export function keyDown(key: string) {
     return keysPressed.includes(key.toLowerCase()) // yeah bud no
-}
-
-export function keyWentDown(key: string) {
-    return keysPressed.includes(key.toUpperCase())
 }

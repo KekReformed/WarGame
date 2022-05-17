@@ -125,11 +125,9 @@ export class Sprite {
 
     overlap(sp: Sprite) {
         if (!this.isColliding) return false;
-        for (let i = 0; i < this.collisions.length; i++) {
-            // console.log(this, this.collisions[i])
-            if (this.collisions[i].id === sp.id) return true;
+        for(let i = 0; i < this.collisions.length; i++){
+            if(this.collisions[i].id === sp.id) return true;
         }
-        // console.log("no overlap")
         return false;
     }
 
@@ -180,7 +178,6 @@ export class Sprite {
     }
 
     addCollision(sp: Sprite) {
-        console.log("collision")
         this.isColliding = true;
         this.collisions.push(sp)
         return true

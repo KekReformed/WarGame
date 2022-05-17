@@ -1,5 +1,5 @@
 import { Vector } from "p5";
-import { p, longClick, mouseDown } from "../sketch";
+import { p, longClick, mouseUp } from "../sketch";
 import Battle from "../Battle";
 import { client, keyDown, unitTypes } from "../index";
 import { Anchor, Sprite } from "../Sprite";
@@ -55,6 +55,7 @@ class Unit {
         this.speed = 1
         client.globalUnits.push(this)
         this.sprite = new Sprite(unitData.positionX, unitData.positionY, unitData.width, unitData.height, 0, Anchor.top)
+        this.sprite.userData = this
         this.goToPoint = this.sprite.position
         this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
         this.sprite.velocityRotate = true
@@ -72,10 +73,11 @@ class Unit {
 
         if (this.goingToUnit) this.goTo(this.goingToUnit.sprite.position, this.speed)
 
+
+        let mousePos = p.createVector(p.mouseX, p.mouseY)
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
 
-            let mousePos = p.createVector(p.mouseX, p.mouseY)
             if (this.selected && longClick(p.RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
                 this.joiningBattle = true
                 this.goingToBattle = true
@@ -87,9 +89,9 @@ class Unit {
             if (this.sprite.overlap(unit.sprite) && (this.terrainType !== "air" && unit.terrainType !== "air" || this.joiningBattle)) {
 
                 //If the unit we're colliding with is an enemy
-                if (unit.faction !== this.faction && unit.terrainType !== "air") {
-                    this.startBattle(unit)
-                }
+                //if (unit.faction !== this.faction && unit.terrainType !== "air") {
+                //    this.startBattle(unit)
+                //}
             }
 
             //Unit Combining
@@ -97,6 +99,17 @@ class Unit {
                 this.combine(unit)
             }
         }
+
+
+
+        //New unit collisions but doesn't work properly yet
+        if (this.sprite.collisions.length != 0) {
+            let collidingUnit: Unit = this.sprite.collisions[0].userData
+            if(this.terrainType !== "air" && collidingUnit.terrainType !== "air" || this.joiningBattle) {
+                this.startBattle(collidingUnit)
+            }
+        }
+
 
         if (this.strength > 0) {
             for (const i in client.globalBattles) {
@@ -118,9 +131,8 @@ class Unit {
 
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
-            if (mouseDown(p.RIGHT)) {
-                let temp = screenToWorld(p.mouseX, p.mouseY)
-                let mousePos = p.createVector(temp.x, temp.y)
+            if (mouseUp(p.RIGHT)) {
+                let mousePos = p.createVector(p.mouseX, p.mouseY)
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 this.goingToUnit = null
@@ -150,7 +162,8 @@ class Unit {
 
     startBattle(EnemyUnit: Unit) {
         this.deselect()
-        client.globalBattles.push(new Battle((this.sprite.position.x + EnemyUnit.sprite.position.x) / 2, (this.sprite.position.y + EnemyUnit.sprite.position.y) / 2, this, EnemyUnit))
+        let battle = new Battle((this.sprite.position.x + EnemyUnit.sprite.position.x) / 2, (this.sprite.position.y + EnemyUnit.sprite.position.y) / 2, this, EnemyUnit)
+        client.globalBattles.push(battle)
         this.strength = 0
         EnemyUnit.strength = 0
     }
