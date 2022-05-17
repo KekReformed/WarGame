@@ -68,6 +68,8 @@ h1, p {
 
 .player p {
     padding: 10px;
+    font-size: 15px;
+    font-family: monospace;
 }
 
 .faction {
@@ -76,7 +78,17 @@ h1, p {
     right: 0;
     background-color: #0a0a0a;
     text-align: left;
+    font-family: monospace;
     width: fit-content;
+    height: 100%;
+}
+
+.input {
+    margin: 0;
+    border: none;
+    min-width: 153px !important;
+    height: 100%;
+    font-family: monospace;
 }
 
 .player-colour {

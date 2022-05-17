@@ -1,5 +1,7 @@
 import { request, socket } from "../shared/api.js";
 
+const dom = new DOMParser()
+
 const title = document.getElementById("title");
 const players = document.getElementById("players");
 
@@ -36,7 +38,7 @@ leaveBtn.addEventListener("click", async e => {
 })
 
 function addPlayer(player) {
-    const element = new DOMParser().parseFromString(
+    const element = dom.parseFromString(
         `<div class="player">
             <p>${player.name}</p>
             <div class="faction">
@@ -49,7 +51,36 @@ function addPlayer(player) {
                 }
             </div>
         </div>`, 'text/html').activeElement.children.item(0)
+
+    const faction = element.children.item(1)
+    const factionName = faction.children.item(0)
+    const factionColour = faction.children.item(1)
+    factionName.addEventListener("click", e => changeToInput(faction, factionName))
     players.appendChild(element)
+}
+
+function changeToInput(parent, child) {
+    const textbox = dom.parseFromString(
+        `<input class="input" type="text" value="${child.innerHTML}">`,
+        'text/html').activeElement.children.item(0);
+    
+    textbox.style.width = textbox.value.length + 3 + "ch"
+    textbox.addEventListener("input", e => textbox.style.width = textbox.value.length + 5 + "ch")
+
+    textbox.addEventListener("blur", e => changeToText(parent, textbox))
+    
+    child.remove()
+    parent.prepend(textbox)
+    textbox.select()
+}
+
+function changeToText(parent, child) {
+    const text = dom.parseFromString(`<p>${child.value}</p>`, 'text/html').activeElement.children.item(0);
+
+    text.addEventListener("click", e => changeToInput(parent, text))
+
+    child.remove()
+    parent.prepend(text)
 }
 
 function removePlayer(index) {
