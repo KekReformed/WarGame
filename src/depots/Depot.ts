@@ -2,6 +2,7 @@ import { client } from ".."
 import City from "../City"
 import { p } from "../sketch"
 import { Sprite } from "../Sprite"
+import { worldToScreen } from "../Util"
 import Airstrip from "./Airstrip"
 import Aviation from "./Aviation"
 import Barracks from "./Barracks"
@@ -45,11 +46,12 @@ class Depot {
             }
         }
 
+        let pos = worldToScreen(this.sprite.position.x,this.sprite.position.y)
         p.textSize(12)
         p.textAlign(p.CENTER)
         p.fill(255,255,255)
         p.noStroke()
-        p.text(this.faction,this.sprite.position.x,this.sprite.position.y-15)
+        p.text(this.faction,pos.x,pos.y-15)
     }
 
     select() {

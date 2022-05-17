@@ -1,5 +1,5 @@
 import p5 from 'p5'
-import { client, unitTypes } from "./index"
+import { client, keyDown, unitTypes } from "./index"
 import { UnitData } from './units/Unit'
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
@@ -9,6 +9,7 @@ import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
 import { scaleBy, setOffset, worldToScreen } from './Util'
+import Aviation from './depots/Aviation'
 let timeHeld = 0
 var dragged = false
 var rectStartX = 0
@@ -85,7 +86,7 @@ function sketch(p: p5) {
             strength: 2000
         })
 
-        const jimbo = new Bomber({
+        const jimbo = new Infantry({
             faction: "Spain",
             height: 50,
             width: 50,
@@ -101,18 +102,16 @@ function sketch(p: p5) {
         const manchester = new City("Spain", "Manchester", 1200, 400, 100)
 
         const barracks = new Airstrip({
-            faction: "Spain",
+            faction: "UK",
             positionX: 400,
             positionY: 600,
-            city: "None",
             inCity: false
         })
 
-        const airstrip = new Airstrip({
+        const airstrip = new Aviation({
             faction: "UK",
             positionX: 600,
             positionY: 600,
-            city: "None",
             inCity: false
         })
     }

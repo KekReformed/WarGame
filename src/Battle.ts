@@ -48,6 +48,7 @@ class Battle {
         this.land = 0
         this.air = 0
         this.sprite = new Sprite(positionX, positionY, 100, 100)
+        this.sprite.userData = this
         this.sprite.color = `rgb(0,0,255)`
         this.damageInterval = 0.1
         this.timer = 0

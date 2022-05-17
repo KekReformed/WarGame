@@ -85,28 +85,33 @@ class Unit {
                 this.goTo(unit.sprite.position, this.speed)
             }
 
-            //If were touching a unit and we're not an air unit or we're joining the battle
-            if (this.sprite.overlap(unit.sprite) && (this.terrainType !== "air" && unit.terrainType !== "air" || this.joiningBattle)) {
-
-                //If the unit we're colliding with is an enemy
-                //if (unit.faction !== this.faction && unit.terrainType !== "air") {
-                //    this.startBattle(unit)
-                //}
-            }
-
             //Unit Combining
             if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining && this.type === unit.type) {
                 this.combine(unit)
             }
         }
 
-
-
         //New unit collisions but doesn't work properly yet
         if (this.sprite.collisions.length != 0) {
-            let collidingUnit: Unit = this.sprite.collisions[0].userData
-            if(this.terrainType !== "air" && collidingUnit.terrainType !== "air" || this.joiningBattle) {
-                this.startBattle(collidingUnit)
+
+            for (const i in this.sprite.collisions) {
+                if(this.sprite.collisions[i].userData instanceof Unit) {
+                    let collidingUnit: Unit = this.sprite.collisions[0].userData
+    
+                    if(this.terrainType !== "air" && collidingUnit.terrainType !== "air" || this.joiningBattle) {
+                        this.startBattle(collidingUnit)
+                    }
+                }
+    
+                if(this.sprite.collisions[i].userData instanceof Battle) {
+                    let collidingBattle: Battle = this.sprite.collisions[0].userData
+                    
+                    //If we touch a battle (Currently doesn't work due to collision)
+                    if (this.terrainType !== "air" || this.joiningBattle) {
+                        this.joinBattle(collidingBattle)
+                    }
+    
+                }
             }
         }
 
@@ -120,11 +125,6 @@ class Unit {
                     this.joiningBattle = true
                     this.goingToBattle = true
                     this.goTo(battle.sprite.position, this.speed)
-                }
-
-                //If we touch a battle
-                if (this.sprite.overlap(battle.sprite)  && (this.terrainType !== "air" || this.joiningBattle)) {
-                    this.joinBattle(battle)
                 }
             }
         }
