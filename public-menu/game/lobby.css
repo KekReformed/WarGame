@@ -67,6 +67,14 @@ h1, p {
     margin: 10px 10px 0 10px;
 }
 
+.player#client {
+    background-color: #181818
+}
+
+.player#client .faction {
+    cursor: pointer;
+}
+
 .player p {
     padding: 10px;
     font-family: monospace;

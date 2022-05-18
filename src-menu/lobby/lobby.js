@@ -7,8 +7,8 @@ const players = document.getElementById("players");
 
 const secret = localStorage.secret;
 
+let game;
 (async () => {
-    let game;
     if (localStorage.game) {
         game = JSON.parse(localStorage.game)
     }
@@ -25,8 +25,13 @@ const secret = localStorage.secret;
         document.title = titleString + " | Wargame"
         title.innerHTML = `<p>${titleString}</p>`
 
-        for (let player of game.players) {
-            addPlayer(player)
+        for (const i in game.players) {
+            const player = game.players[i]
+            if (i == game.clientIndex) {
+                game.client = player
+                addPlayer(player, i === "0", true)
+            }
+            else addPlayer(player, i === "0")
         }
     }
 })()
@@ -38,33 +43,43 @@ leaveBtn.addEventListener("click", async e => {
     location.pathname = ""
 })
 
-function addPlayer(player) {
+function addPlayer(player, host=false, client=false) {
     const input = `<input class="input" type="text" style="display: none"/>`
+    let factionHtml;
+
+    if (player.faction) {
+        factionHtml = 
+            `<p>${player.faction.name}</p>
+            ${input}
+            <div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
+    }
+    else {
+        player.faction = {}
+        factionHtml =
+            `<p>No faction selected</p>
+            ${input}
+            <div class="player-colour" style="background-color: gray"></div>`
+    }
+
     const element = dom.parseFromString(
-        `<div class="player">
+        `<div class="player" ${client ? 'id="client"' : ''}>
             <p>${player.name}</p>
             <div class="faction">
-                ${player.faction ? 
-                    `<p>${player.faction.name}</p>
-                     ${input}
-                     <div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
-                     :
-                    `<p>No faction selected</p>
-                     ${input}
-                     <div class="player-colour" style="background-color: gray"></div>`
-                }
+                ${factionHtml}
             </div>
         </div>`, 'text/html').activeElement.children.item(0)
 
-    const faction = element.children.item(1)
-    const [factionName, factionInput, factionColour] = faction.children
+    if (client) {
+        const faction = element.children.item(1)
+        const [factionName, factionInput, factionColour] = faction.children
 
-    factionName.addEventListener("click", e => changeToInput(factionName, factionInput))
+        factionName.addEventListener("click", e => changeToInput(factionName, factionInput))
 
-    factionInput.style.width = factionInput.value.length + 3 + "ch"
-    factionInput.addEventListener("input", e => factionInput.style.width = factionInput.value.length + 5 + "ch")
-    factionInput.addEventListener("blur", e => changeToText(factionName, factionInput))
-    factionInput.addEventListener("keydown", e => e.key === "Enter"  && changeToText(factionName, factionInput))
+        factionInput.style.width = factionInput.value.length + 3 + "ch"
+        factionInput.addEventListener("input", e => factionInput.style.width = factionInput.value.length + 5 + "ch")
+        factionInput.addEventListener("blur", e => changeToText(factionName, factionInput))
+        factionInput.addEventListener("keydown", e => e.key === "Enter" && changeToText(factionName, factionInput))
+    }
 
     players.appendChild(element)
 }
@@ -79,7 +94,11 @@ function changeToInput(text, input) {
 function changeToText(text, input) {
     input.style.display = "none"
     text.style.display = "block"
-    text.innerHTML = input.value
+    if (input.value && input.value !== text.innerHTML) {
+        text.innerHTML = input.value
+        game.client.faction
+        socket.emit("editPlayer", { faction: { name: input.value } })
+    }
 }
 
 function removePlayer(index) {
