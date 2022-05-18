@@ -55,6 +55,7 @@ h1, p {
 
 #players {
     border: 2px solid grey;
+    border-top: none;
     height: 100%;
 }
 
