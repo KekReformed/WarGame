@@ -87,7 +87,6 @@ h1, p {
     background-color: #0a0a0a;
     text-align: left;
     font-family: monospace;
-    width: fit-content;
     height: 100%;
 }
 
@@ -100,8 +99,12 @@ h1, p {
 }
 
 .player-colour {
-    background-color: #0e4d0e;
-    width: 70px;
+    width: 52.5px;
+}
+
+.player-colour.no-faction {
+    background-image: url("https://wargame.amelix.xyz/no-faction.svg");
+    background-size: cover;
 }
 
 #right {

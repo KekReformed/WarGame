@@ -28,7 +28,6 @@ let game;
         for (const i in game.players) {
             const player = game.players[i]
             if (i == game.clientIndex) {
-                game.client = player
                 addPlayer(player, i === "0", true)
             }
             else addPlayer(player, i === "0")
@@ -44,29 +43,9 @@ leaveBtn.addEventListener("click", async e => {
 })
 
 function addPlayer(player, host=false, client=false) {
-    const input = `<input class="input" type="text" style="display: none"/>`
-    let factionHtml;
-
-    if (player.faction) {
-        factionHtml = 
-            `<p>${player.faction.name}</p>
-            ${input}
-            <div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
-    }
-    else {
-        player.faction = {}
-        factionHtml =
-            `<p>No faction selected</p>
-            ${input}
-            <div class="player-colour" style="background-color: gray"></div>`
-    }
-
     const element = dom.parseFromString(
         `<div class="player" ${client ? 'id="client"' : ''}>
-            <p>${player.name}</p>
-            <div class="faction">
-                ${factionHtml}
-            </div>
+            ${generatePlayerHtml(player)}
         </div>`, 'text/html').activeElement.children.item(0)
 
     if (client) {
@@ -84,6 +63,23 @@ function addPlayer(player, host=false, client=false) {
     players.appendChild(element)
 }
 
+function generatePlayerHtml(player) {
+    const input = `<input class="input" type="text" style="display: none"/>`
+
+    if (!player.faction) player.faction = {}
+    return (
+        `<p>${player.name}</p>
+        <div class="faction">
+            <p>${player.faction.name || "No faction selected"}</p>
+            ${input}
+            ${player.faction.colour
+                ? `<div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
+                : `<div class="player-colour no-faction"></div>`
+            }
+        </div>`
+    )
+}
+
 function changeToInput(text, input) {
     text.style.display = "none"
     input.style.display = "block"
@@ -96,14 +92,32 @@ function changeToText(text, input) {
     text.style.display = "block"
     if (input.value && input.value !== text.innerHTML) {
         text.innerHTML = input.value
-        game.client.faction
-        socket.emit("editPlayer", { faction: { name: input.value } })
+        game.players[game.clientIndex].faction.name = input.value
+        saveGame()
+        socket.emit("editPlayer", game.players[game.clientIndex])
     }
 }
 
+function editPlayer(player) {
+    console.log(player.index, game.clientIndex)
+    if (player.index === game.clientIndex) return;
+
+    players.children.item(player.index).innerHTML = generatePlayerHtml(player)
+    game.players[player.index] = player
+    saveGame()
+}
+
 function removePlayer(index) {
+    delete game.players[index]
     players.children.item(index).remove()
+    saveGame()
+}
+
+function saveGame() {
+    localStorage.game = JSON.stringify(game)
 }
 
 socket.on('playerJoin', addPlayer)
+socket.on('playerEdit', editPlayer)
 socket.on('playerLeave', removePlayer)
+socket.on('exception', msg => console.error(`Socket request rejected: ${msg}`))
