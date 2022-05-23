@@ -20,7 +20,10 @@ const colourList = [
     "#020202",
     "#f8649d"
 ]
+let disabledColours = [];
 let colourIndex;
+/** Global HTML element - the client's colour */
+let clientColour;
 
 const secret = localStorage.secret;
 
@@ -44,8 +47,15 @@ let game;
 
         for (const i in game.players) {
             const player = game.players[i]
+            if (player.faction.colour) disabledColours.push(player.faction.colour)
             addPlayer(player, i === "0", i == game.clientIndex)
         }
+
+        // Generate colour select box
+        renderColours()
+        
+        positionColoursBox(clientColour)
+        window.onresize = () => positionColoursBox(clientColour)
     }
 })()
 
@@ -68,6 +78,7 @@ function addPlayer(player, host=false, client=false) {
 
         const faction = element.children.item(1)
         const [factionName, factionInput, factionColour] = faction.children
+        clientColour = factionColour
 
         factionName.addEventListener("click", e => changeToInput(factionName, factionInput))
 
@@ -77,20 +88,6 @@ function addPlayer(player, host=false, client=false) {
         factionInput.addEventListener("keydown", e => e.key === "Enter" && changeToText(factionName, factionInput))
 
         factionColour.addEventListener("click", e => toggleColours())
-
-        // Generate colour select box
-        colours.innerHTML = "<p>Unselect Colour</p>" // add a click handler for unselecting colour
-        for (let colour of colourList) {
-            const el = createElement(
-                `<div class="colour" style="background-color: ${colour};"></div>`
-            )
-            el.addEventListener("click", () => colourClick(factionColour, colour))
-            colours.appendChild(el)
-        }
-        
-        positionColoursBox(factionColour)
-        window.onresize = () => positionColoursBox(factionColour)
-        console.log(factionColour.style.backgroundColor)
     }
 }
 
@@ -129,6 +126,19 @@ function changeToText(text, input) {
     }
 }
 
+function renderColours() {
+    colours.innerHTML = "<p>Unselect Colour</p>" // add a click handler for unselecting colour
+    for (let i in colourList) {
+        const colour = colourList[i]
+        const disabled = disabledColours.includes(colour) ? " disabled" : ""
+        const el = createElement(
+            `<div class="colour${disabled}" style="background-color: ${colour};"></div>`
+        )
+        el.addEventListener("click", () => colourClick(clientColour, colour))
+        colours.appendChild(el)
+    }
+}
+
 function positionColoursBox(clientColour) {
     const offsets = clientColour.getBoundingClientRect();
     colours.style.top = offsets.top + offsets.height + "px"
@@ -147,11 +157,16 @@ function toggleColours() {
 }
 
 function colourClick(colourDiv, colour) {
+    if (disabledColours.includes(colour)) return;
     toggleColours()
 
-    if (colourIndex >= 0) colours.children.item(colourIndex + 1).className = "colour"
+    if (colourIndex >= 0) {
+        disabledColours.splice(disabledColours.indexOf(colours[colourIndex]), 1)
+    }
+    disabledColours.push(colour)
+    renderColours()
+
     colourIndex = colourList.indexOf(colour)
-    colours.children.item(colourIndex + 1).className = "colour selected disabled"
 
     colourDiv.style.backgroundColor = colour
 
@@ -164,6 +179,11 @@ function editPlayer(player) {
     if (player.index === game.clientIndex) return;
 
     players.children.item(player.index).innerHTML = generatePlayerHtml(player)
+    if (game.players[player.index].faction.colour !== player.faction.colour) {
+        disabledColours.splice(disabledColours.indexOf(game.players[player.index].faction.colour), 1)
+        disabledColours.push(player.faction.colour)
+        renderColours()
+    }
     game.players[player.index] = player
     saveGame()
 }

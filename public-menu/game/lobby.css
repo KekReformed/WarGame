@@ -180,11 +180,6 @@ h1, p {
     margin-bottom: 15px;
 }
 
-.colour.selected {
-    cursor: default;
-    border: 3px solid #3d3d3d
-}
-
 .colour.disabled {
-    cursor: default;
+    display: none;
 }
