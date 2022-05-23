@@ -183,3 +183,9 @@ h1, p {
 .colour.disabled {
     display: none;
 }
+
+.deselect {
+    color: #4686ff;
+    cursor: pointer;
+    margin-bottom: 10px;
+}

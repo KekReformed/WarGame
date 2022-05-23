@@ -128,9 +128,11 @@ function changeToText(text, input) {
 
 function renderColours() {
     colours.innerHTML = ""
-    const deselect = createElement("<p>Deselect Colour</p>")
-    deselect.addEventListener("click", () => colourClick(clientColour, null))
-    colours.appendChild(deselect)
+    if (colourIndex >= 0) {
+        const deselect = createElement("<p class='deselect'>Deselect Colour</p>")
+        deselect.addEventListener("click", () => colourClick(clientColour, null))
+        colours.appendChild(deselect)
+    }
 
     for (let i in colourList) {
         const colour = colourList[i]
@@ -174,9 +176,8 @@ function colourClick(colourDiv, colour) {
     else {
         colourDiv.className += " no-faction"
     }
-    renderColours()
-
     colourIndex = colourList.indexOf(colour)
+    renderColours()
 
     game.players[game.clientIndex].faction.colour = colour
     saveGame()
