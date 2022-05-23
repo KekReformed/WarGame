@@ -5,6 +5,23 @@ const dom = new DOMParser()
 const title = document.getElementById("title");
 const players = document.getElementById("players");
 
+const colours = document.getElementById("colours")
+let coloursDisplayed = false
+
+const colourList = [
+    "#fff",
+    "#cf1818",
+    "#189ab1",
+    "#861373",
+    "#53e07d",
+    "#0d2e0a",
+    "#e67777",
+    "#f0a94c",
+    "#020202",
+    "#f8649d"
+]
+let colourIndex;
+
 const secret = localStorage.secret;
 
 let game;
@@ -27,10 +44,7 @@ let game;
 
         for (const i in game.players) {
             const player = game.players[i]
-            if (i == game.clientIndex) {
-                addPlayer(player, i === "0", true)
-            }
-            else addPlayer(player, i === "0")
+            addPlayer(player, i === "0", i == game.clientIndex)
         }
     }
 })()
@@ -43,12 +57,15 @@ leaveBtn.addEventListener("click", async e => {
 })
 
 function addPlayer(player, host=false, client=false) {
-    const element = dom.parseFromString(
+    const element = createElement(
         `<div class="player" ${client ? 'id="client"' : ''}>
             ${generatePlayerHtml(player)}
-        </div>`, 'text/html').activeElement.children.item(0)
+        </div>`)
+    players.appendChild(element)
 
     if (client) {
+        colourIndex = colourList.indexOf(player.faction.colour)
+
         const faction = element.children.item(1)
         const [factionName, factionInput, factionColour] = faction.children
 
@@ -58,9 +75,23 @@ function addPlayer(player, host=false, client=false) {
         factionInput.addEventListener("input", e => factionInput.style.width = factionInput.value.length + 5 + "ch")
         factionInput.addEventListener("blur", e => changeToText(factionName, factionInput))
         factionInput.addEventListener("keydown", e => e.key === "Enter" && changeToText(factionName, factionInput))
-    }
 
-    players.appendChild(element)
+        factionColour.addEventListener("click", e => toggleColours())
+
+        // Generate colour select box
+        colours.innerHTML = "<p>Unselect Colour</p>" // add a click handler for unselecting colour
+        for (let colour of colourList) {
+            const el = createElement(
+                `<div class="colour" style="background-color: ${colour};"></div>`
+            )
+            el.addEventListener("click", () => colourClick(factionColour, colour))
+            colours.appendChild(el)
+        }
+        
+        positionColoursBox(factionColour)
+        window.onresize = () => positionColoursBox(factionColour)
+        console.log(factionColour.style.backgroundColor)
+    }
 }
 
 function generatePlayerHtml(player) {
@@ -98,8 +129,38 @@ function changeToText(text, input) {
     }
 }
 
+function positionColoursBox(clientColour) {
+    const offsets = clientColour.getBoundingClientRect();
+    colours.style.top = offsets.top + offsets.height + "px"
+    colours.style.left = offsets.left + "px"
+}
+
+function toggleColours() {
+    if (coloursDisplayed) {
+        coloursDisplayed = false
+        colours.style.display = "none"
+    }
+    else {
+        coloursDisplayed = true
+        colours.style.display = "flex"
+    }
+}
+
+function colourClick(colourDiv, colour) {
+    toggleColours()
+
+    if (colourIndex >= 0) colours.children.item(colourIndex + 1).className = "colour"
+    colourIndex = colourList.indexOf(colour)
+    colours.children.item(colourIndex + 1).className = "colour selected disabled"
+
+    colourDiv.style.backgroundColor = colour
+
+    game.players[game.clientIndex].faction.colour = colour
+    saveGame()
+    socket.emit("editPlayer", game.players[game.clientIndex])
+}
+
 function editPlayer(player) {
-    console.log(player.index, game.clientIndex)
     if (player.index === game.clientIndex) return;
 
     players.children.item(player.index).innerHTML = generatePlayerHtml(player)
@@ -121,3 +182,7 @@ socket.on('playerJoin', addPlayer)
 socket.on('playerEdit', editPlayer)
 socket.on('playerLeave', removePlayer)
 socket.on('exception', msg => console.error(`Socket request rejected: ${msg}`))
+
+function createElement(html) {
+    return dom.parseFromString(html, 'text/html').activeElement.children.item(0)
+}
