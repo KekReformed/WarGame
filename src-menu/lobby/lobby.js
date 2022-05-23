@@ -157,11 +157,10 @@ function toggleColours() {
 }
 
 function colourClick(colourDiv, colour) {
-    if (disabledColours.includes(colour)) return;
     toggleColours()
 
     if (colourIndex >= 0) {
-        disabledColours.splice(disabledColours.indexOf(colours[colourIndex]), 1)
+        disabledColours.splice(disabledColours.indexOf(colourList[colourIndex]), 1)
     }
     disabledColours.push(colour)
     renderColours()
