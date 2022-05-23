@@ -127,7 +127,11 @@ function changeToText(text, input) {
 }
 
 function renderColours() {
-    colours.innerHTML = "<p>Unselect Colour</p>" // add a click handler for unselecting colour
+    colours.innerHTML = ""
+    const deselect = createElement("<p>Deselect Colour</p>")
+    deselect.addEventListener("click", () => colourClick(clientColour, null))
+    colours.appendChild(deselect)
+
     for (let i in colourList) {
         const colour = colourList[i]
         const disabled = disabledColours.includes(colour) ? " disabled" : ""
@@ -162,12 +166,17 @@ function colourClick(colourDiv, colour) {
     if (colourIndex >= 0) {
         disabledColours.splice(disabledColours.indexOf(colourList[colourIndex]), 1)
     }
-    disabledColours.push(colour)
+    if (colour) {
+        disabledColours.push(colour)
+        colourDiv.style.backgroundColor = colour
+        colourDiv.className = "player-colour"
+    }
+    else {
+        colourDiv.className += " no-faction"
+    }
     renderColours()
 
     colourIndex = colourList.indexOf(colour)
-
-    colourDiv.style.backgroundColor = colour
 
     game.players[game.clientIndex].faction.colour = colour
     saveGame()
