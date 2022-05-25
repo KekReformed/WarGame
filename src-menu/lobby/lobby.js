@@ -47,7 +47,7 @@ let game;
 
         for (const i in game.players) {
             const player = game.players[i]
-            if (player.faction.colour) disabledColours.push(player.faction.colour)
+            if (player.faction?.colour) disabledColours.push(player.faction.colour)
             addPlayer(player, i === "0", i == game.clientIndex)
         }
 
