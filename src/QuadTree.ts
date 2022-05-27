@@ -64,6 +64,7 @@ export class QuadTree {
     tl: QuadTree
     br: QuadTree
     bl: QuadTree
+
     constructor(rect: Rectangle) {
         this.rect = rect;            // the rectangle the QuadTree instance represents 
         this.points = [];            // stores the points housed within the instance
@@ -76,15 +77,17 @@ export class QuadTree {
 
         if (this.points.length < capacity) {
             this.points.push(point);
-        } else if (!this.subdivided) {
-            this.subdivide();        // split our rectangle
-        } else {
+            return true;
+        } else{ 
+            if (!this.subdivided) this.subdivide();        // split our rectangle if needed
+
             // random order of precidence doesn't really matter
             // if - else if to make sure the point only enters one QuadTree
             if (this.tr.add(point)) return true;
             else if (this.tl.add(point)) return true;
             else if (this.br.add(point)) return true;
             else if (this.bl.add(point)) return true;
+
         }
     }
 
@@ -137,8 +140,10 @@ export class QuadTree {
         for (let i = 0; i < this.points.length; i++){
             p.fill(255);
             p.noStroke();
-            p.circle(this.points[i].x, this.points[i].y, 5);
+            p.circle(this.points[i].x, this.points[i].y, 20);
         }
+        p.noStroke();
+        p.noFill();
     }
 
     /**

@@ -130,16 +130,21 @@ function sketch(p: p5) {
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
 
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
-
-        //Update units
+        
+        //Update units & Points
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
             unit.update()
-            qt.add(new Point(unit.sprite.position.x, unit.sprite.position.y, unit))
+            let p = new Point(unit.sprite.position.x, unit.sprite.position.y, unit)
+            qt.add(p)
             if (unit.strength <= 0) {
                 unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
             }
+        }
+        // Search and collision
+        for (const i in client.globalUnits) {
+            let unit = client.globalUnits[i]
             const others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width * 2, unit.sprite.height * 2))
             // reduced sample size
             if (others.length) for (let point of others) {
@@ -147,7 +152,7 @@ function sketch(p: p5) {
             }
             else unit.sprite.resetCollisions()
         }
-
+        
         //Update battles
         for (const i in client.globalBattles) {
 
@@ -156,21 +161,21 @@ function sketch(p: p5) {
 
             for (const factionName in battle.factions) {
                 let faction = battle.factions[factionName]
-
+                
                 if (faction.totalStrength <= 1) {
                     delete battle.factions[factionName]
                     break
                 }
             }
-
+            
             let factionList = Object.keys(battle.factions)
-
-
+            
+            
             //When a battle finishes
             if (factionList.length === 1) {
                 battle.sprite.remove()
                 let units = battle.factions[factionList[0]].units
-
+                
                 let unitData: UnitData = {
                     faction: factionList[0],
                     height: 50,
@@ -181,7 +186,7 @@ function sketch(p: p5) {
                     positionX: battle.sprite.position.x,
                     positionY: battle.sprite.position.y
                 }
-
+                
                 for (const unitTerrainType in units) {
                     for (const unitType in units[unitTerrainType]) {
                         unitData.strength = Math.round(units[unitTerrainType][unitType])
@@ -198,7 +203,7 @@ function sketch(p: p5) {
         for (const i in client.globalCities) {
 
             let city = client.globalCities[i]
-
+            
             city.update()
 
             if (city.faction === client.faction) {
@@ -210,7 +215,7 @@ function sketch(p: p5) {
         for (const i in client.globalDepots) {
 
             let depot = client.globalDepots[i]
-
+            
             depot.update()
         }
 
@@ -227,7 +232,9 @@ function sketch(p: p5) {
             p.noFill()
             p.rect(rectStartX, rectStartY, p.mouseX, p.mouseY)
         }
-
+        //debug qt draw
+        qt.draw()
+        
         //Reset the mouse up status so it doesn't fire forever
         if (mouseUpState[p.RIGHT]) mouseUpState[p.RIGHT] = false;
         if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;

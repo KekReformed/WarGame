@@ -59,6 +59,7 @@ class Unit {
         this.goToPoint = this.sprite.position
         this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
         this.sprite.velocityRotate = true
+        console.log(client.globalUnits);
     }
 
     is<UnitType>(type: string): this is UnitType {
