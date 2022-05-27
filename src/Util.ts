@@ -34,6 +34,10 @@ export function specificScaleOf(w: number, h: number) {
     return { w: w * scaleX, h: h * scaleY }
 }
 
+export function specificScaleOfRadius(r: number) {
+    return r * scaleX
+}
+
 export function worldToScreen(wx: number, wy: number) {
     return { x: (wx - offsetX) * scaleX, y: (wy - offsetY) * scaleY }
 }

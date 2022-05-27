@@ -1,4 +1,5 @@
 import { p } from "../sketch";
+import {specificScaleOfRadius, worldToScreen } from "../Util";
 import Depot from "./Depot";
 
 class Airstrip extends Depot {
@@ -16,7 +17,9 @@ class Airstrip extends Depot {
         if (this.selected) {
             p.noFill()
             p.stroke(255,0,0)
-            p.circle(this.sprite.position.x, this.sprite.position.y, this.range)
+            let pos = worldToScreen(this.sprite.position.x, this.sprite.position.y)
+            let r = specificScaleOfRadius(this.range)
+            p.circle(pos.x, pos.y, r)
         }
     }
 }

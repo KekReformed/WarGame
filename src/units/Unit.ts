@@ -133,7 +133,8 @@ class Unit {
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
             if (mouseUp(p.RIGHT)) {
-                let mousePos = p.createVector(p.mouseX, p.mouseY)
+                let pos = screenToWorld(p.mouseX, p.mouseY);
+                let mousePos = p.createVector(pos.x, pos.y);
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 this.goingToUnit = null

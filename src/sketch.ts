@@ -8,7 +8,7 @@ import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
-import { scaleBy, setOffset, worldToScreen } from './Util'
+import { scaleBy, screenToWorld, setOffset, worldToScreen } from './Util'
 import Aviation from './depots/Aviation'
 let timeHeld = 0
 var dragged = false
@@ -233,7 +233,7 @@ function sketch(p: p5) {
             p.rect(rectStartX, rectStartY, p.mouseX, p.mouseY)
         }
         //debug qt draw
-        qt.draw()
+        // qt.draw()
         
         //Reset the mouse up status so it doesn't fire forever
         if (mouseUpState[p.RIGHT]) mouseUpState[p.RIGHT] = false;
@@ -282,8 +282,14 @@ function sketch(p: p5) {
             for (const i in client.globalUnits) {
                 let unit = client.globalUnits[i]
 
+                let pos = worldToScreen(unit.sprite.position.x, unit.sprite.position.y);
                 //Check if a unit is within the rectangle
-                if (Math.min(rectStartX, p.mouseX) < unit.sprite.position.x && unit.sprite.position.x < Math.max(rectStartX, p.mouseX) && Math.min(rectStartY, p.mouseY) < unit.sprite.position.y && unit.sprite.position.y < Math.max(rectStartY, p.mouseY)) {
+                if (
+                    Math.min(rectStartX, p.mouseX) < pos.x &&
+                    pos.x < Math.max(rectStartX, p.mouseX) &&
+                    Math.min(rectStartY, p.mouseY) < pos.y &&
+                    pos.y < Math.max(rectStartY, p.mouseY)
+                    ) {
                     unit.select()
                 }
             }

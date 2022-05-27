@@ -72,8 +72,9 @@ export class Sprite {
     }
 
     isMouseOver() {
-        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, { x: this.position.x, y: this.position.y })
+
         let pos = worldToScreen(this.position.x, this.position.y)
+        let mouse = rotateVector(p.mouseX, p.mouseY, -this.rad, { x: pos.x, y: pos.y })
         if (
             mouse.x <= pos.x + (this.scaled.w / 2) &&
             mouse.x >= pos.x - (this.scaled.w / 2) &&
