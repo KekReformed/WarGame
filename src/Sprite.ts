@@ -1,5 +1,4 @@
 import p5, { Image, Vector } from 'p5'
-import { initalizeQuadTree } from './QuadTree'
 import { p } from './sketch'
 import { specificScaleOf, worldToScreen } from './Util'
 
@@ -132,8 +131,7 @@ export class Sprite {
     }
 
     collisionDetection(sp: Sprite) {
-        if (this.collisions.filter(x => x.id == this.id).length >= 1) return;
-
+        
         let w = this.width / 2, h = this.height / 2, spw = sp.width / 2, sph = sp.height / 2;
 
         let pos = [
@@ -170,17 +168,30 @@ export class Sprite {
             }
             if (p.min(scalars[1]) >= p.max(scalars[0]) || p.max(scalars[1]) <= p.min(scalars[0])) return collision = false
         }
+        console.log("hm")
         if (collision) this.addCollision(sp)
         else {
+            console.log("no")
             this.collisions = this.collisions.filter((x) => { if (x.id !== sp.id) return x })
             this.isColliding = !!this.collisions
+            sp.collisions = sp.collisions.filter((x) => {if (x.id !== this.id) return x})
+            sp.isColliding = !!sp.collisions
         }
     }
 
     addCollision(sp: Sprite) {
+        if (this.collisions.filter(x => x.id == sp.id).length || sp.collisions.filter(x => x.id == this.id).length) return;
+        // if(this.collisions.filter((x) => { if (x.id !== sp.id) return x }).length || sp.collisions.filter((x) => { if (x.id !== this.id) return x }).length) return console.log(false);
         this.isColliding = true;
         this.collisions.push(sp)
+        sp.isColliding = true;
+        sp.collisions.push(this)
         return true
+    }
+
+    resetCollisions() {
+        this.collisions = []
+        this.isColliding = false
     }
 }
 
@@ -202,5 +213,4 @@ export const updateSprites = () => { // change from foreach
 
 export const initalize = () => {
     p.rectMode(p.CORNERS)
-    initalizeQuadTree(4)
 }

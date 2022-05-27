@@ -36,7 +36,7 @@ function sketch(p: p5) {
             positionX: 100,
             positionY: 200,
             strength: 2000
-        })
+        })  
 
         const dave = new Infantry({
             faction: "USA",
@@ -145,6 +145,7 @@ function sketch(p: p5) {
             if (others.length) for (let point of others) {
                 unit.sprite.collisionDetection(point.unit.sprite)
             }
+            else unit.sprite.resetCollisions()
         }
 
         //Update battles

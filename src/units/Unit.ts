@@ -98,7 +98,7 @@ class Unit {
                 if(this.sprite.collisions[i].userData instanceof Unit) {
                     let collidingUnit: Unit = this.sprite.collisions[0].userData
     
-                    if(this.terrainType !== "air" && collidingUnit.terrainType !== "air" || this.joiningBattle) {
+                    if((this.terrainType !== "air" && collidingUnit.terrainType !== "air") || this.joiningBattle) {
                         this.startBattle(collidingUnit)
                     }
                 }
