@@ -5,7 +5,8 @@ import { p } from "./sketch";
 // import { p } from "./sketch"; // debug
 import Unit from "./units/Unit";
 
-let capacity: number = 0;    // the capacity of the of the QuadTree (how many points each section / QuadTree can store)
+/** The capacity of the of the QuadTree (how many points each section / QuadTree can store) */
+let capacity: number = 0;
 
 export class Point {
     x: number
@@ -25,7 +26,7 @@ export class Rectangle {
     y: number
     w: number
     h: number
-    // a modification of p5's corner mode (width and height rather than another vector) that has half the width and height instead so that this is centered around it's x and y
+    /** A modification of p5's corner mode (width and height rather than another vector) that has half the width and height instead so that this is centered around it's x and y */
     constructor(x: number, y: number, hw: number, hh: number) {
         this.x = x;
         this.y = y;
@@ -33,9 +34,8 @@ export class Rectangle {
         this.h = hh;
     }
 
-    // check if a point is within this instance of a rectangle
+    /** Check if a point is within this instance of a rectangle. */
     has(p: Point) {
-        // there you go amy
         return ( // making it = in case we get a point at the exact corner
             p.x >= this.x - this.w &&
             p.x <= this.x + this.w &&
@@ -44,9 +44,8 @@ export class Rectangle {
         );
     }
 
-    // check if another rectangle intersects this one
+    /** Check if another rectangle intersects this one. */
     intersects(rect: Rectangle) {
-        // there you go amy
         return (
             rect.x - rect.w <= this.x + this.w ||
             rect.x + rect.w >= this.x - this.w ||

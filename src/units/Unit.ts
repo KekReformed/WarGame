@@ -89,13 +89,13 @@ class Unit {
                 this.goTo(unit.sprite.position, this.speed)
             }
 
-            //Unit Combining
+            // Unit Combining
             if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining && this.type === unit.type) {
                 this.combine(unit)
             }
         }
 
-        //New unit collisions
+        // New unit collisions
         if (this.sprite.collisions.length != 0) {
 
             for (const i in this.sprite.collisions) {
@@ -110,7 +110,7 @@ class Unit {
                 if (this.sprite.collisions[i].userData instanceof Battle) {
                     let collidingBattle: Battle = this.sprite.collisions[0].userData
 
-                    //If we touch a battle (Currently doesn't work due to collision)
+                    // If we touch a battle (Currently doesn't work due to collision)
                     if (this.terrainType !== "air" || this.joiningBattle) {
                         this.joinBattle(collidingBattle)
                     }
