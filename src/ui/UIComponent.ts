@@ -1,6 +1,7 @@
 import { Color } from "p5"
 import { client } from ".."
 import { p } from "../sketch"
+import { screenToWorld } from "../Util"
 import Button from "./Button"
 import PanelUI from "./PanelUI"
 
@@ -30,7 +31,8 @@ class UIComponent {
     }
 
     mouseOver() {
-        return p.mouseX > this.posX && p.mouseX < this.posX + this.width && p.mouseY > this.posY && p.mouseY < this.posY + this.height
+        let temp = screenToWorld(p.mouseX, p.mouseY);
+        return temp.x > this.posX && temp.x < this.posX + this.width && temp.y > this.posY && temp.y < this.posY + this.height
     }
 
     unhide() {

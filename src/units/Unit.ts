@@ -59,7 +59,6 @@ class Unit {
         this.goToPoint = this.sprite.position
         this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
         this.sprite.velocityRotate = true
-        console.log(client.globalUnits);
     }
 
     is<UnitType>(type: string): this is UnitType {
@@ -89,30 +88,30 @@ class Unit {
                 this.goTo(unit.sprite.position, this.speed)
             }
 
-            //Unit Combining
+            // Unit Combining
             if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining && this.type === unit.type) {
                 this.combine(unit)
             }
         }
 
-        //New unit collisions
+        // New unit collisions
         if (this.sprite.collisions.length != 0) {
 
+            
             for (const i in this.sprite.collisions) {
-                if (this.sprite.collisions[i].userData instanceof Unit) {
-                    let collidingUnit: Unit = this.sprite.collisions[0].userData
+                /** The thing it's colliding with */
+                const colliding = this.sprite.collisions[i].userData
 
-                    if ((this.terrainType !== "air" && collidingUnit.terrainType !== "air") || this.joiningBattle) {
-                        this.startBattle(collidingUnit)
+                if (colliding instanceof Unit) {
+                    if (this.faction !== colliding.faction && (this.terrainType !== "air" && colliding.terrainType !== "air") || this.joiningBattle && this.faction !== colliding.faction) {
+                        this.startBattle(colliding)
                     }
                 }
 
-                if (this.sprite.collisions[i].userData instanceof Battle) {
-                    let collidingBattle: Battle = this.sprite.collisions[0].userData
-
-                    //If we touch a battle (Currently doesn't work due to collision)
+                if (colliding instanceof Battle) {
+                    // If we touch a battle (Currently doesn't work due to collision)
                     if (this.terrainType !== "air" || this.joiningBattle) {
-                        this.joinBattle(collidingBattle)
+                        this.joinBattle(colliding)
                     }
 
                 }
@@ -201,6 +200,7 @@ class Unit {
         }
 
         if (!factionExists) {
+            console.log(battle)
             battle.factions[this.faction] = {
                 units: { [this.terrainType]: { [this.type]: this.effectiveStrength } },
                 totalStrength: this.effectiveStrength,

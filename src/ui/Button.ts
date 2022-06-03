@@ -1,5 +1,6 @@
 import { Color } from "p5"
 import { p } from "../sketch"
+import { screenToWorld, worldToScreen } from "../Util"
 import UIComponent from "./UIComponent"
 
 class Button extends UIComponent {
@@ -24,12 +25,13 @@ class Button extends UIComponent {
 
         p.fill(this.colour)
         p.noStroke()
-        p.rect(this.posX, this.posY, this.width, this.height)
+        let temp = worldToScreen(this.posX, this.posY)
+        p.rect(temp.x, temp.y, temp.x + this.width, temp.y + this.height)
 
         p.textSize(this.width / 7)
         p.textAlign(p.CENTER)
         p.fill(255, 255, 255)
-        p.text(this.label, this.posX + this.width / 2, this.posY + this.height / 2)
+        p.text(this.label, temp.x + this.width / 2, temp.y + this.height / 2)
 
 
         //Check if the mouse is inside me

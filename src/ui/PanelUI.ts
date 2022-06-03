@@ -1,5 +1,6 @@
 import { Color } from "p5"
 import { p } from "../sketch"
+import { worldToScreen } from "../Util"
 import UIComponent from "./UIComponent"
 
 class PanelUI extends UIComponent {
@@ -27,7 +28,9 @@ class PanelUI extends UIComponent {
 
         p.fill(this.colour)
         p.noStroke()
-        p.rect(this.posX, this.posY, this.width, this.height)
+        p.rectMode("corners")
+        let temp = worldToScreen(this.posX, this.posY)
+        p.rect(temp.x, temp.y, temp.x + this.width, temp.y + this.height)
     }
 
     hide() {

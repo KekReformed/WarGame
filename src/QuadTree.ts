@@ -3,20 +3,20 @@
 import p5 from "p5";
 import { p } from "./sketch";
 // import { p } from "./sketch"; // debug
-import Unit from "./units/Unit";
+import { Sprite } from "./Sprite";
 
 let capacity: number = 0;    // the capacity of the of the QuadTree (how many points each section / QuadTree can store)
 
 export class Point {
     x: number
     y: number
-    unit: Unit
+    sprite: Sprite
 
-    constructor(x: number, y: number, unit: Unit) {
+    constructor(x: number, y: number, sprite: Sprite) {
         this.x = x;
         this.y = y;
         // unique to this usecase
-        this.unit = unit;
+        this.sprite = sprite;
     }
 }
 

@@ -29,7 +29,6 @@ class City {
 
     update() {
         this.defenders = 0
-        console.log(this.sprite.collisions)
         if (this.sprite.collisions.length != 0) {
 
             for (const i in this.sprite.collisions) {

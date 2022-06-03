@@ -11,7 +11,7 @@ class Aviation extends ProductionDepot {
 
     constructor(depotData: {[k: string]: any}) {
         super(depotData)
-        this.type = "barracks"
+        this.type = "aviation"
 
         this.fighterButton = new Button(p.color(50, 50, 50, 80), 0, 0, 80, 50, "Create fighter \n Cost: 2.5B", true, () => {
             if (client.money >= 2500) {

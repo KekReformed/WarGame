@@ -1,6 +1,9 @@
 import p5, { Image, Vector } from 'p5'
 import { p } from './sketch'
 import { specificScaleOf, worldToScreen } from './Util'
+import { QuadTree, Rectangle, Point } from './QuadTree'
+
+let qt: QuadTree;
 
 export enum Anchor {
     top,
@@ -91,6 +94,14 @@ export class Sprite {
         this.scaled.w = temp.w;
         this.scaled.h = temp.h;
         this.position.set(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
+
+        const others = qt.search(new Rectangle(this.position.x, this.position.y, this.width * 2, this.height * 2))
+
+        // reduced sample size
+        if (others.length) for (let point of others) {
+            this.collisionDetection(point.sprite)
+        }
+        else this.resetCollisions()
     }
 
     draw() {
@@ -125,14 +136,16 @@ export class Sprite {
 
     overlap(sp: Sprite) {
         if (!this.isColliding) return false;
-        for(let i = 0; i < this.collisions.length; i++){
-            if(this.collisions[i].id === sp.id) return true;
+        for (let i = 0; i < this.collisions.length; i++) {
+            if (this.collisions[i].id === sp.id) return true;
         }
         return false;
     }
 
     collisionDetection(sp: Sprite) {
-        
+
+        if (this.id == sp.id || this.layer != sp.layer) return;
+
         let w = this.width / 2, h = this.height / 2, spw = sp.width / 2, sph = sp.height / 2;
 
         let pos = [
@@ -175,7 +188,7 @@ export class Sprite {
             console.log("no")
             this.collisions = this.collisions.filter((x) => { if (x.id !== sp.id) return x })
             this.isColliding = !!this.collisions
-            sp.collisions = sp.collisions.filter((x) => {if (x.id !== this.id) return x})
+            sp.collisions = sp.collisions.filter((x) => { if (x.id !== this.id) return x })
             sp.isColliding = !!sp.collisions
         }
     }
@@ -197,11 +210,21 @@ export class Sprite {
 }
 
 export const drawSprites = () => {
+
+    qt = new QuadTree(new Rectangle(window.innerWidth / 2, window.innerHeight / 2, window.innerWidth / 2, window.innerHeight / 2))
+
+    allSprites.sprites.forEach(sprite => { // change from foreach
+        qt.add(new Point(sprite.position.x, sprite.position.y, sprite))
+    })
+
+    
     allSprites.layered.forEach(layer => { // change from foreach
         layer.forEach(sprite => {
             sprite.draw()
         })
     })
+
+    qt = null
 }
 
 export const updateSprites = () => { // change from foreach

@@ -118,7 +118,6 @@ function sketch(p: p5) {
 
     p.draw = () => {
         // note for later if we experience extremely daunting performance issues make it so the Point gets updated rather than being re-inserted
-        qt = new QuadTree(new Rectangle(window.innerWidth / 2, window.innerHeight / 2, window.innerWidth / 2, window.innerHeight / 2))
         p.frameRate(60)
         p.background(10, 10, 10);
         p.textSize(12)
@@ -131,30 +130,18 @@ function sketch(p: p5) {
 
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
         
-        //Update units & Points
+        // Update units & Points
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
             unit.update()
-            let p = new Point(unit.sprite.position.x, unit.sprite.position.y, unit)
-            qt.add(p)
+            
             if (unit.strength <= 0) {
                 unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
             }
         }
         
-        // Search and collision
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
-            const others = qt.search(new Rectangle(unit.sprite.position.x, unit.sprite.position.y, unit.sprite.width * 2, unit.sprite.height * 2))
-            // reduced sample size
-            if (others.length) for (let point of others) {
-                unit.sprite.collisionDetection(point.unit.sprite)
-            }
-            else unit.sprite.resetCollisions()
-        }
-        
-        //Update battles
+        // Update battles
         for (const i in client.globalBattles) {
 
             let battle = client.globalBattles[i]
@@ -172,7 +159,7 @@ function sketch(p: p5) {
             let factionList = Object.keys(battle.factions)
             
             
-            //When a battle finishes
+            // When a battle finishes
             if (factionList.length === 1) {
                 battle.sprite.remove()
 
@@ -202,7 +189,7 @@ function sketch(p: p5) {
             }
         }
 
-        //Update cities
+        // Update cities
         for (const i in client.globalCities) {
 
             let city = client.globalCities[i]
@@ -214,7 +201,7 @@ function sketch(p: p5) {
             }
         }
 
-        //Update depots
+        // Update depots
         for (const i in client.globalDepots) {
 
             let depot = client.globalDepots[i]
@@ -222,7 +209,7 @@ function sketch(p: p5) {
             depot.update()
         }
 
-        //Update UI elements
+        // Update UI elements
         for (const i in client.globalUIComponents) {
 
             let UIComponent = client.globalUIComponents[i]
@@ -238,7 +225,7 @@ function sketch(p: p5) {
         //debug qt draw
         // qt.draw()
         
-        //Reset the mouse up status so it doesn't fire forever
+        // Reset the mouse up status so it doesn't fire forever
         if (mouseUpState[p.RIGHT]) mouseUpState[p.RIGHT] = false;
         if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;
         if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;
@@ -251,7 +238,7 @@ function sketch(p: p5) {
             rectStartY = p.mouseY
 
             let unitSelected = false
-            //Select a unit by clicking on it
+            // Select a unit by clicking on it
             for (const i in client.globalUnits) {
                 let unit = client.globalUnits[i]
                 if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
@@ -263,7 +250,7 @@ function sketch(p: p5) {
                     unit.deselect()
                 }
             }
-            //Select a depot by clicking on it
+            // Select a depot by clicking on it
             for (const i in client.globalDepots) {
                 let depot = client.globalDepots[i]
 
@@ -286,7 +273,7 @@ function sketch(p: p5) {
                 let unit = client.globalUnits[i]
 
                 let pos = worldToScreen(unit.sprite.position.x, unit.sprite.position.y);
-                //Check if a unit is within the rectangle
+                // Check if a unit is within the rectangle
                 if (
                     Math.min(rectStartX, p.mouseX) < pos.x &&
                     pos.x < Math.max(rectStartX, p.mouseX) &&
@@ -311,8 +298,8 @@ function sketch(p: p5) {
     }
     
     p.mouseWheel = (event) => {
-        //@ts-ignore
-        scaleBy(event.delta > 0 ? 1.05 : 0.95)
+        // @ts-ignore
+        scaleBy(event.delta < 0 ? 1.05 : 0.95)
     }
     
     dragged = false
