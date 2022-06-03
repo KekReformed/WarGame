@@ -142,6 +142,7 @@ function sketch(p: p5) {
                 client.globalUnits.splice(parseInt(i), 1)
             }
         }
+        
         // Search and collision
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
@@ -174,8 +175,10 @@ function sketch(p: p5) {
             //When a battle finishes
             if (factionList.length === 1) {
                 battle.sprite.remove()
+
                 let units = battle.factions[factionList[0]].units
-                
+                console.log(battle.factions)
+
                 let unitData: UnitData = {
                     faction: factionList[0],
                     height: 50,

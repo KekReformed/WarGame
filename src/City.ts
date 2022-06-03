@@ -1,7 +1,8 @@
-import { client } from "."
+import { client, unitTypes } from "."
 import { p } from "./sketch"
 import { Sprite } from "./Sprite"
 import Infantry from "./units/Infantry"
+import Unit from "./units/Unit"
 import { worldToScreen } from "./Util"
 
 class City {
@@ -28,16 +29,18 @@ class City {
 
     update() {
         this.defenders = 0
-        
+        console.log(this.sprite.collisions)
+        if (this.sprite.collisions.length != 0) {
 
-        //Counts how many defenders there are 
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
-
-            if (this.sprite.overlap(unit.sprite) && unit.faction === this.faction && unit.is<Infantry>("infantry") && !unit.inCity){
-                this.defenders += 1
-                unit.inCity = true
-                unit.strengthModifier += 1
+            for (const i in this.sprite.collisions) {
+                if (this.sprite.collisions[i].userData instanceof Unit) {
+                    let unit: Unit = this.sprite.collisions[i].userData
+                    if (unit.faction === this.faction && unit.is<Infantry>("infantry") && !unit.inCity) {
+                        this.defenders += 1
+                        unit.inCity = true
+                        unit.strengthModifier += 1
+                    }
+                }
             }
         }
 

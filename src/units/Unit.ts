@@ -67,6 +67,8 @@ class Unit {
     }
 
     update() {
+        if (this.strength <= 0) return;
+
         if (this.goToPoint && this.sprite.position.dist(this.goToPoint) < 3) {
             this.sprite.setVelocity(0, 0);
             this.goToPoint = undefined
@@ -76,6 +78,7 @@ class Unit {
 
 
         let mousePos = p.createVector(p.mouseX, p.mouseY)
+
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
 
@@ -92,41 +95,39 @@ class Unit {
             }
         }
 
-        //New unit collisions but doesn't work properly yet
+        //New unit collisions
         if (this.sprite.collisions.length != 0) {
 
             for (const i in this.sprite.collisions) {
-                if(this.sprite.collisions[i].userData instanceof Unit) {
+                if (this.sprite.collisions[i].userData instanceof Unit) {
                     let collidingUnit: Unit = this.sprite.collisions[0].userData
-    
-                    if((this.terrainType !== "air" && collidingUnit.terrainType !== "air") || this.joiningBattle) {
+
+                    if ((this.terrainType !== "air" && collidingUnit.terrainType !== "air") || this.joiningBattle) {
                         this.startBattle(collidingUnit)
                     }
                 }
-    
-                if(this.sprite.collisions[i].userData instanceof Battle) {
+
+                if (this.sprite.collisions[i].userData instanceof Battle) {
                     let collidingBattle: Battle = this.sprite.collisions[0].userData
-                    
+
                     //If we touch a battle (Currently doesn't work due to collision)
                     if (this.terrainType !== "air" || this.joiningBattle) {
                         this.joinBattle(collidingBattle)
                     }
-    
+
                 }
             }
         }
 
 
-        if (this.strength > 0) {
-            for (const i in client.globalBattles) {
-                let battle = client.globalBattles[i]
-                let mousePos = p.createVector(p.mouseX, p.mouseY)
+        for (const i in client.globalBattles) {
+            let battle = client.globalBattles[i]
+            let mousePos = p.createVector(p.mouseX, p.mouseY)
 
-                if (this.selected && longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
-                    this.joiningBattle = true
-                    this.goingToBattle = true
-                    this.goTo(battle.sprite.position, this.speed)
-                }
+            if (this.selected && longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
+                this.joiningBattle = true
+                this.goingToBattle = true
+                this.goTo(battle.sprite.position, this.speed)
             }
         }
 
@@ -168,6 +169,7 @@ class Unit {
         client.globalBattles.push(battle)
         this.strength = 0
         EnemyUnit.strength = 0
+        console.log(EnemyUnit)
     }
 
     joinBattle(battle: Battle) {
