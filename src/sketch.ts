@@ -3,13 +3,13 @@ import { client, keyDown, unitTypes } from "./index"
 import { UnitData } from './units/Unit'
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
-import Bomber from "./units/Bomber"
 import Fighter from "./units/Fighter"
 import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
-import { scaleBy, screenToWorld, setOffset, worldToScreen } from './Util'
+import { scaleBy, setOffset, worldToScreen } from './Util'
 import Aviation from './depots/Aviation'
+
 let timeHeld = 0
 var dragged = false
 var rectStartX = 0
