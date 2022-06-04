@@ -160,7 +160,6 @@ class Unit {
     deselect() {
         this.selected = false
         this.sprite.color = "#660000"
-        this.sprite.layer = 0
     }
 
     startBattle(EnemyUnit: Unit) {

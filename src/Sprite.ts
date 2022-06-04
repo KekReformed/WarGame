@@ -144,7 +144,7 @@ export class Sprite {
 
     collisionDetection(sp: Sprite) {
 
-        if (this.id == sp.id || this.layer != sp.layer) return;
+        if (this.id === sp.id) return;
 
         let w = this.width / 2, h = this.height / 2, spw = sp.width / 2, sph = sp.height / 2;
 
