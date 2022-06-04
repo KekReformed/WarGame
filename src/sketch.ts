@@ -17,6 +17,7 @@ var rectStartY = 0
 let qt;
 
 let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
+let mouseDownState : { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 let mouseUpState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 
 
@@ -226,13 +227,19 @@ function sketch(p: p5) {
         // qt.draw()
         
         // Reset the mouse up status so it doesn't fire forever
+        if (mouseUpState[p.LEFT]) mouseUpState[p.LEFT] = false;
+        if (mouseUpState[p.CENTER]) mouseUpState[p.CENTER] = false;
         if (mouseUpState[p.RIGHT]) mouseUpState[p.RIGHT] = false;
-        if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;
-        if (mouseUpState[p.CENTER])   mouseUpState[p.LEFT] = false;
+
+        // Reset the mouse down status so it also doesn't fire forever
+        if (mouseDownState[p.LEFT]) mouseDownState[p.LEFT] = false;
+        if (mouseDownState[p.CENTER]) mouseDownState[p.CENTER] = false;
+        if (mouseDownState[p.RIGHT]) mouseDownState[p.RIGHT] = false;
     }
 
     p.mousePressed = () => {
         mouseState[p.mouseButton] = true;
+        mouseDownState[p.mouseButton] = true;
         if (p.mouseButton === p.LEFT) {
             rectStartX = p.mouseX
             rectStartY = p.mouseY
@@ -327,6 +334,10 @@ export function mouseUp(mouseButton: any) {
 
 export function mouseDown(mouseButton: any) {
     return mouseState[mouseButton]
+}
+
+export function mouseWentDown(mouseButton: any) {
+    return mouseDownState[mouseButton]
 }
 
 export const p = new p5(sketch)

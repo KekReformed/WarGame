@@ -182,7 +182,6 @@ export class Sprite {
             }
             if (p.min(scalars[1]) >= p.max(scalars[0]) || p.max(scalars[1]) <= p.min(scalars[0])) return collision = false
         }
-        console.log("hm")
         if (collision) this.addCollision(sp)
         else {
             console.log("no")

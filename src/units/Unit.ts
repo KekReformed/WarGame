@@ -137,7 +137,7 @@ class Unit {
                 let mousePos = p.createVector(pos.x, pos.y);
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
-                this.goingToUnit = null
+                if (!this.joiningBattle) this.goingToUnit = null
                 if (!mousePos.equals(this.goToPoint)) this.goTo(mousePos, this.speed)
             }
 
@@ -160,6 +160,7 @@ class Unit {
     deselect() {
         this.selected = false
         this.sprite.color = "#660000"
+        this.sprite.layer = 0
     }
 
     startBattle(EnemyUnit: Unit) {

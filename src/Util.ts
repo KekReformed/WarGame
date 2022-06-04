@@ -30,6 +30,7 @@ export function scaleBy(delta: number) {
     offsetX += preScale.x - postScale.x
     offsetY += preScale.y - postScale.y
 }
+
 export function specificScaleOf(w: number, h: number) {
     return { w: w * scaleX, h: h * scaleY }
 }

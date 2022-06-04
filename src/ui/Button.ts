@@ -1,5 +1,5 @@
 import { Color } from "p5"
-import { p } from "../sketch"
+import { mouseWentDown, p } from "../sketch"
 import { screenToWorld, worldToScreen } from "../Util"
 import UIComponent from "./UIComponent"
 
@@ -35,7 +35,7 @@ class Button extends UIComponent {
 
 
         //Check if the mouse is inside me
-        if (this.mouseOver() /* && mouseWentDown(LEFT) */) {
+        if (this.mouseOver() && mouseWentDown(p.LEFT)) {
             this.buttonFunction()
         }
     }
