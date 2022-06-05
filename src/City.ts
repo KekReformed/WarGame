@@ -34,6 +34,7 @@ class City {
             for (const i in this.sprite.collisions) {
                 if (this.sprite.collisions[i].userData instanceof Unit) {
                     let unit: Unit = this.sprite.collisions[i].userData
+
                     if (unit.faction === this.faction && unit.is<Infantry>("infantry") && !unit.inCity) {
                         this.defenders += 1
                         unit.inCity = true
@@ -41,24 +42,26 @@ class City {
                     }
                 }
             }
-        }
 
+            for (const i in this.sprite.collisions) {
+                if (this.sprite.collisions[i].userData instanceof Unit) {
+                    let unit: Unit = this.sprite.collisions[i].userData
 
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
-
-            //Oh noes! there is an enemy inside of me, now im gonna be captured!
-            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0 && unit.type === "infantry") {
-                this.faction = unit.faction
+                    //Oh noes! there is an enemy inside of me, now im gonna be captured!
+                    if (this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0 && unit.type === "infantry") {
+                        this.faction = unit.faction
+                    }
+                }
             }
         }
+
         let pos = worldToScreen(this.sprite.position.x, this.sprite.position.y)
         p.textSize(12)
         p.textAlign(p.CENTER)
-        p.fill(255,255,255)
+        p.fill(255, 255, 255)
         p.noStroke()
-        p.text(`${this.cityName}: £${this.value}B/yr`,pos.x, pos.y)
-        p.text(`Owned by: ${this.faction}`,pos.x, pos.y+10)
+        p.text(`${this.cityName}: £${this.value}B/yr`, pos.x, pos.y)
+        p.text(`Owned by: ${this.faction}`, pos.x, pos.y + 10)
     }
 }
 export default City

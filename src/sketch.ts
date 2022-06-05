@@ -14,10 +14,14 @@ let timeHeld = 0
 var dragged = false
 var rectStartX = 0
 var rectStartY = 0
+let days = 1
 let qt;
 
+// If time scale is 1 then 1 day = 1 second this only effects money and day progression and NOT troop speed
+const timeScale = 10
+
 let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
-let mouseDownState : { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
+let mouseDownState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 let mouseUpState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 
 
@@ -37,7 +41,7 @@ function sketch(p: p5) {
             positionX: 100,
             positionY: 200,
             strength: 2000
-        })  
+        })
 
         const dave = new Infantry({
             faction: "USA",
@@ -99,8 +103,8 @@ function sketch(p: p5) {
             strength: 2000
         })
 
-        const london = new City("UK", "London", 800, 400, 100)
-        const manchester = new City("Spain", "Manchester", 1200, 400, 100)
+        const london = new City("UK", "London", 800, 400, 1000)
+        const manchester = new City("Spain", "Manchester", 1200, 400, 1000)
 
         const barracks = new Airstrip({
             faction: "UK",
@@ -119,29 +123,58 @@ function sketch(p: p5) {
 
     p.draw = () => {
         // note for later if we experience extremely daunting performance issues make it so the Point gets updated rather than being re-inserted
-        p.frameRate(60)
+        p.frameRate(200)
         p.background(10, 10, 10);
         p.textSize(12)
         p.textAlign(p.CENTER)
         p.fill(255, 255, 255)
         p.noStroke()
         let roundedPlayerMoney = Math.round(client.money)
-        p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 20)
+        p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 35)
+        p.text(`Day ${p.floor(days)} of the conflict`, window.outerWidth / 2, 20)
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
 
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
-        
-        // Update units & Points
+
+        // Update units
         for (const i in client.globalUnits) {
             let unit = client.globalUnits[i]
             unit.update()
-            
+
             if (unit.strength <= 0) {
                 unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
             }
-        }
+
+            let mousePos = p.createVector(p.mouseX, p.mouseY)
+
+            if (unit.selected) {
+                for (const i in client.globalUnits) {
+                    let otherUnit = client.globalUnits[i]
+    
+                    if (longClick(p.RIGHT) && otherUnit.sprite.position.dist(mousePos) < 80) {
+                        unit.joiningBattle = true
+                        unit.goingToBattle = true
+                        unit.goingToUnit = otherUnit
+                        unit.goTo(otherUnit.sprite.position, unit.speed)
+                        break
+                    }
+                }
+
+                for (const i in client.globalBattles) {
+                    let battle = client.globalBattles[i]
+                    let mousePos = p.createVector(p.mouseX, p.mouseY)
         
+                    if (longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
+                        unit.joiningBattle = true
+                        unit.goingToBattle = true
+                        unit.goTo(battle.sprite.position, unit.speed)
+                        break
+                    }
+                }
+            }
+        }
+
         // Update battles
         for (const i in client.globalBattles) {
 
@@ -150,16 +183,16 @@ function sketch(p: p5) {
 
             for (const factionName in battle.factions) {
                 let faction = battle.factions[factionName]
-                
+
                 if (faction.totalStrength <= 1) {
                     delete battle.factions[factionName]
                     break
                 }
             }
-            
+
             let factionList = Object.keys(battle.factions)
-            
-            
+
+
             // When a battle finishes
             if (factionList.length === 1) {
                 battle.sprite.remove()
@@ -177,7 +210,7 @@ function sketch(p: p5) {
                     positionX: battle.sprite.position.x,
                     positionY: battle.sprite.position.y
                 }
-                
+
                 for (const unitTerrainType in units) {
                     for (const unitType in units[unitTerrainType]) {
                         unitData.strength = Math.round(units[unitTerrainType][unitType])
@@ -194,11 +227,12 @@ function sketch(p: p5) {
         for (const i in client.globalCities) {
 
             let city = client.globalCities[i]
-            
+
             city.update()
 
             if (city.faction === client.faction) {
-                client.money += city.value / 365 * 1000
+                client.money += (city.value / 365 * 1000 * p.deltaTime / 1000 ) * timeScale
+                days +=  1 * p.deltaTime / 1000 * timeScale
             }
         }
 
@@ -206,7 +240,7 @@ function sketch(p: p5) {
         for (const i in client.globalDepots) {
 
             let depot = client.globalDepots[i]
-            
+
             depot.update()
         }
 
@@ -225,7 +259,7 @@ function sketch(p: p5) {
         }
         //debug qt draw
         // qt.draw()
-        
+
         // Reset the mouse up status so it doesn't fire forever
         if (mouseUpState[p.LEFT]) mouseUpState[p.LEFT] = false;
         if (mouseUpState[p.CENTER]) mouseUpState[p.CENTER] = false;
@@ -286,7 +320,7 @@ function sketch(p: p5) {
                     pos.x < Math.max(rectStartX, p.mouseX) &&
                     Math.min(rectStartY, p.mouseY) < pos.y &&
                     pos.y < Math.max(rectStartY, p.mouseY)
-                    ) {
+                ) {
                     unit.select()
                 }
             }
@@ -303,12 +337,12 @@ function sketch(p: p5) {
         if (p.mouseButton === p.RIGHT) return;
         dragged = true
     }
-    
+
     p.mouseWheel = (event) => {
         // @ts-ignore
         scaleBy(event.delta < 0 ? 1.05 : 0.95)
     }
-    
+
     dragged = false
 
 

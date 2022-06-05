@@ -2,6 +2,7 @@ import { client } from ".."
 import City from "../City"
 import { p } from "../sketch"
 import { Sprite } from "../Sprite"
+import Unit from "../units/Unit"
 import { worldToScreen } from "../Util"
 import Airstrip from "./Airstrip"
 import Aviation from "./Aviation"
@@ -37,12 +38,15 @@ class Depot {
     update() {
         if (this.inCity) this.faction = this.city.faction
 
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
+        for (const i in this.sprite.collisions) {
 
-            //Oh noes! there is an enemy inside of me, now im gonna be captured!
-            if (this.sprite.overlap(unit.sprite) && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && !this.inCity) {
-                this.faction = unit.faction
+            if (this.sprite.collisions[i].userData instanceof Unit) {
+                let unit: Unit = this.sprite.collisions[i].userData
+
+                //Oh noes! there is an enemy inside of me, now im gonna be captured!
+                if (!this.inCity && this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && unit.strength > 0 && unit.type === "infantry") {
+                    this.faction = unit.faction
+                }
             }
         }
 

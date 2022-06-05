@@ -78,33 +78,20 @@ class Unit {
 
         let mousePos = p.createVector(p.mouseX, p.mouseY)
 
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
-
-            if (this.selected && longClick(p.RIGHT) && unit.sprite.position.dist(mousePos) < 80) {
-                this.joiningBattle = true
-                this.goingToBattle = true
-                this.goingToUnit = client.globalUnits[i]
-                this.goTo(unit.sprite.position, this.speed)
-            }
-
-            // Unit Combining
-            if (this.sprite.position.dist(unit.sprite.position) < 4 && this.faction === unit.faction && !this.sprite.position.equals(unit.sprite.position) && !this.combining && this.type === unit.type) {
-                this.combine(unit)
-            }
-        }
-
         // New unit collisions
         if (this.sprite.collisions.length != 0) {
-
-            
             for (const i in this.sprite.collisions) {
                 /** The thing it's colliding with */
                 const colliding = this.sprite.collisions[i].userData
 
                 if (colliding instanceof Unit) {
-                    if (this.faction !== colliding.faction && (this.terrainType !== "air" && colliding.terrainType !== "air") || this.joiningBattle && this.faction !== colliding.faction) {
+                    console.log(this.sprite.collisions)
+                    if (this.faction !== colliding.faction && (this.terrainType !== "air" && !this.joiningBattle || colliding.terrainType !== "air" && !colliding.joiningBattle) && this.faction !== colliding.faction) {
                         this.startBattle(colliding)
+                    }
+
+                    if (this.sprite.position.dist(colliding.sprite.position) < 8 && this.faction === colliding.faction && !this.sprite.position.equals(colliding.sprite.position) && !this.combining && this.type === colliding.type) {
+                        this.combine(colliding)
                     }
                 }
 
@@ -113,20 +100,7 @@ class Unit {
                     if (this.terrainType !== "air" || this.joiningBattle) {
                         this.joinBattle(colliding)
                     }
-
                 }
-            }
-        }
-
-
-        for (const i in client.globalBattles) {
-            let battle = client.globalBattles[i]
-            let mousePos = p.createVector(p.mouseX, p.mouseY)
-
-            if (this.selected && longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
-                this.joiningBattle = true
-                this.goingToBattle = true
-                this.goTo(battle.sprite.position, this.speed)
             }
         }
 
@@ -262,6 +236,8 @@ class Unit {
         this.vector = p.createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
         this.vector.normalize()
         this.vector.mult(speed)
+        // Multiply the vector by deltatime so that it isn't tied to frame rate
+        this.vector.mult(p.deltaTime*0.1)
         this.sprite.setVelocity(this.vector.x, this.vector.y)
     }
 }
