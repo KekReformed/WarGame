@@ -6,10 +6,23 @@ const serveDirectory = path.resolve(__dirname, 'public')
 module.exports = {
   entry: [
     'p5',
-    './src',
-    './src/sketch.js'
+    './src/sketch.ts',
   ],
   mode: "development",
+
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js']
+  },
+
   output: {
     filename: 'bundle.js',
     path: serveDirectory,

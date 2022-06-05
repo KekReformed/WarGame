@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link href="./index.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script defer src="index.js"></script>
+    <script src="index.js"></script>
 </head>
-<body>
+
+<body>    
     <div class="container">
         <section id="main">
             <h1>Wargame</h1>
@@ -31,7 +33,8 @@
 
             <div class="form">
                 <div class="tooltip">You must enter a username to join a game.</div>
-                <input class="input" id="join-game-u" type="text" placeholder="Username" %eval%|req.user ? `value="${req.user.username}"` : ``|>
+                <input class="input" id="join-game-u" type="text" placeholder="Username" %eval%|req.user ?
+                    `value="${req.user.username}" ` : ``|>
                 <p class="error" id="username-taken"></p>
             </div>
 
@@ -42,7 +45,8 @@
                     Back
                 </div>
             </div>
-            <p class="footer">There's no need to refresh the page; games show up as soon as they become available, and player counts will update instantly too!</p>
+            <p class="footer">There's no need to refresh the page; games show up as soon as they become available, and
+                player counts will update instantly too!</p>
         </section>
 
         <section class="page" id="create-game">
@@ -50,12 +54,16 @@
 
             <div class="form">
                 <div class="tooltip">Enter a username so that players know what to call you.</div>
-                <input class="input" id="u" type="text" placeholder="Username" %eval%|req.user ? `value="${req.user.username}"` : ``|>
+                <input class="input" id="u" type="text" placeholder="Username" %eval%|req.user ?
+                    `value="${req.user.username}" ` : ``|>
                 <div class="form-section left">
                     <input type="checkbox" name="public" id="public">
-                    <label id="public-label" for="public"><p>Public</p></label>
+                    <label id="public-label" for="public">
+                        <p>Public</p>
+                    </label>
                 </div>
-                <div class="tooltip">Public games can be joined by anyone.<br>If unchecked, players will only be able to join your game through a link you send them.</div>
+                <div class="tooltip">Public games can be joined by anyone.<br>If unchecked, players will only be able to
+                    join your game through a link you send them.</div>
             </div>
 
             <div class="buttons">
@@ -70,4 +78,5 @@
         </section>
     </div>
 </body>
+
 </html>
