@@ -6,9 +6,23 @@ const serveDirectory = path.resolve(__dirname, 'public-menu')
 module.exports = {
   entry: {
     index: ['./src-menu/', './src-menu/joinGame.js'],
-    lobby: './src-menu/lobby/lobby.js'
+    lobby: './src-menu/lobby/lobby.ts'
   },
   mode: "development",
+
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js']
+  },
+
   output: {
     filename: '[name].js',
     path: serveDirectory,

@@ -1,4 +1,4 @@
-import { request, socket } from "./shared/api.js";
+import { request, socket } from "./shared/api";
 import { createGame } from "./createGame.js";
 import { delay } from "./index.js"
 

@@ -1,4 +1,4 @@
-import { request, socket } from "../shared/api.js";
+import { request, socket } from "../shared/api";
 
 const dom = new DOMParser()
 
@@ -20,14 +20,27 @@ const colourList = [
     "#020202",
     "#f8649d"
 ]
-let disabledColours = [];
-let colourIndex;
-/** Global HTML element - the client's colour */
-let clientColour;
+let disabledColours: string[] = [];
+let colourIndex: number;
+let clientColour: HTMLDivElement;
 
 const secret = localStorage.secret;
 
-let game;
+interface Game {
+    players: Player[],
+    clientIndex: number
+}
+
+interface Player {
+    name: string
+    faction: {
+        name: string
+        colour: string
+    }
+    index: number
+}
+
+let game: Game;
 (async () => {
     if (localStorage.game) {
         game = JSON.parse(localStorage.game)
@@ -48,7 +61,7 @@ let game;
         for (const i in game.players) {
             const player = game.players[i]
             if (player.faction?.colour) disabledColours.push(player.faction.colour)
-            addPlayer(player, i === "0", i == game.clientIndex)
+            addPlayer(player, i === "0", parseInt(i) === game.clientIndex)
         }
 
         // Generate colour select box
@@ -66,7 +79,7 @@ leaveBtn.addEventListener("click", async e => {
     location.pathname = ""
 })
 
-function addPlayer(player, host=false, client=false) {
+function addPlayer(player: Player, host=false, client=false) {
     const element = createElement(
         `<div class="player" ${client ? 'id="client"' : ''}>
             ${generatePlayerHtml(player)}
@@ -77,7 +90,7 @@ function addPlayer(player, host=false, client=false) {
         colourIndex = colourList.indexOf(player.faction.colour)
 
         const faction = element.children.item(1)
-        const [factionName, factionInput, factionColour] = faction.children
+        const [factionName, factionInput, factionColour]: [HTMLDivElement, HTMLInputElement, HTMLDivElement] = faction.children as any
         clientColour = factionColour
 
         factionName.addEventListener("click", e => changeToInput(factionName, factionInput))
@@ -91,10 +104,9 @@ function addPlayer(player, host=false, client=false) {
     }
 }
 
-function generatePlayerHtml(player) {
+function generatePlayerHtml(player: Player) {
     const input = `<input class="input" type="text" style="display: none"/>`
 
-    if (!player.faction) player.faction = {}
     return (
         `<p>${player.name}</p>
         <div class="faction">
@@ -108,14 +120,14 @@ function generatePlayerHtml(player) {
     )
 }
 
-function changeToInput(text, input) {
+function changeToInput(text: HTMLDivElement, input: HTMLInputElement) {
     text.style.display = "none"
     input.style.display = "block"
     input.value = text.innerHTML
     input.select()
 }
 
-function changeToText(text, input) {
+function changeToText(text: HTMLDivElement, input: HTMLInputElement) {
     input.style.display = "none"
     text.style.display = "block"
     if (input.value && input.value !== text.innerHTML) {
@@ -145,7 +157,7 @@ function renderColours() {
     }
 }
 
-function positionColoursBox(clientColour) {
+function positionColoursBox(clientColour: HTMLDivElement) {
     const offsets = clientColour.getBoundingClientRect();
     colours.style.top = offsets.top + offsets.height + "px"
     colours.style.left = offsets.left + "px"
@@ -162,7 +174,7 @@ function toggleColours() {
     }
 }
 
-function colourClick(colourDiv, colour) {
+function colourClick(colourDiv: HTMLDivElement, colour: string) {
     toggleColours()
 
     if (colourIndex >= 0) {
@@ -184,7 +196,7 @@ function colourClick(colourDiv, colour) {
     socket.emit("editPlayer", game.players[game.clientIndex])
 }
 
-function editPlayer(player) {
+function editPlayer(player: Player) {
     if (player.index === game.clientIndex) return;
 
     players.children.item(player.index).innerHTML = generatePlayerHtml(player)
@@ -197,7 +209,7 @@ function editPlayer(player) {
     saveGame()
 }
 
-function removePlayer(index) {
+function removePlayer(index: number) {
     delete game.players[index]
     players.children.item(index).remove()
     saveGame()
@@ -212,6 +224,6 @@ socket.on('playerEdit', editPlayer)
 socket.on('playerLeave', removePlayer)
 socket.on('exception', msg => console.error(`Socket request rejected: ${msg}`))
 
-function createElement(html) {
+function createElement(html: string) {
     return dom.parseFromString(html, 'text/html').activeElement.children.item(0)
 }

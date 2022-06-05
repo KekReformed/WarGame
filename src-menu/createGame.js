@@ -1,4 +1,4 @@
-import { request } from "./shared/api.js"
+import { request } from "./shared/api"
 
 export const createGame = document.getElementById("create-game")
 

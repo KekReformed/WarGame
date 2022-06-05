@@ -3,7 +3,7 @@ import { io } from 'socket.io-client'
 const hostname = "wargame.amelix.xyz:7777/api"
 const socketPort = "4000"
 
-export async function request(method, path, write, headers={}, hostOverwrite) {
+export async function request(method: string, path: string, write: any, headers={}, hostOverwrite?: string) {
     if (typeof write === "object") write = JSON.stringify(write);
 
     const res = await fetch(`https://` + (hostOverwrite || hostname) + path, {
@@ -12,7 +12,7 @@ export async function request(method, path, write, headers={}, hostOverwrite) {
         body: write
     }).catch(e => {throw new Error(e)})
     if (res.ok) {
-        let body = await res.text()
+        let body: any = await res.text()
 
         try { body = JSON.parse(body) } catch {}
         return { ...res, body }
