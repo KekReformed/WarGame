@@ -9,6 +9,7 @@ import * as sprites from './Sprite'
 import City from "./City"
 import { scaleBy, setOffset, worldToScreen } from './Util'
 import Aviation from './depots/Aviation'
+import Pathfinding from './Pathfinding'
 
 let timeHeld = 0
 var dragged = false
@@ -17,8 +18,10 @@ var rectStartY = 0
 let days = 1
 let qt;
 
+const pathFinder = new Pathfinding()
+
 // If time scale is 1 then 1 day = 1 second this only effects money and day progression and NOT troop speed
-const timeScale = 10
+const timeScale = 1
 
 let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 let mouseDownState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
@@ -64,7 +67,8 @@ function sketch(p: p5) {
             l: 20,
             positionX: 300,
             positionY: 200,
-            strength: 2000
+            strength: 2000,
+            pathFinder,
         })
 
         const john = new Fighter({
@@ -119,6 +123,7 @@ function sketch(p: p5) {
             positionY: 600,
             inCity: false
         })
+        pathFinder.generateNodes()
     }
 
     p.draw = () => {
@@ -133,7 +138,7 @@ function sketch(p: p5) {
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 35)
         p.text(`Day ${p.floor(days)} of the conflict`, window.outerWidth / 2, 20)
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
-
+        pathFinder.debug()
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
 
         // Update units

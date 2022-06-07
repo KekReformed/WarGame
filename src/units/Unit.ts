@@ -8,6 +8,7 @@ import Bomber from "./Bomber.js";
 import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
+import Pathfinding, { nodes, nodeSize } from "../Pathfinding";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -40,6 +41,7 @@ class Unit {
     terrainType: Terrain
     combining: boolean
     type: string
+    pathFinder: Pathfinding
 
     constructor(unitData: UnitData) {
         this.height = unitData.height
@@ -59,6 +61,7 @@ class Unit {
         this.goToPoint = this.sprite.position
         this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
         this.sprite.velocityRotate = true
+        this.pathFinder = unitData.pathFinder
     }
 
     is<UnitType>(type: string): this is UnitType {
@@ -85,7 +88,6 @@ class Unit {
                 const colliding = this.sprite.collisions[i].userData
 
                 if (colliding instanceof Unit) {
-                    console.log(this.sprite.collisions)
                     if (this.faction !== colliding.faction && (this.terrainType !== "air" && !this.joiningBattle || colliding.terrainType !== "air" && !colliding.joiningBattle) && this.faction !== colliding.faction) {
                         this.startBattle(colliding)
                     }
@@ -109,10 +111,39 @@ class Unit {
             if (mouseUp(p.RIGHT)) {
                 let pos = screenToWorld(p.mouseX, p.mouseY);
                 let mousePos = p.createVector(pos.x, pos.y);
+                let closestMouseNodePosition;
+                let closestNode;
+                let closestMouseNode;
+                let closestNodeDist = Infinity
+                let closestMouseNodeDist = Infinity
 
+                for (const y in nodes) {
+                    let nodeRows = nodes[y]
+                    for (const x in nodeRows) {
+                        let node = nodeRows[x]
+                        let nodePosition = p.createVector(node.x, node.y)
+                        let dist = this.sprite.position.dist(nodePosition)
+                        let mouseDist = mousePos.dist(nodePosition)
+
+                        if (dist < nodeSize && dist < closestNodeDist) {
+                            closestNodeDist = dist
+                            closestNode = node
+                        }
+
+                        if (mouseDist < nodeSize && mouseDist < closestMouseNodeDist) {
+                            closestMouseNodeDist = mouseDist
+                            closestMouseNodePosition = nodePosition
+                            closestMouseNode = node
+                        }
+                    }
+                }
+
+                this.pathFinder.exploreSurroundingNode(closestNode,closestNode.xIndex,closestNode.yIndex,closestMouseNode.xIndex,closestMouseNode.yIndex)
+                this.pathFinder.findBestPath(closestNode.xIndex,closestNode.yIndex,closestMouseNode.xIndex,closestMouseNode.yIndex)
+                
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 if (!this.joiningBattle) this.goingToUnit = null
-                if (!mousePos.equals(this.goToPoint)) this.goTo(mousePos, this.speed)
+                if (!mousePos.equals(this.goToPoint)) this.goTo(closestMouseNodePosition, this.speed)
             }
 
             //Unit Splitting
@@ -142,7 +173,6 @@ class Unit {
         client.globalBattles.push(battle)
         this.strength = 0
         EnemyUnit.strength = 0
-        console.log(EnemyUnit)
     }
 
     joinBattle(battle: Battle) {
@@ -237,7 +267,7 @@ class Unit {
         this.vector.normalize()
         this.vector.mult(speed)
         // Multiply the vector by deltatime so that it isn't tied to frame rate
-        this.vector.mult(p.deltaTime*0.1)
+        this.vector.mult(p.deltaTime * 0.1)
         this.sprite.setVelocity(this.vector.x, this.vector.y)
     }
 }
