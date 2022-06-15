@@ -8,7 +8,7 @@ import Bomber from "./Bomber.js";
 import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
-import Pathfinding, { nodes, nodeSize } from "../Pathfinding";
+import * as pathfinding from "../Pathfinding"
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -41,7 +41,7 @@ class Unit {
     terrainType: Terrain
     combining: boolean
     type: string
-    pathFinder: Pathfinding
+    path: pathfinding.node[]
 
     constructor(unitData: UnitData) {
         this.height = unitData.height
@@ -61,7 +61,7 @@ class Unit {
         this.goToPoint = this.sprite.position
         this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
         this.sprite.velocityRotate = true
-        this.pathFinder = unitData.pathFinder
+        this.path = []
     }
 
     is<UnitType>(type: string): this is UnitType {
@@ -69,11 +69,19 @@ class Unit {
     }
 
     update() {
+
         if (this.strength <= 0) return;
 
         if (this.goToPoint && this.sprite.position.dist(this.goToPoint) < 3) {
-            this.sprite.setVelocity(0, 0);
-            this.goToPoint = undefined
+            if (this.path.length > 0) {
+                let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
+                this.goTo(finalPoint, this.speed)
+                this.path.splice(0, 1)
+            }
+            else {
+                this.sprite.setVelocity(0, 0);
+                this.goToPoint = undefined
+            }
         }
 
         if (this.goingToUnit) this.goTo(this.goingToUnit.sprite.position, this.speed)
@@ -108,6 +116,7 @@ class Unit {
 
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
+
             if (mouseUp(p.RIGHT)) {
                 let pos = screenToWorld(p.mouseX, p.mouseY);
                 let mousePos = p.createVector(pos.x, pos.y);
@@ -117,20 +126,21 @@ class Unit {
                 let closestNodeDist = Infinity
                 let closestMouseNodeDist = Infinity
 
-                for (const y in nodes) {
-                    let nodeRows = nodes[y]
+                for (const y in pathfinding.nodes) {
+                    let nodeRows = pathfinding.nodes[y]
+
                     for (const x in nodeRows) {
                         let node = nodeRows[x]
                         let nodePosition = p.createVector(node.x, node.y)
                         let dist = this.sprite.position.dist(nodePosition)
                         let mouseDist = mousePos.dist(nodePosition)
 
-                        if (dist < nodeSize && dist < closestNodeDist) {
+                        if (dist < pathfinding.nodeSize && dist < closestNodeDist) {
                             closestNodeDist = dist
                             closestNode = node
                         }
 
-                        if (mouseDist < nodeSize && mouseDist < closestMouseNodeDist) {
+                        if (mouseDist < pathfinding.nodeSize && mouseDist < closestMouseNodeDist) {
                             closestMouseNodeDist = mouseDist
                             closestMouseNodePosition = nodePosition
                             closestMouseNode = node
@@ -138,12 +148,12 @@ class Unit {
                     }
                 }
 
-                this.pathFinder.exploreSurroundingNode(closestNode,closestNode.xIndex,closestNode.yIndex,closestMouseNode.xIndex,closestMouseNode.yIndex)
-                this.pathFinder.findBestPath(closestNode.xIndex,closestNode.yIndex,closestMouseNode.xIndex,closestMouseNode.yIndex)
-                
+                this.path = pathfinding.findBestPath(closestNode.xIndex, closestNode.yIndex, closestMouseNode.xIndex, closestMouseNode.yIndex)
+                let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
+
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 if (!this.joiningBattle) this.goingToUnit = null
-                if (!mousePos.equals(this.goToPoint)) this.goTo(closestMouseNodePosition, this.speed)
+                if (!mousePos.equals(this.goToPoint)) this.goTo(finalPoint, this.speed)
             }
 
             //Unit Splitting
@@ -151,7 +161,7 @@ class Unit {
                 this.split()
             }
         }
-
+        
         this.updateLabels()
 
         this.effectiveStrength = this.strength * this.strengthModifier
