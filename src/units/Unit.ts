@@ -8,6 +8,7 @@ import Bomber from "./Bomber.js";
 import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
+import * as pathfinding from "../Pathfinding"
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -40,6 +41,7 @@ class Unit {
     terrainType: Terrain
     combining: boolean
     type: string
+    path: pathfinding.node[]
 
     constructor(unitData: UnitData) {
         this.height = unitData.height
@@ -59,6 +61,7 @@ class Unit {
         this.goToPoint = this.sprite.position
         this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
         this.sprite.velocityRotate = true
+        this.path = []
     }
 
     is<UnitType>(type: string): this is UnitType {
@@ -66,11 +69,19 @@ class Unit {
     }
 
     update() {
+
         if (this.strength <= 0) return;
 
         if (this.goToPoint && this.sprite.position.dist(this.goToPoint) < 3) {
-            this.sprite.setVelocity(0, 0);
-            this.goToPoint = undefined
+            if (this.path.length > 0) {
+                let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
+                this.goTo(finalPoint, this.speed)
+                this.path.splice(0, 1)
+            }
+            else {
+                this.sprite.setVelocity(0, 0);
+                this.goToPoint = undefined
+            }
         }
 
         if (this.goingToUnit) this.goTo(this.goingToUnit.sprite.position, this.speed)
@@ -85,7 +96,6 @@ class Unit {
                 const colliding = this.sprite.collisions[i].userData
 
                 if (colliding instanceof Unit) {
-                    console.log(this.sprite.collisions)
                     if (this.faction !== colliding.faction && (this.terrainType !== "air" && !this.joiningBattle || colliding.terrainType !== "air" && !colliding.joiningBattle) && this.faction !== colliding.faction) {
                         this.startBattle(colliding)
                     }
@@ -106,13 +116,44 @@ class Unit {
 
         //Move the unit if right click pressed whilst selected
         if (this.selected) {
+
             if (mouseUp(p.RIGHT)) {
                 let pos = screenToWorld(p.mouseX, p.mouseY);
                 let mousePos = p.createVector(pos.x, pos.y);
+                let closestMouseNodePosition;
+                let closestNode;
+                let closestMouseNode;
+                let closestNodeDist = Infinity
+                let closestMouseNodeDist = Infinity
+
+                for (const y in pathfinding.nodes) {
+                    let nodeRows = pathfinding.nodes[y]
+
+                    for (const x in nodeRows) {
+                        let node = nodeRows[x]
+                        let nodePosition = p.createVector(node.x, node.y)
+                        let dist = this.sprite.position.dist(nodePosition)
+                        let mouseDist = mousePos.dist(nodePosition)
+
+                        if (dist < pathfinding.nodeSize && dist < closestNodeDist) {
+                            closestNodeDist = dist
+                            closestNode = node
+                        }
+
+                        if (mouseDist < pathfinding.nodeSize && mouseDist < closestMouseNodeDist) {
+                            closestMouseNodeDist = mouseDist
+                            closestMouseNodePosition = nodePosition
+                            closestMouseNode = node
+                        }
+                    }
+                }
+
+                this.path = pathfinding.findBestPath(closestNode.xIndex, closestNode.yIndex, closestMouseNode.xIndex, closestMouseNode.yIndex)
+                let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 if (!this.joiningBattle) this.goingToUnit = null
-                if (!mousePos.equals(this.goToPoint)) this.goTo(mousePos, this.speed)
+                if (!mousePos.equals(this.goToPoint)) this.goTo(finalPoint, this.speed)
             }
 
             //Unit Splitting
@@ -120,7 +161,7 @@ class Unit {
                 this.split()
             }
         }
-
+        
         this.updateLabels()
 
         this.effectiveStrength = this.strength * this.strengthModifier
@@ -142,7 +183,6 @@ class Unit {
         client.globalBattles.push(battle)
         this.strength = 0
         EnemyUnit.strength = 0
-        console.log(EnemyUnit)
     }
 
     joinBattle(battle: Battle) {
@@ -237,7 +277,7 @@ class Unit {
         this.vector.normalize()
         this.vector.mult(speed)
         // Multiply the vector by deltatime so that it isn't tied to frame rate
-        this.vector.mult(p.deltaTime*0.1)
+        this.vector.mult(p.deltaTime * 0.1)
         this.sprite.setVelocity(this.vector.x, this.vector.y)
     }
 }
