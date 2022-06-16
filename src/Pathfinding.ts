@@ -106,7 +106,7 @@ export const findBestPath = (startXIndex: number, startYIndex: number, endXIndex
 
     while ((currentNode.xIndex !== startXIndex) || (currentNode.yIndex !== startYIndex)) {
         currentNode = currentNode.cameFrom
-        bestPath.push(structuredClone(currentNode))
+        bestPath.push((currentNode))
     }
 
     console.log(bestPath)

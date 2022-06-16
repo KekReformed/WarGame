@@ -10,6 +10,7 @@ import City from "./City"
 import { scaleBy, setOffset, worldToScreen } from './Util'
 import Aviation from './depots/Aviation'
 import * as pathfinding from "./Pathfinding"
+import NukeSilo from './depots/NukeSilo'
 
 let timeHeld = 0
 var dragged = false
@@ -114,7 +115,7 @@ function sketch(p: p5) {
             inCity: false
         })
 
-        const airstrip = new Aviation({
+        const airstrip = new NukeSilo({
             faction: "UK",
             positionX: 600,
             positionY: 600,
@@ -135,7 +136,7 @@ function sketch(p: p5) {
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 35)
         p.text(`Day ${p.floor(days)} of the conflict`, window.outerWidth / 2, 20)
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
-        pathfinding.debug()
+        //pathfinding.debug()
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
 
         // Update units
