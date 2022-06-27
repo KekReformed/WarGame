@@ -146,9 +146,11 @@ class Battle {
         this.factionList = Object.keys(this.factions)
         this.battleParticipants = [...this.factionList]
         this.battleParticipants.splice(this.battleParticipants.length - 1, 1)
+        
         if (this.factionList.length > 2) {
             this.battleParticipants = [this.battleParticipants.join(", ")]
         }
+
         this.battleParticipants.push(this.factionList[this.factionList.length - 1])
 
         let pos = worldToScreen(this.sprite.position.x, this.sprite.position.y)

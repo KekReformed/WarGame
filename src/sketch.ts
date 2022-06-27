@@ -4,23 +4,24 @@ import { UnitData } from './units/Unit'
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
 import Fighter from "./units/Fighter"
-import { QuadTree, initalizeQuadTree, Rectangle, Point } from './QuadTree'
+import { initalizeQuadTree, } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
 import { scaleBy, setOffset, worldToScreen } from './Util'
-import Aviation from './depots/Aviation'
 import * as pathfinding from "./Pathfinding"
 import NukeSilo from './depots/NukeSilo'
+import Barracks from './depots/Barracks'
+import Aviation from './depots/Aviation'
+import BattleShip from './units/BattleShip'
 
 let timeHeld = 0
 var dragged = false
 var rectStartX = 0
 var rectStartY = 0
-let days = 1
 let qt;
 
 // If time scale is 1 then 1 day = 1 second this only effects money and day progression and NOT troop speed
-const timeScale = 1
+export const timeScale = 1
 
 let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 let mouseDownState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
@@ -33,13 +34,9 @@ function sketch(p: p5) {
         sprites.initalize()
         initalizeQuadTree(3)
         const canvas = p.createCanvas(window.outerWidth, window.outerHeight);
+
         const jeff = new Infantry({
             faction: "USA",
-            height: 50,
-            width: 50,
-            h: 0,
-            s: 100,
-            l: 20,
             positionX: 100,
             positionY: 200,
             strength: 2000
@@ -47,11 +44,6 @@ function sketch(p: p5) {
 
         const dave = new Infantry({
             faction: "USA",
-            height: 50,
-            width: 50,
-            h: 0,
-            s: 100,
-            l: 20,
             positionX: 200,
             positionY: 200,
             strength: 2000
@@ -59,23 +51,13 @@ function sketch(p: p5) {
 
         const derek = new Infantry({
             faction: "UK",
-            height: 50,
-            width: 50,
-            h: 0,
-            s: 100,
-            l: 20,
             positionX: 300,
             positionY: 200,
             strength: 2000,
         })
 
-        const john = new Fighter({
+        const john = new BattleShip({
             faction: "UK",
-            height: 50,
-            width: 50,
-            h: 0,
-            s: 100,
-            l: 20,
             positionX: 400,
             positionY: 200,
             strength: 2000
@@ -83,11 +65,6 @@ function sketch(p: p5) {
 
         const garry = new Infantry({
             faction: "Spain",
-            height: 50,
-            width: 50,
-            h: 0,
-            s: 100,
-            l: 20,
             positionX: 600,
             positionY: 200,
             strength: 2000
@@ -95,11 +72,6 @@ function sketch(p: p5) {
 
         const jimbo = new Infantry({
             faction: "Spain",
-            height: 50,
-            width: 50,
-            h: 0,
-            s: 100,
-            l: 20,
             positionX: 500,
             positionY: 200,
             strength: 2000
@@ -115,13 +87,15 @@ function sketch(p: p5) {
             inCity: false
         })
 
-        const airstrip = new NukeSilo({
+        const airstrip = new Aviation({
             faction: "UK",
             positionX: 600,
             positionY: 600,
             inCity: false
         })
+
         pathfinding.generateNodes()
+        console.log(client)
     }
 
     p.draw = () => {
@@ -134,10 +108,13 @@ function sketch(p: p5) {
         p.noStroke()
         let roundedPlayerMoney = Math.round(client.money)
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 35)
-        p.text(`Day ${p.floor(days)} of the conflict`, window.outerWidth / 2, 20)
+        p.text(`Day ${p.floor(client.day)} of the conflict`, window.outerWidth / 2, 20)
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
         //pathfinding.debug()
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
+
+        //Update the clients in-game date
+        client.day += 1 * p.deltaTime / 1000 * timeScale
 
         // Update units
         for (const i in client.globalUnits) {
@@ -154,7 +131,7 @@ function sketch(p: p5) {
             if (unit.selected) {
                 for (const i in client.globalUnits) {
                     let otherUnit = client.globalUnits[i]
-    
+
                     if (longClick(p.RIGHT) && otherUnit.sprite.position.dist(mousePos) < 80) {
                         unit.joiningBattle = true
                         unit.goingToBattle = true
@@ -167,7 +144,7 @@ function sketch(p: p5) {
                 for (const i in client.globalBattles) {
                     let battle = client.globalBattles[i]
                     let mousePos = p.createVector(p.mouseX, p.mouseY)
-        
+
                     if (longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
                         unit.joiningBattle = true
                         unit.goingToBattle = true
@@ -205,11 +182,6 @@ function sketch(p: p5) {
 
                 let unitData: UnitData = {
                     faction: factionList[0],
-                    height: 50,
-                    width: 50,
-                    h: 0,
-                    s: 100,
-                    l: 20,
                     positionX: battle.sprite.position.x,
                     positionY: battle.sprite.position.y
                 }
@@ -234,8 +206,7 @@ function sketch(p: p5) {
             city.update()
 
             if (city.faction === client.faction) {
-                client.money += (city.value / 365 * 1000 * p.deltaTime / 1000 ) * timeScale
-                days +=  1 * p.deltaTime / 1000 * timeScale
+                client.money += (city.value / 365 * 1000 * p.deltaTime / 1000) * timeScale
             }
         }
 

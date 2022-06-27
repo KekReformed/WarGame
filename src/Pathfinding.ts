@@ -1,6 +1,6 @@
 import { p } from "./sketch";
 export const nodeSize = 50
-const boxSize = 10
+const boxSize = 20
 export const nodes: node[][] = [[]]
 
 export interface node {
@@ -105,8 +105,8 @@ export const findBestPath = (startXIndex: number, startYIndex: number, endXIndex
     }
 
     while ((currentNode.xIndex !== startXIndex) || (currentNode.yIndex !== startYIndex)) {
-        currentNode = currentNode.cameFrom
         bestPath.push((currentNode))
+        currentNode = currentNode.cameFrom
     }
 
     console.log(bestPath)

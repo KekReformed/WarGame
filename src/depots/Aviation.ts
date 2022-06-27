@@ -1,4 +1,4 @@
-import ProductionDepot from "./ProductionDepot";
+import ProductionDepot, { Production } from "./ProductionDepot";
 import { client, randomInt } from "..";
 import Button from "../ui/Button";
 import PanelUI from "../ui/PanelUI";
@@ -9,7 +9,7 @@ import { p } from "../sketch";
 class Aviation extends ProductionDepot {
     fighterButton: Button
 
-    constructor(depotData: {[k: string]: any}) {
+    constructor(depotData: { [k: string]: any }) {
         super(depotData)
         this.type = "aviation"
 
@@ -18,17 +18,20 @@ class Aviation extends ProductionDepot {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
-                new Fighter({
-                    faction: this.faction,
-                    height: 50,
-                    width: 50,
-                    h: 0,
-                    s: 100,
-                    l: 20,
-                    positionX: newUnitX,
-                    positionY: newUnitY,
-                    strength: 100
-                })
+                let production:Production = {
+                    unitData: {
+                        faction: this.faction,
+                        height: 50,
+                        width: 50,
+                        positionX: newUnitX,
+                        positionY: newUnitY,
+                        strength: 100,
+                        type: "fighter jet"
+                    },
+                    productionTime: 5
+                }
+
+                this.enqueue(production)
 
                 client.money -= 2500
             }

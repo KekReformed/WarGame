@@ -1,10 +1,11 @@
-import ProductionDepot from "./ProductionDepot";
-import { client, randomInt } from "..";
+import ProductionDepot, { Production } from "./ProductionDepot";
+import { client, randomInt, unitTypes } from "..";
 import Armour from "../units/Armour";
 import Button from "../ui/Button";
 import Infantry from "../units/Infantry";
 import PanelUI from "../ui/PanelUI";
 import { p } from "../sketch";
+import { AnyUnit, UnitData } from "../units/Unit";
 
 
 class Barracks extends ProductionDepot {
@@ -12,7 +13,7 @@ class Barracks extends ProductionDepot {
     tankButton: Button
 
 
-    constructor(depotData: {[k: string]: any}) {
+    constructor(depotData: { [k: string]: any }) {
         super(depotData)
         this.type = "barracks"
 
@@ -21,17 +22,20 @@ class Barracks extends ProductionDepot {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
-                new Infantry({
-                    faction: this.faction,
-                    height: 50,
-                    width: 50,
-                    h: 0,
-                    s: 100,
-                    l: 20,
-                    positionX: newUnitX,
-                    positionY: newUnitY,
-                    strength: 100
-                })
+                let production:Production = {
+                    unitData: {
+                        faction: this.faction,
+                        height: 50,
+                        width: 50,
+                        positionX: newUnitX,
+                        positionY: newUnitY,
+                        strength: 100,
+                        type: "infantry"
+                    },
+                    productionTime: 3
+                }
+
+                this.enqueue(production)
 
                 client.money -= 1000
             }
@@ -42,17 +46,20 @@ class Barracks extends ProductionDepot {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
-                new Armour({
-                    faction: this.faction,
-                    height: 50,
-                    width: 50,
-                    h: 0,
-                    s: 100,
-                    l: 20,
-                    positionX: newUnitX,
-                    positionY: newUnitY,
-                    strength: 100
-                })
+                let production:Production = {
+                    unitData: {
+                        faction: this.faction,
+                        height: 50,
+                        width: 50,
+                        positionX: newUnitX,
+                        positionY: newUnitY,
+                        strength: 100,
+                        type: "armour"
+                    },
+                    productionTime: 3
+                }
+
+                this.enqueue(production)
 
                 client.money -= 1200
             }

@@ -9,6 +9,7 @@ import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
 import * as pathfinding from "../Pathfinding"
+import AirUnit from "./AirUnit";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -23,9 +24,6 @@ export interface UnitData extends Partial<Unit> {
 class Unit {
     height: number
     width: number
-    h: number
-    s: number
-    l: number
     selected: boolean
     faction: string
     strength: number
@@ -44,11 +42,8 @@ class Unit {
     path: pathfinding.node[]
 
     constructor(unitData: UnitData) {
-        this.height = unitData.height
-        this.width = unitData.width;
-        this.h = unitData.h
-        this.s = unitData.s
-        this.l = unitData.l
+        this.height = 50
+        this.width = 50
         this.selected = false
         this.faction = unitData.faction
         this.strength = unitData.strength
@@ -56,10 +51,10 @@ class Unit {
         this.strengthModifier = 1
         this.speed = 1
         client.globalUnits.push(this)
-        this.sprite = new Sprite(unitData.positionX, unitData.positionY, unitData.width, unitData.height, 0, Anchor.top)
+        this.sprite = new Sprite(unitData.positionX, unitData.positionY, this.height, this.width, 0, Anchor.top)
         this.sprite.userData = this
         this.goToPoint = this.sprite.position
-        this.sprite.color = `hsl(${this.h}, ${this.s}%, ${this.l}%)`
+        this.sprite.color = `RGB(102,0,0)`
         this.sprite.velocityRotate = true
         this.path = []
     }
@@ -73,7 +68,7 @@ class Unit {
         if (this.strength <= 0) return;
 
         if (this.goToPoint && this.sprite.position.dist(this.goToPoint) < 3) {
-            if (this.path.length > 0) {
+            if (this.path.length > 0 && this.terrainType !== "air") {
                 let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
                 this.goTo(finalPoint, this.speed)
                 this.path.splice(0, 1)
@@ -90,7 +85,7 @@ class Unit {
         let mousePos = p.createVector(p.mouseX, p.mouseY)
 
         // New unit collisions
-        if (this.sprite.collisions.length != 0) {
+        if (this.sprite.collisions.length !==- 0) {
             for (const i in this.sprite.collisions) {
                 /** The thing it's colliding with */
                 const colliding = this.sprite.collisions[i].userData
@@ -153,7 +148,8 @@ class Unit {
 
                 this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
                 if (!this.joiningBattle) this.goingToUnit = null
-                if (!mousePos.equals(this.goToPoint)) this.goTo(finalPoint, this.speed)
+                if (this.terrainType === "air" && !mousePos.equals(this.goToPoint)) this.goTo(mousePos, this.speed)
+                else if (!mousePos.equals(this.goToPoint)) this.goTo(finalPoint, this.speed)
             }
 
             //Unit Splitting
@@ -169,12 +165,12 @@ class Unit {
 
     select() {
         this.selected = true
-        this.sprite.color = "#ff0000"
+        this.sprite.color = "RGB(255,0,0)"
     }
 
     deselect() {
         this.selected = false
-        this.sprite.color = "#660000"
+        this.sprite.color = "RGB(102,0,0)"
     }
 
     startBattle(EnemyUnit: Unit) {
@@ -246,9 +242,6 @@ class Unit {
             faction: this.faction,
             height: this.height,
             width: this.width,
-            h: this.h,
-            s: this.s,
-            l: this.l,
             positionX: this.sprite.position.x,
             positionY: this.sprite.position.y,
             strength: Math.floor(this.strength / 2),
