@@ -9,7 +9,6 @@ import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
 import * as pathfinding from "../Pathfinding"
-import AirUnit from "./AirUnit";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -39,6 +38,7 @@ class Unit {
     terrainType: Terrain
     combining: boolean
     type: string
+    kill: boolean
     path: pathfinding.node[]
 
     constructor(unitData: UnitData) {
@@ -65,7 +65,7 @@ class Unit {
 
     update() {
 
-        if (this.strength <= 0) return;
+        if (this.strength <= 0 || this.kill) return;
 
         if (this.goToPoint && this.sprite.position.dist(this.goToPoint) < 3) {
             if (this.path.length > 0 && this.terrainType !== "air") {
@@ -85,7 +85,7 @@ class Unit {
         let mousePos = p.createVector(p.mouseX, p.mouseY)
 
         // New unit collisions
-        if (this.sprite.collisions.length !==- 0) {
+        if (this.sprite.collisions.length !== 0) {
             for (const i in this.sprite.collisions) {
                 /** The thing it's colliding with */
                 const colliding = this.sprite.collisions[i].userData
@@ -101,7 +101,6 @@ class Unit {
                 }
 
                 if (colliding instanceof Battle) {
-                    // If we touch a battle (Currently doesn't work due to collision)
                     if (this.terrainType !== "air" || this.joiningBattle) {
                         this.joinBattle(colliding)
                     }
@@ -157,7 +156,7 @@ class Unit {
                 this.split()
             }
         }
-        
+
         this.updateLabels()
 
         this.effectiveStrength = this.strength * this.strengthModifier
@@ -177,8 +176,8 @@ class Unit {
         this.deselect()
         let battle = new Battle((this.sprite.position.x + EnemyUnit.sprite.position.x) / 2, (this.sprite.position.y + EnemyUnit.sprite.position.y) / 2, this, EnemyUnit)
         client.globalBattles.push(battle)
-        this.strength = 0
-        EnemyUnit.strength = 0
+        this.kill = true
+        EnemyUnit.kill = true
     }
 
     joinBattle(battle: Battle) {
@@ -188,23 +187,7 @@ class Unit {
 
             if (faction === this.faction) {
 
-                if (!battle.factions[faction].units[this.terrainType]) {
-                    battle.factions[faction].units[this.terrainType] = {}
-                }
-
-                //If there is already units of our type in the battle then add on to that, otherwise add ourselves to it
-                if (battle.factions[faction].units[this.terrainType][this.type]) {
-                    battle.factions[faction].units[this.terrainType][this.type] += this.effectiveStrength
-                }
-
-                else {
-                    battle.factions[faction].units[this.terrainType][this.type] = this.effectiveStrength
-                }
-
-                battle.factions[faction].totalStrength += this.effectiveStrength
-                battle.factions[faction][this.terrainType] += this.effectiveStrength
-                battle.totalStrength += this.effectiveStrength
-                battle[this.terrainType] += this.effectiveStrength
+                battle.factions[this.faction].units.push(this)
                 factionExists = true
             }
         }
@@ -212,17 +195,13 @@ class Unit {
         if (!factionExists) {
             console.log(battle)
             battle.factions[this.faction] = {
-                units: { [this.terrainType]: { [this.type]: this.effectiveStrength } },
-                totalStrength: this.effectiveStrength,
-                [this.terrainType]: this.effectiveStrength,
+                units: [this]
             }
             battle.totalStrength += this.effectiveStrength
-            // fixed? pls.
             battle.factionList.push(this.faction)
         }
 
-
-        this.strength = 0
+        this.kill = true
     }
 
     updateLabels() {
@@ -255,7 +234,7 @@ class Unit {
 
         new unitTypes[this.type](data)
 
-        this.strength = 0
+        this.kill = true
     }
 
     combine(unit: Unit) {

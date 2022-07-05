@@ -121,9 +121,10 @@ function sketch(p: p5) {
             let unit = client.globalUnits[i]
             unit.update()
 
-            if (unit.strength <= 0) {
+            if (unit.kill || unit.strength <= 0) {
                 unit.sprite.remove()
                 client.globalUnits.splice(parseInt(i), 1)
+                break
             }
 
             let mousePos = p.createVector(p.mouseX, p.mouseY)
@@ -157,6 +158,7 @@ function sketch(p: p5) {
 
         // Update battles
         for (const i in client.globalBattles) {
+            console.log(client.globalBattles.length)
 
             let battle = client.globalBattles[i]
             battle.update()
@@ -178,20 +180,13 @@ function sketch(p: p5) {
                 battle.sprite.remove()
 
                 let units = battle.factions[factionList[0]].units
-                console.log(battle.factions)
-
-                let unitData: UnitData = {
-                    faction: factionList[0],
-                    positionX: battle.sprite.position.x,
-                    positionY: battle.sprite.position.y
-                }
-
-                for (const unitTerrainType in units) {
-                    for (const unitType in units[unitTerrainType]) {
-                        unitData.strength = Math.round(units[unitTerrainType][unitType])
-
-                        new unitTypes[unitType](unitData)
-                    }
+                console.log(units)
+                for (const i in units) {
+                    let unit = units[i]
+                    unit.sprite = new sprites.Sprite(battle.positionX,battle.positionY,50,50,unit)
+                    unit.kill = false
+                    unit.strength = Math.round(unit.strength)
+                    client.globalUnits.push(unit)
                 }
 
                 client.globalBattles.splice(parseInt(i), 1)
