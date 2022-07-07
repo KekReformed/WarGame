@@ -27,9 +27,17 @@ let clientColour: HTMLDivElement;
 
 const secret = localStorage.secret;
 
+export enum GamePhase {
+    "lobby",
+    "playing"
+}
+
 export interface Game {
-    players: Player[],
+    id: string
+    players: Player[]
     clientIndex: number
+    public?: string
+    phase: GamePhase
 }
 
 interface Player {
@@ -219,7 +227,7 @@ function removePlayer(index: number) {
     saveGame()
 }
 
-function saveGame() {
+export function saveGame() {
     localStorage.game = JSON.stringify(game)
 }
 

@@ -221,6 +221,10 @@ h1, p {
     border-radius: 34px;
 }
 
+.slider.notOwner {
+    cursor: not-allowed;
+}
+
 .switch input {
     display: none;
 }
