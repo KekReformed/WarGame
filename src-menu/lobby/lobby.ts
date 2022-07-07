@@ -1,4 +1,5 @@
 import { request, socket } from "../shared/api";
+import settings from "./settings";
 
 const dom = new DOMParser()
 
@@ -26,7 +27,7 @@ let clientColour: HTMLDivElement;
 
 const secret = localStorage.secret;
 
-interface Game {
+export interface Game {
     players: Player[],
     clientIndex: number
 }
@@ -40,7 +41,7 @@ interface Player {
     index: number
 }
 
-let game: Game;
+export let game: Game;
 (async () => {
     if (localStorage.game) {
         game = JSON.parse(localStorage.game)
@@ -69,6 +70,9 @@ let game: Game;
         
         positionColoursBox(clientColour)
         window.onresize = () => positionColoursBox(clientColour)
+
+        // Initialise Settings
+        settings()
     }
 })()
 
