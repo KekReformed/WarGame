@@ -50,6 +50,14 @@ div.button:hover {
   background-color: #b48b847e;
 }
 
+.button#current-game {
+  color: #376fd8;
+}
+
+.button#current-game span {
+  color: #d986ff;
+}
+
 .valid {
   background-color: #1a3a166b;
 }

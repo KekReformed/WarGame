@@ -1,7 +1,7 @@
-import { request, socket } from "../shared/api";
+import { createElement, request, socket } from "../shared/api";
 import settings from "./settings";
 
-const dom = new DOMParser()
+
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
@@ -236,6 +236,3 @@ socket.on('playerEdit', editPlayer)
 socket.on('playerLeave', removePlayer)
 socket.on('exception', msg => console.error(`Socket request rejected: ${msg}`))
 
-function createElement(html: string) {
-    return dom.parseFromString(html, 'text/html').activeElement.children.item(0)
-}

@@ -23,3 +23,8 @@ export async function request(method: string, path: string, write: any, headers=
 let socketOptions;
 if (localStorage.secret) socketOptions = { query: { secret: localStorage.secret }}
 export const socket = io("https://amelix.xyz:" + socketPort, socketOptions)
+
+const dom = new DOMParser()
+export function createElement(html: string) {
+    return dom.parseFromString(html, 'text/html').activeElement.children.item(0)
+}

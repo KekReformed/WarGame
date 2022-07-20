@@ -1,4 +1,5 @@
 import './agar.js'
+import { createElement } from './shared/api.ts'
 
 const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")
@@ -12,6 +13,14 @@ for (let btn of backBtns) {
             page.style.display = "none"
         }
     })
+}
+
+const buttons = document.getElementById("buttons")
+if (localStorage.game) {
+    const game = JSON.parse(localStorage.game)
+    buttons.prepend(createElement(`<div class="button" id="current-game">You're already in a game! Click here to reconnect.<br><span>${game.players[0].name}'s game<br>${game.players.length} players</span></div>`))
+
+    document.getElementById("current-game").addEventListener("click", e => location.pathname = "/game/")
 }
 
 export async function delay(seconds) {
