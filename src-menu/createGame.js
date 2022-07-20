@@ -1,4 +1,4 @@
-import { request } from "./index.js"
+import { request } from "./shared/api"
 
 export const createGame = document.getElementById("create-game")
 
@@ -22,8 +22,14 @@ gameCreateBtn.addEventListener('click', e => {
     if (gameCreateFormValid()) {
         createGameError.innerHTML = ""
         request("POST", "/games", { name: usernameInput.value, public: publicCheckbox.checked})
-        .then((res) => {
-            // go to a new page (page where the game takes place) and show the lobby
+        .then(res => {
+            if (typeof res.body === "string") {
+                localStorage.secret = res.body
+            }
+            else {
+                localStorage.game = JSON.stringify(res.body)
+            }
+            location.pathname = "/game/"
         })
         .catch((err) => {
             createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${err.message}`

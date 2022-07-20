@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "webpack serve --open",
-    "start:menu": "webpack serve --open --config webpack.menu.config.js",
+    "menu": "webpack serve --open --config webpack.menu.config.js",
     "build": "webpack --mode=production",
     "build:menu": "webpack --mode=production --config webpack.menu.config.js"
   },
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "p5": "^1.4.1",
+    "p5.play": "^3.0.19",
     "socket.io-client": "^4.5.0"
   }
 }

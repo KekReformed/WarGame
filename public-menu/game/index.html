@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="lobby.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wargame</title>
+
+    <script defer src="../lobby.js"></script>
+</head>
+<body>
+    <section id="lobby">
+        <div id="title"></div>
+        <div class="lobby-container">
+            <div id="colours"></div>
+            <div id="left">
+                <div id="players"></div>
+                <div class="lobby-button" id="leave">
+                    <p>Leave</p>
+                </div>
+            </div>
+            <div id="right">
+                <div class="settings">
+                    <h1>Settings</h1>
+
+                    <div class="setting">
+                        <p>Public</p>
+                        <label class="switch" id="public">
+                            <input type="checkbox" disabled readonly>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="lobby-button" id="start">
+                    <p>Ready</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
