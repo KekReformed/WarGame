@@ -16,6 +16,8 @@ let games;
 
 const usernameError = document.getElementById("username-taken")
 
+const noGamesString = `<p>There aren't any public games to join at the moment. Wanna <span id="create-one">create one?</span></p>`
+
 joinBtn.addEventListener("click", async e => {
     main.style.display = "none"
     lobbies.style.display = "block"
@@ -34,7 +36,7 @@ joinBtn.addEventListener("click", async e => {
                 }
             }
             else {
-                gamesDiv.innerHTML = `<p>There aren't any public games to join at the moment. Wanna <span id="create-one">create one?</span></p>`
+                gamesDiv.innerHTML = noGamesString
                 document.getElementById("create-one").addEventListener("click", e => {
                     lobbies.style.display = "none"
                     createGame.style.display = "block"
@@ -64,6 +66,7 @@ function updateJoinButtons() {
 }
 
 function addGame(game) {
+    if (games.length === 0) gamesDiv.innerHTML = ""
     const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button invalid">Join</div></div>`, 'text/html').activeElement.children.item(0)
     gamesDiv.appendChild(element)
     element.children.item(1).addEventListener("click", e => joinGame(game.id))
@@ -77,6 +80,7 @@ function editGame(game) {
 
 function deleteGame(id) {
     document.getElementById(id)?.remove()
+    if (games.length === 0) gamesDiv.innerHTML = noGamesString
 }
 
 function createGameString(game) {

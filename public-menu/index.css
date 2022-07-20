@@ -87,7 +87,7 @@ p.footer {
 
 p.error {
   margin-top: 10px;
-  color: #971212;
+  color: #ff4c4c;
 }
 
 p.error#username-taken {
