@@ -117,7 +117,7 @@ function addPlayer(player: Player, host=false, client=false) {
 }
 
 function generatePlayerHtml(player: Player) {
-    const input = `<input class="input" type="text" style="display: none"/>`
+    const input = `<input class="input" type="text" style="display: none" maxLength="30"/>`
 
     return (
         `<p>${player.name}</p>
