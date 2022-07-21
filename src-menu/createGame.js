@@ -25,6 +25,7 @@ gameCreateBtn.addEventListener('click', e => {
         .then(res => {
             if (typeof res.body === "string") {
                 localStorage.secret = res.body
+                localStorage.removeItem("game")
             }
             else {
                 localStorage.game = JSON.stringify(res.body)
