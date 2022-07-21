@@ -54,11 +54,15 @@ joinBtn.addEventListener("click", async e => {
 
 input.addEventListener("keyup", e => updateJoinButtons())
 
+function joinButtonClass() {
+    return input.value.length > 0 
+    ? "join-button valid" 
+    : "join-button invalid"
+}
+
 function updateJoinButtons() {
     usernameError.innerHTML = ""
-    const className = input.value.length > 0 
-        ? "join-button valid" 
-        : "join-button invalid"
+    const className = joinButtonClass()
 
     for (const button of joinButtons) {
         button.className = className
@@ -67,7 +71,7 @@ function updateJoinButtons() {
 
 function addGame(game) {
     if (games.length === 0) gamesDiv.innerHTML = ""
-    const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button invalid">Join</div></div>`, 'text/html').activeElement.children.item(0)
+    const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button ${joinButtonClass()}">Join</div></div>`, 'text/html').activeElement.children.item(0)
     gamesDiv.appendChild(element)
     element.children.item(1).addEventListener("click", e => joinGame(game.id))
 }
