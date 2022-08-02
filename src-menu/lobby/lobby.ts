@@ -1,5 +1,6 @@
 import { createElement, request, socket } from "../shared/api";
 import settings from "./settings";
+import { toggleReadyStatus } from "./start";
 
 
 
@@ -40,12 +41,13 @@ export interface Game {
     phase: GamePhase
 }
 
-interface Player {
+export interface Player {
     name: string
     faction: {
         name: string
         colour: string
     }
+    ready?: boolean
     index: number
 }
 
@@ -91,7 +93,7 @@ leaveBtn.addEventListener("click", async e => {
     location.pathname = ""
 })
 
-function addPlayer(player: Player, host=false, client=false) {
+function addPlayer (player: Player, host=false, client=false) {
     const element = createElement(
         `<div class="player" ${client ? 'id="client"' : ''}>
             ${generatePlayerHtml(player)}
@@ -116,7 +118,7 @@ function addPlayer(player: Player, host=false, client=false) {
     }
 }
 
-function generatePlayerHtml(player: Player) {
+function generatePlayerHtml (player: Player) {
     const input = `<input class="input" type="text" style="display: none" maxLength="30"/>`
 
     return (
@@ -210,13 +212,15 @@ function colourClick(colourDiv: HTMLDivElement, colour: string) {
 
 function editPlayer(player: Player) {
     if (player.index === game.clientIndex) return;
+    const currentPlayer = game.players[player.index]
 
     players.children.item(player.index).innerHTML = generatePlayerHtml(player)
-    if (game.players[player.index].faction.colour !== player.faction.colour) {
-        disabledColours.splice(disabledColours.indexOf(game.players[player.index].faction.colour), 1)
+    if (currentPlayer.faction.colour !== player.faction.colour) {
+        disabledColours.splice(disabledColours.indexOf(currentPlayer.faction.colour), 1)
         disabledColours.push(player.faction.colour)
         renderColours()
     }
+    if (currentPlayer.ready !== player.ready) toggleReadyStatus(player)
     game.players[player.index] = player
     saveGame()
 }
@@ -235,4 +239,3 @@ socket.on('playerJoin', addPlayer)
 socket.on('playerEdit', editPlayer)
 socket.on('playerLeave', removePlayer)
 socket.on('exception', msg => console.error(`Socket request rejected: ${msg}`))
-
