@@ -122,7 +122,7 @@ function generatePlayerHtml (player: Player) {
     const input = `<input class="input" type="text" style="display: none" maxLength="30"/>`
 
     return (
-        `<p>${player.name}</p>
+        `<p class="${player.ready ? 'ready' : ''}">${player.name}</p>
         <div class="faction">
             <p>${player.faction.name || "No faction selected"}</p>
             ${input}
@@ -211,16 +211,18 @@ function colourClick(colourDiv: HTMLDivElement, colour: string) {
 }
 
 function editPlayer(player: Player) {
-    if (player.index === game.clientIndex) return;
     const currentPlayer = game.players[player.index]
-
-    players.children.item(player.index).innerHTML = generatePlayerHtml(player)
-    if (currentPlayer.faction.colour !== player.faction.colour) {
-        disabledColours.splice(disabledColours.indexOf(currentPlayer.faction.colour), 1)
-        disabledColours.push(player.faction.colour)
-        renderColours()
-    }
     if (currentPlayer.ready !== player.ready) toggleReadyStatus(player)
+
+    if (player.index !== game.clientIndex) {
+        if (currentPlayer.faction.colour !== player.faction.colour) {
+            disabledColours.splice(disabledColours.indexOf(currentPlayer.faction.colour), 1)
+            disabledColours.push(player.faction.colour)
+            renderColours()
+        }
+    }
+    players.children.item(player.index).innerHTML = generatePlayerHtml(player)
+    
     game.players[player.index] = player
     saveGame()
 }

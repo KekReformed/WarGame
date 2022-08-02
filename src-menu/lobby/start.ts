@@ -12,21 +12,14 @@ startButton.addEventListener("click", e => {
 
         // If yes, start game
     }
-    else {
-        // Toggle ready status of player
-        // game.players[game.clientIndex].ready = !client.ready
-        // console.log(game.players[game.clientIndex])
-        socket.emit("editPlayer", { ready: !client.ready })
-    }
+    else socket.emit("editPlayer", { ready: !client.ready })
 })
 
 export function toggleReadyStatus(player: Player) {
-    player.ready = !player.ready
-    console.log(player.ready)
-    // Change HTML of Start button
+    game.players[player.index].ready = !player.ready
+
     if (player.index === game.clientIndex) {
-        player.ready 
-            ? startButton.innerHTML = "Unready"
-            : startButton.innerHTML = "Ready"
+        if (player.ready) startButton.innerHTML = "<p>Unready</p>"
+        else startButton.innerHTML = "<p>Ready</p>"
     }
 }

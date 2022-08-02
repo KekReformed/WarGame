@@ -67,6 +67,10 @@ h1, p {
     margin: 10px 10px 0 10px;
 }
 
+.player > p.ready {
+    color: #087908;
+}
+
 .player#client {
     background-color: #181818
 }
@@ -133,6 +137,13 @@ h1, p {
     position: absolute;
     bottom: 12px;
     right: 12px;
+    transition: 400ms;
+}
+
+#start:hover {
+    cursor: pointer;
+    background-color: #6d0101;
+    transition: 300ms;
 }
 
 #leave {
