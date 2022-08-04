@@ -1,8 +1,6 @@
 import { createElement, request, socket } from "../shared/api";
 import settings from "./settings";
-import { toggleReadyStatus } from "./start";
-
-
+import { toggleReadyStatus, startButton } from "./start";
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
@@ -69,7 +67,10 @@ export let game: Game;
         document.title = titleString + " | Wargame"
         title.innerHTML = `<p>${titleString}</p>`
 
+        if (game.clientIndex === 0) startButton.innerHTML = `<p>Start</p>`
+
         for (const i in game.players) {
+            game.players[i].index = parseInt(i)
             const player = game.players[i]
             if (player.faction?.colour) disabledColours.push(player.faction.colour)
             addPlayer(player, i === "0", parseInt(i) === game.clientIndex)
@@ -93,17 +94,32 @@ leaveBtn.addEventListener("click", async e => {
     location.pathname = ""
 })
 
-function addPlayer (player: Player, host=false, client=false) {
-    const element = createElement(
-        `<div class="player" ${client ? 'id="client"' : ''}>
-            ${generatePlayerHtml(player)}
-        </div>`)
+function addPlayer(player: Player, host=false, client=false) {
+    const element = createElement(`<div class="player" ${client ? 'id="client"' : ''}></div>`)
     players.appendChild(element)
+    resetPlayerHtml(player)
+}
 
-    if (client) {
+function resetPlayerHtml(player: Player) {
+    const playerElement = players.children.item(player.index)
+    const input = `<input class="input" type="text" style="display: none" maxLength="30"/>`
+
+    const html = `
+        <p class="${player.ready ? 'ready' : ''}">${player.name}</p>
+        <div class="faction">
+            <p>${player.faction.name || "No faction selected"}</p>
+            ${input}
+            ${player.faction.colour
+                ? `<div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
+                : `<div class="player-colour no-faction"></div>`
+            }
+        </div>`
+    playerElement.innerHTML = html
+
+    if (player.index === game.clientIndex) {
         colourIndex = colourList.indexOf(player.faction.colour)
 
-        const faction = element.children.item(1)
+        const faction = playerElement.children.item(1)
         const [factionName, factionInput, factionColour]: [HTMLDivElement, HTMLInputElement, HTMLDivElement] = faction.children as any
         clientColour = factionColour
 
@@ -116,22 +132,6 @@ function addPlayer (player: Player, host=false, client=false) {
 
         factionColour.addEventListener("click", e => toggleColours())
     }
-}
-
-function generatePlayerHtml (player: Player) {
-    const input = `<input class="input" type="text" style="display: none" maxLength="30"/>`
-
-    return (
-        `<p class="${player.ready ? 'ready' : ''}">${player.name}</p>
-        <div class="faction">
-            <p>${player.faction.name || "No faction selected"}</p>
-            ${input}
-            ${player.faction.colour
-                ? `<div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
-                : `<div class="player-colour no-faction"></div>`
-            }
-        </div>`
-    )
 }
 
 function changeToInput(text: HTMLDivElement, input: HTMLInputElement) {
@@ -221,8 +221,7 @@ function editPlayer(player: Player) {
             renderColours()
         }
     }
-    players.children.item(player.index).innerHTML = generatePlayerHtml(player)
-    
+    resetPlayerHtml(player)
     game.players[player.index] = player
     saveGame()
 }

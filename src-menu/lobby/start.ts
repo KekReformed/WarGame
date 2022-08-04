@@ -3,7 +3,7 @@
 import { socket } from "../shared/api"
 import { game, Player } from "./lobby"
 
-const startButton = document.getElementById("start")
+export const startButton = document.getElementById("start")
 
 startButton.addEventListener("click", e => {
     const client = game.players[game.clientIndex]
