@@ -71,6 +71,10 @@ h1, p {
     color: #087908;
 }
 
+.player > p.owner {
+    color: #e4e468
+}
+
 .player#client {
     background-color: #181818
 }
@@ -124,13 +128,25 @@ h1, p {
 }
 
 .lobby-button {
-    border-radius: 15px;
-    border: 2px solid grey;
-    padding: 10px
+    display:inline-block;
+    padding: 0.7em 1.4em;
+    border-radius:0.15em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:400;
+    color:#a5a5a5;
+    background-color:#202020;
+    box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+    text-align:center;
+    position:relative;
+    transition: all 0.15s;
+    user-select: none;
+    cursor: pointer;
 }
 
-.lobby-button p {
-    font-size: 20px;
+.lobby-button:active {
+    bottom: 10px !important;
 }
 
 #start {
@@ -142,8 +158,16 @@ h1, p {
 
 #start:hover {
     cursor: pointer;
-    background-color: #6d0101;
+    background-color: #383838;
     transition: 300ms;
+}
+
+#start.disabled {
+
+}
+
+#readyStatus {
+    margin-top: 10px
 }
 
 #leave {

@@ -4,6 +4,12 @@ import { socket } from "../shared/api"
 import { game, Player } from "./lobby"
 
 export const startButton = document.getElementById("start")
+const readyStatus = document.getElementById("readyStatus")
+
+export default () => {
+    changeStartButtonText()
+    renderReadyStatusText()
+}
 
 startButton.addEventListener("click", e => {
     const client = game.players[game.clientIndex]
@@ -16,10 +22,20 @@ startButton.addEventListener("click", e => {
 })
 
 export function toggleReadyStatus(player: Player) {
+    if (player.ready) game.playersReady --
+    else game.playersReady ++
+    renderReadyStatusText()
+
     game.players[player.index].ready = !player.ready
 
-    if (player.index === game.clientIndex) {
-        if (player.ready) startButton.innerHTML = "<p>Unready</p>"
-        else startButton.innerHTML = "<p>Ready</p>"
-    }
+    if (player.index === game.clientIndex) changeStartButtonText()
+}
+
+function changeStartButtonText() {
+    if (game.players[game.clientIndex].ready) startButton.innerHTML = "<p>Unready</p>"
+    else startButton.innerHTML = "<p>Ready</p>"
+}
+
+function renderReadyStatusText() {
+    readyStatus.innerHTML = `<p>${game.playersReady}/${game.players.length} players ready.</p>`
 }

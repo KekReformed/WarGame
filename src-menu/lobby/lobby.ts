@@ -1,6 +1,6 @@
 import { createElement, request, socket } from "../shared/api";
 import settings from "./settings";
-import { toggleReadyStatus, startButton } from "./start";
+import initaliseStart, { toggleReadyStatus } from "./start";
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
@@ -37,6 +37,8 @@ export interface Game {
     clientIndex: number
     public?: string
     phase: GamePhase
+
+    playersReady: number
 }
 
 export interface Player {
@@ -66,16 +68,18 @@ export let game: Game;
         const titleString = `${game.players[0].name}'s Game`
         document.title = titleString + " | Wargame"
         title.innerHTML = `<p>${titleString}</p>`
-
-        if (game.clientIndex === 0) startButton.innerHTML = `<p>Start</p>`
-
+        
+        game.playersReady = 0
         for (const i in game.players) {
             game.players[i].index = parseInt(i)
             const player = game.players[i]
             if (player.faction?.colour) disabledColours.push(player.faction.colour)
+            if (player.ready) game.playersReady ++
             addPlayer(player, i === "0", parseInt(i) === game.clientIndex)
         }
-
+        
+        initaliseStart()
+        
         // Generate colour select box
         renderColours()
         
@@ -97,15 +101,17 @@ leaveBtn.addEventListener("click", async e => {
 function addPlayer(player: Player, host=false, client=false) {
     const element = createElement(`<div class="player" ${client ? 'id="client"' : ''}></div>`)
     players.appendChild(element)
-    resetPlayerHtml(player)
+    renderPlayerHtml(player)
 }
 
-function resetPlayerHtml(player: Player) {
+/** Creates and appends a new render of the player HTML, given that there's already a player div there.
+ *  If this player is the client, the click events are re added to the new elements too. */
+function renderPlayerHtml(player: Player) {
     const playerElement = players.children.item(player.index)
     const input = `<input class="input" type="text" style="display: none" maxLength="30"/>`
 
     const html = `
-        <p class="${player.ready ? 'ready' : ''}">${player.name}</p>
+        <p class="${player.ready ? 'ready' : ''}${player.index === 0 ? ' owner' : ''}">${player.name}</p>
         <div class="faction">
             <p>${player.faction.name || "No faction selected"}</p>
             ${input}
@@ -212,7 +218,7 @@ function colourClick(colourDiv: HTMLDivElement, colour: string) {
 
 function editPlayer(player: Player) {
     const currentPlayer = game.players[player.index]
-    if (currentPlayer.ready !== player.ready) toggleReadyStatus(player)
+    if (currentPlayer.ready !== player.ready) toggleReadyStatus(currentPlayer)
 
     if (player.index !== game.clientIndex) {
         if (currentPlayer.faction.colour !== player.faction.colour) {
@@ -221,7 +227,7 @@ function editPlayer(player: Player) {
             renderColours()
         }
     }
-    resetPlayerHtml(player)
+    renderPlayerHtml(player)
     game.players[player.index] = player
     saveGame()
 }
