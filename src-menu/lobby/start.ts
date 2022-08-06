@@ -7,16 +7,16 @@ export const startButton = document.getElementById("start")
 const readyStatus = document.getElementById("readyStatus")
 
 export default () => {
-    changeStartButtonText()
+    changeStartButtonStatus()
     renderReadyStatusText()
 }
 
 startButton.addEventListener("click", e => {
     const client = game.players[game.clientIndex]
     if (client.index === 0) {
-        // Check if all players are ready 
-
-        // If yes, start game
+        if (allPlayersReady()) {
+            socket.emit("gameStart")
+        }
     }
     else socket.emit("editPlayer", { ready: !client.ready })
 })
@@ -24,16 +24,32 @@ startButton.addEventListener("click", e => {
 export function toggleReadyStatus(player: Player) {
     if (player.ready) game.playersReady --
     else game.playersReady ++
-    renderReadyStatusText()
-
+    
     game.players[player.index].ready = !player.ready
-
-    if (player.index === game.clientIndex) changeStartButtonText()
+    renderReadyStatusText()
+    changeStartButtonStatus()
 }
 
-function changeStartButtonText() {
-    if (game.players[game.clientIndex].ready) startButton.innerHTML = "<p>Unready</p>"
-    else startButton.innerHTML = "<p>Ready</p>"
+function changeStartButtonStatus() {
+    if (game.clientIndex === 0) {
+        startButton.innerHTML = "<p>Start</p>"
+        if (allPlayersReady()) {
+            startButton.classList.remove("disabled")
+            startButton.classList.add("enabled")
+        }
+        else {
+            startButton.classList.add("disabled")
+            startButton.classList.remove("enabled")
+        }
+    }
+    else {
+        if (game.players[game.clientIndex].ready) startButton.innerHTML = "<p>Unready</p>"
+        else startButton.innerHTML = "<p>Ready</p>"
+    }
+}
+
+function allPlayersReady() {
+    return game.playersReady === game.players.length
 }
 
 function renderReadyStatusText() {

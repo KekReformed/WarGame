@@ -158,12 +158,20 @@ h1, p {
 
 #start:hover {
     cursor: pointer;
-    background-color: #383838;
+}
+
+#start.enabled {
+    background-color: #014201;
+}
+
+#start.enabled:hover {
+    background-color: #018328;
     transition: 300ms;
 }
 
 #start.disabled {
-
+    cursor: not-allowed;
+    background-color: #350808;
 }
 
 #readyStatus {
