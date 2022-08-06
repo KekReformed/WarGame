@@ -98,6 +98,10 @@ h1, p {
     height: 100%;
 }
 
+.faction p.no-faction {
+    color: #a52424
+}
+
 .input {
     margin: 0;
     border: none;

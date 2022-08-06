@@ -75,7 +75,7 @@ export let game: Game;
             const player = game.players[i]
             if (player.faction?.colour) disabledColours.push(player.faction.colour)
             if (player.ready) game.playersReady ++
-            addPlayer(player, i === "0", parseInt(i) === game.clientIndex)
+            addPlayer(player, parseInt(i) === game.clientIndex, true)
         }
         
         initaliseStart()
@@ -88,6 +88,8 @@ export let game: Game;
 
         // Initialise Settings
         settings()
+
+        saveGame()
     }
 })()
 
@@ -98,9 +100,15 @@ leaveBtn.addEventListener("click", async e => {
     location.pathname = ""
 })
 
-function addPlayer(player: Player, host=false, client=false) {
+function addPlayer(player: Player, client=false, initialisation=false) {
+    if (!initialisation) {
+        player.index = game.players.length
+        game.players.push(player)
+        saveGame()
+    }
+
     const element = createElement(`<div class="player" ${client ? 'id="client"' : ''}></div>`)
-    players.appendChild(element)
+    players.append(element)
     renderPlayerHtml(player)
 }
 
@@ -113,7 +121,7 @@ function renderPlayerHtml(player: Player) {
     const html = `
         <p class="${player.ready ? 'ready' : ''}${player.index === 0 ? ' owner' : ''}">${player.name}</p>
         <div class="faction">
-            <p>${player.faction.name || "No faction selected"}</p>
+            <p class="${player.faction.name ? "" : "no-faction"}">${player.faction.name || "No faction selected"}</p>
             ${input}
             ${player.faction.colour
                 ? `<div class="player-colour" style="background-color: ${player.faction.colour}"></div>`
@@ -233,7 +241,7 @@ function editPlayer(player: Player) {
 }
 
 function removePlayer(index: number) {
-    delete game.players[index]
+    game.players.splice(index, 1)
     players.children.item(index).remove()
     saveGame()
 }
