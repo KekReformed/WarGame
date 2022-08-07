@@ -6,4 +6,4 @@
 - Your browser will open, serving the game.
 
 ### Other Projects
-- The main menu can be started with `npm run start:menu`.
+- The main menu (and lobby) can be started with `npm run menu`.
