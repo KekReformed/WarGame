@@ -26,8 +26,6 @@ export function toggleReadyStatus(player: Player) {
     else game.playersReady ++
     
     game.players[player.index].ready = !player.ready
-    renderReadyStatusText()
-    changeStartButtonStatus()
 }
 
 function changeStartButtonStatus() {
@@ -49,9 +47,10 @@ function changeStartButtonStatus() {
 }
 
 function allPlayersReady() {
-    return game.playersReady === game.players.length
+    const playersWithoutFaction = game.players.filter(p => !p.faction.name || !p.faction.colour)
+    return playersWithoutFaction.length === 0 && game.playersReady === game.players.length
 }
 
-function renderReadyStatusText() {
+export function renderReadyStatusText() {
     readyStatus.innerHTML = `<p>${game.playersReady}/${game.players.length} players ready.</p>`
 }

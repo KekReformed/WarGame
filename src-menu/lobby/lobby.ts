@@ -1,6 +1,6 @@
 import { createElement, request, socket } from "../shared/api";
 import settings from "./settings";
-import initaliseStart, { toggleReadyStatus } from "./start";
+import renderStart, { toggleReadyStatus } from "./start";
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
@@ -78,7 +78,7 @@ export let game: Game;
             addPlayer(player, parseInt(i) === game.clientIndex, true)
         }
         
-        initaliseStart()
+        renderStart()
         
         // Generate colour select box
         renderColours()
@@ -110,6 +110,7 @@ function addPlayer(player: Player, client=false, initialisation=false) {
     const element = createElement(`<div class="player" ${client ? 'id="client"' : ''}></div>`)
     players.append(element)
     renderPlayerHtml(player)
+    renderStart()
 }
 
 /** Creates and appends a new render of the player HTML, given that there's already a player div there.
@@ -238,12 +239,15 @@ function editPlayer(player: Player) {
     renderPlayerHtml(player)
     game.players[player.index] = player
     saveGame()
+    renderStart()
 }
 
 function removePlayer(index: number) {
+    toggleReadyStatus(game.players[index])
     game.players.splice(index, 1)
     players.children.item(index).remove()
     saveGame()
+    renderStart()
 }
 
 export function saveGame() {
