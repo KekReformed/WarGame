@@ -35,6 +35,6 @@ module.exports = {
       directory: serveDirectory,
     },
     compress: true,
-    port: 3000,
+    port: 5000,
   },
 };

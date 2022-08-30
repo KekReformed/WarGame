@@ -295,3 +295,11 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(26px);
 }
+
+
+/*   Canvas Overlay  */
+main {
+    position: absolute;
+    top: 0;
+    z-index: -4;
+}

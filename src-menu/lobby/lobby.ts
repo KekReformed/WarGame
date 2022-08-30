@@ -1,4 +1,5 @@
 import { createElement, request, socket } from "../shared/api";
+import { launchGame } from "./game";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
 
@@ -90,6 +91,8 @@ export let game: Game;
         settings()
 
         saveGame()
+
+        launchGame()
     }
 })()
 
