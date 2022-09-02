@@ -35,7 +35,7 @@ interface NewGame extends Game {
 }
 /** Saves a game to the browser after receiving it from the server for the first time, then navigates to the lobby. */
 export function saveNewGame(body: NewGame) {
-    localStorage.secret = body.secret
+    if (location.hostname === "localhost") localStorage.secret = body.secret
     delete body.secret
     localStorage.game = JSON.stringify(body)
     location.pathname = "/game/"
