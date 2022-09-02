@@ -1,4 +1,4 @@
-import { request, socket } from "./shared/api";
+import { request, saveNewGame, socket } from "./shared/api";
 import { createGame } from "./createGame.js";
 import { delay } from "./index.js"
 
@@ -94,16 +94,7 @@ function createGameString(game) {
 async function joinGame(id) {
     if (input.value.length > 0) {
         request("POST", `/games/${id}/join`, { name: input.value })
-        .then(res => {
-            if (typeof res.body === "string") {
-                localStorage.secret = res.body
-                localStorage.removeItem("game")
-            }
-            else {
-                localStorage.game = JSON.stringify(res.body)
-            }
-            location.pathname = "/game/"
-        })
+        .then(res => saveNewGame(res.body))
         .catch(e => {
             if (e.statusCode === 409) {
                 usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
