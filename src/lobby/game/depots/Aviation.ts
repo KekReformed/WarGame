@@ -2,7 +2,6 @@ import ProductionDepot, { Production } from "./ProductionDepot";
 import { client, randomInt } from "..";
 import Button from "../ui/Button";
 import PanelUI from "../ui/PanelUI";
-import Fighter from "../units/Fighter";
 import { p } from "../sketch";
 
 

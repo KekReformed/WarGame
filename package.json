@@ -5,9 +5,7 @@
   "private": true,
   "scripts": {
     "start": "webpack serve --open",
-    "menu": "webpack serve --open --config webpack.menu.config.js",
-    "build": "webpack --mode=production",
-    "build:menu": "webpack --mode=production --config webpack.menu.config.js"
+    "build": "webpack --mode=production"
   },
   "repository": {
     "type": "git",

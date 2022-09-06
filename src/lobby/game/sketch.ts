@@ -1,16 +1,12 @@
 import p5 from 'p5'
-import { client, keyDown, unitTypes } from "./index"
-import { UnitData } from './units/Unit'
+import { client, keyDown } from "./index"
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
-import Fighter from "./units/Fighter"
 import { initalizeQuadTree, } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
 import { scaleBy, setOffset, worldToScreen } from './Util'
 import * as pathfinding from "./Pathfinding"
-import NukeSilo from './depots/NukeSilo'
-import Barracks from './depots/Barracks'
 import Aviation from './depots/Aviation'
 import BattleShip from './units/BattleShip'
 

@@ -4,10 +4,10 @@ const TerserPlugin = require('terser-webpack-plugin');
 const serveDirectory = path.resolve(__dirname, 'public')
 
 module.exports = {
-  entry: [
-    'p5',
-    './src/sketch.ts',
-  ],
+  entry: {
+    index: ['./src/index.js', './src/joinGame.js'],
+    game: ['./src/lobby/lobby.ts', 'p5', './src/lobby/game/sketch.ts']
+  },
   mode: "development",
 
   module: {
@@ -24,7 +24,7 @@ module.exports = {
   },
 
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: serveDirectory,
   },
   optimization: {
@@ -35,6 +35,6 @@ module.exports = {
       directory: serveDirectory,
     },
     compress: true,
-    port: 5000,
+    port: 9999,
   },
 };

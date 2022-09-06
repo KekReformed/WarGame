@@ -1,5 +1,5 @@
+import Client from "./Client";
 import Armour from "./units/Armour";
-import Client from "./client";
 import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
 import Bomber from "./units/Bomber";
