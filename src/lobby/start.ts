@@ -12,13 +12,12 @@ export default () => {
 }
 
 startButton.addEventListener("click", e => {
-    const client = game.players[game.clientIndex]
-    if (client.index === 0) {
+    if (game.client.index === 0) {
         if (allPlayersReady()) {
             socket.emit("gameStart")
         }
     }
-    else socket.emit("editPlayer", { ready: !client.ready })
+    else socket.emit("editPlayer", { ready: !game.client.ready })
 })
 
 export function toggleReadyStatus(player: Player) {
@@ -29,7 +28,7 @@ export function toggleReadyStatus(player: Player) {
 }
 
 function changeStartButtonStatus() {
-    if (game.clientIndex === 0) {
+    if (game.client.index === 0) {
         startButton.innerHTML = "<p>Start</p>"
         if (allPlayersReady()) {
             startButton.classList.remove("disabled")
@@ -41,7 +40,7 @@ function changeStartButtonStatus() {
         }
     }
     else {
-        if (game.players[game.clientIndex].ready) startButton.innerHTML = "<p>Unready</p>"
+        if (game.client.ready) startButton.innerHTML = "<p>Unready</p>"
         else startButton.innerHTML = "<p>Ready</p>"
     }
 }

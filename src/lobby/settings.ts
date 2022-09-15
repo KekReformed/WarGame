@@ -1,5 +1,6 @@
 import { socket } from "../shared/api";
-import { Game, game, saveGame } from "./lobby";
+import Game from "./api/Game";
+import { game } from "./lobby";
 
 const inputs: {[setting: string]: HTMLInputElement} = {}
 
@@ -13,7 +14,7 @@ export default () => {
         inputs[s.id] = checkbox
         if (game[s.id as keyof Game]) checkbox.checked = true
 
-        if (game.clientIndex === 0) 
+        if (game.client.index === 0) 
             s.addEventListener("click", e => toggleBooleanSetting(s.id as keyof Game))
         else s.children.item(1).classList.add("notOwner")
     } 
@@ -24,12 +25,12 @@ function toggleBooleanSetting(setting: keyof Game) {
     const value = !game[setting]
     // @ts-ignore
     game[setting] = value
-    if (game.clientIndex === 0) socket.emit("editSettings", { [setting]: value })
-    saveGame()
+    if (game.client.index === 0) socket.emit("editSettings", { [setting]: value })
+    game.save()
 }
 
 socket.on('settingsEdit', (settings: Partial<Game>) => {
-    if (game.clientIndex === 0) return
+    if (game.client.index === 0) return
     for (let setting in settings) {
         if (typeof settings[setting as keyof Game] === "boolean") toggleBooleanSetting(setting as keyof Game)
     }

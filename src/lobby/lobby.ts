@@ -1,4 +1,5 @@
 import { createElement, request, socket } from "../shared/api";
+import Game from "./api/Game";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
 
@@ -26,21 +27,6 @@ let clientColour: HTMLDivElement;
 
 const secret = localStorage.secret;
 
-export enum GamePhase {
-    "lobby",
-    "playing"
-}
-
-export interface Game {
-    id: string
-    players: Player[]
-    clientIndex: number
-    public?: string
-    phase: GamePhase
-
-    playersReady: number
-}
-
 export interface Player {
     name: string
     faction: {
@@ -54,17 +40,16 @@ export interface Player {
 export let game: Game;
 (async () => {
     if (localStorage.game) {
-        game = JSON.parse(localStorage.game)
+        game = new Game(JSON.parse(localStorage.game))
     }
     else {
         const res = await request("GET", "/game", undefined, {authorization: secret}).catch(e => {
             title.innerHTML = `<p>Failed to load a game: ${e.message}</p>`
         })
-        if (res) game = res.body
+        if (res) game = new Game(res.body)
     }
 
     if (game) {
-        localStorage.game = JSON.stringify(game)
         const titleString = `${game.players[0].name}'s Game`
         document.title = titleString + " | Wargame"
         title.innerHTML = `<p>${titleString}</p>`
@@ -75,7 +60,7 @@ export let game: Game;
             const player = game.players[i]
             if (player.faction?.colour) disabledColours.push(player.faction.colour)
             if (player.ready) game.playersReady ++
-            addPlayer(player, parseInt(i) === game.clientIndex, true)
+            addPlayer(player, parseInt(i) === game.client.index, true)
         }
         
         renderStart()
@@ -89,7 +74,7 @@ export let game: Game;
         // Initialise Settings
         settings()
 
-        saveGame()
+        game.save()
     }
 })()
 
@@ -104,7 +89,7 @@ function addPlayer(player: Player, client=false, initialisation=false) {
     if (!initialisation) {
         player.index = game.players.length
         game.players.push(player)
-        saveGame()
+        game.save()
     }
 
     const element = createElement(`<div class="player" ${client ? 'id="client"' : ''}></div>`)
@@ -131,7 +116,7 @@ function renderPlayerHtml(player: Player) {
         </div>`
     playerElement.innerHTML = html
 
-    if (player.index === game.clientIndex) {
+    if (player.index === game.client.index) {
         colourIndex = colourList.indexOf(player.faction.colour)
 
         const faction = playerElement.children.item(1)
@@ -161,9 +146,9 @@ function changeToText(text: HTMLDivElement, input: HTMLInputElement) {
     text.style.display = "block"
     if (input.value && input.value !== text.innerHTML) {
         text.innerHTML = input.value
-        game.players[game.clientIndex].faction.name = input.value
-        saveGame()
-        socket.emit("editPlayer", game.players[game.clientIndex])
+        game.client.faction.name = input.value
+        game.save()
+        socket.emit("editPlayer", game.client)
     }
 }
 
@@ -220,16 +205,16 @@ function colourClick(colourDiv: HTMLDivElement, colour: string) {
     colourIndex = colourList.indexOf(colour)
     renderColours()
 
-    game.players[game.clientIndex].faction.colour = colour
-    saveGame()
-    socket.emit("editPlayer", game.players[game.clientIndex])
+    game.client.faction.colour = colour
+    game.save()
+    socket.emit("editPlayer", game.client)
 }
 
 function editPlayer(player: Player) {
     const currentPlayer = game.players[player.index]
     if (currentPlayer.ready !== player.ready) toggleReadyStatus(currentPlayer)
 
-    if (player.index !== game.clientIndex) {
+    if (player.index !== game.client.index) {
         if (currentPlayer.faction.colour !== player.faction.colour) {
             disabledColours.splice(disabledColours.indexOf(currentPlayer.faction.colour), 1)
             disabledColours.push(player.faction.colour)
@@ -238,7 +223,7 @@ function editPlayer(player: Player) {
     }
     renderPlayerHtml(player)
     game.players[player.index] = player
-    saveGame()
+    game.save()
     renderStart()
 }
 
@@ -246,12 +231,8 @@ function removePlayer(index: number) {
     toggleReadyStatus(game.players[index])
     game.players.splice(index, 1)
     players.children.item(index).remove()
-    saveGame()
+    game.save()
     renderStart()
-}
-
-export function saveGame() {
-    localStorage.game = JSON.stringify(game)
 }
 
 socket.on('playerJoin', addPlayer)

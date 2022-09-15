@@ -8,8 +8,7 @@ import { game } from "../lobby";
 let keysPressed: string[] = []
 let keysHeld: string[] = []
 
-const clientPlayer = game.players[game.clientIndex]
-export const client = new Client(clientPlayer.faction.name, 0, clientPlayer.name, 1)
+export const client = new Client(game.client.faction.name, 0, game.client.name, 1)
 
 interface UnitTypes {
     [type: string]: any
