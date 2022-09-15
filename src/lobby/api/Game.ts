@@ -1,4 +1,4 @@
-import { game, Player } from "../lobby"
+import Player from "./Player"
 
 export enum GamePhase {
     "lobby",

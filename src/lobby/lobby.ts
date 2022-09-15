@@ -1,5 +1,6 @@
 import { createElement, request, socket } from "../shared/api";
 import Game from "./api/Game";
+import Player from "./api/Player";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
 
@@ -26,16 +27,6 @@ let colourIndex: number;
 let clientColour: HTMLDivElement;
 
 const secret = localStorage.secret;
-
-export interface Player {
-    name: string
-    faction: {
-        name: string
-        colour: string
-    }
-    ready?: boolean
-    index: number
-}
 
 export let game: Game;
 (async () => {
