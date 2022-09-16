@@ -5,6 +5,6 @@ export default class Client extends Player {
 
     constructor(data: Partial<Client>) {
         super(data)
-        this.money = data.money
+        this.money = data.money || 0
     }
 }

@@ -11,14 +11,14 @@ export enum GamePhase {
     "playing"
 }
 
-interface GameData extends Partial<Game> {
+export interface GameData extends Partial<Game> {
     clientIndex: number
 }
 
 export default class Game {
     id: string
-    players: Player[]
-    client: Client
+    players: (Client | Player)[]
+    clientIndex: number
     public?: boolean
     phase: GamePhase
 
@@ -30,10 +30,14 @@ export default class Game {
     cities: City[]
     depots: AnyDepot[]
     
+    get client(): Client { // @ts-ignore
+        return this.players[this.clientIndex]
+    }
+
     constructor(data: GameData) {
         this.id = data.id
         this.players = data.players
-        this.client = new Client({...data.players[data.clientIndex], money: 0})
+        this.clientIndex = data.clientIndex
         this.public = data.public
         this.phase = data.phase
 

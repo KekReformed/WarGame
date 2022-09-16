@@ -1,4 +1,5 @@
 import { createElement, request, socket } from "../shared/api";
+import Client from "./api/Client";
 import Game from "./api/Game";
 import Player from "./api/Player";
 import settings from "./settings";
@@ -47,13 +48,18 @@ export let game: Game;
         
         game.playersReady = 0
         for (const i in game.players) {
-            game.players[i].index = parseInt(i)
             const player = game.players[i]
+            const isClient = parseInt(i) === game.clientIndex
+
+            isClient 
+              ? game.players[i] = new Client(player)
+              : game.players[i] = new Player(player)
+
             if (player.faction?.colour) disabledColours.push(player.faction.colour)
             if (player.ready) game.playersReady ++
-            addPlayer(player, parseInt(i) === game.client.index, true)
+            addPlayer(player, isClient, true)
         }
-        
+
         renderStart()
         
         // Generate colour select box
