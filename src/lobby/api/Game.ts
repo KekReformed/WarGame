@@ -48,8 +48,14 @@ export default class Game {
 
     /** Save the current gamestate to the browser's localstorage. */
     save() {
-        const clone: Partial<GameData> = Object.assign({}, this)
+        const clone: any = Object.assign({}, this)
         delete clone.client
+
+        for (let key in clone) {
+            // Delete any arrays for now as trying to store Jack's units / other game data is circular
+            if (key !== "players" && Array.isArray(clone[key])) delete clone[key]
+        }
+
         clone.clientIndex = this.client.index
         localStorage.game = JSON.stringify(clone)
     }
