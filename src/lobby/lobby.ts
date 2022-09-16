@@ -82,10 +82,11 @@ leaveBtn.addEventListener("click", async e => {
     location.pathname = ""
 })
 
+// TODO: move this into the Game class
+// the "player" here isn't an instance of a class (yet) and won't have methods
 function addPlayer(player: Player, client=false, initialisation=false) {
     if (!initialisation) {
-        player.index = game.players.length
-        game.players.push(player)
+        game.players.push(new Player(player))
         game.save()
     }
 
@@ -207,6 +208,8 @@ function colourClick(colourDiv: HTMLDivElement, colour: string) {
     socket.emit("editPlayer", game.client)
 }
 
+// TODO: move this into the Game class
+// the "player" here isn't an instance of a class (yet) and won't have methods
 function editPlayer(player: Player) {
     const currentPlayer = game.players[player.index]
     if (currentPlayer.ready !== player.ready) toggleReadyStatus(currentPlayer)
@@ -224,6 +227,8 @@ function editPlayer(player: Player) {
     renderStart()
 }
 
+// TODO: move this into the Game class
+// the "player" here isn't an instance of a class (yet) and won't have methods
 function removePlayer(index: number) {
     toggleReadyStatus(game.players[index])
     game.players.splice(index, 1)

@@ -1,5 +1,3 @@
-
-// Warning: This class isn't used for the players yet, only the actual client uses this type as anything but a type.
 export default class Player {
     name: string
     faction: {
