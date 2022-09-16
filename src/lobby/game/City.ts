@@ -1,4 +1,4 @@
-import { client, unitTypes } from "."
+import { game } from "../lobby"
 import { p } from "./sketch"
 import { Sprite } from "./Sprite"
 import Infantry from "./units/Infantry"
@@ -24,7 +24,7 @@ class City {
         this.value = value
         this.sprite = new Sprite(positionX, positionY, 80, 80)
         this.sprite.color = `rgb(0,50,255)`
-        client.globalCities.push(this)
+        game.cities.push(this)
     }
 
     update() {

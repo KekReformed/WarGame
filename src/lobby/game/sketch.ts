@@ -1,5 +1,5 @@
 import p5 from 'p5'
-import { client, keyDown } from "./index"
+import { keyDown } from "./index"
 import Airstrip from "./depots/Airstrip"
 import Infantry from "./units/Infantry"
 import { initalizeQuadTree, } from './QuadTree'
@@ -10,6 +10,7 @@ import * as pathfinding from "./Pathfinding"
 import Aviation from './depots/Aviation'
 import BattleShip from './units/BattleShip'
 import { game } from '../lobby'
+import { UIComponents } from './ui/UIComponent'
 
 let timeHeld = 0
 var dragged = false
@@ -23,8 +24,6 @@ export const timeScale = 1
 let mouseState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 let mouseDownState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 let mouseUpState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
-
-
 
 function sketch(p: p5) {
     p.setup = () => {
@@ -82,30 +81,30 @@ function sketch(p: p5) {
         p.noStroke()
         let roundedPlayerMoney = Math.round(game.client.money)
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 35)
-        p.text(`Day ${p.floor(client.day)} of the conflict`, window.outerWidth / 2, 20)
+        p.text(`Day ${p.floor(game.day)} of the conflict`, window.outerWidth / 2, 20)
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
         //pathfinding.debug()
         sprites.drawSprites(); // make sure to draw the sprites before collision checks
 
         //Update the clients in-game date
-        client.day += 1 * p.deltaTime / 1000 * timeScale
+        game.day += 1 * p.deltaTime / 1000 * timeScale
 
         // Update units
-        for (const i in client.globalUnits) {
-            let unit = client.globalUnits[i]
+        for (const i in game.units) {
+            let unit = game.units[i]
             unit.update()
 
             if (unit.kill || unit.strength <= 0) {
                 unit.sprite.remove()
-                client.globalUnits.splice(parseInt(i), 1)
+                game.units.splice(parseInt(i), 1)
                 break
             }
 
             let mousePos = p.createVector(p.mouseX, p.mouseY)
 
             if (unit.selected) {
-                for (const i in client.globalUnits) {
-                    let otherUnit = client.globalUnits[i]
+                for (const i in game.units) {
+                    let otherUnit = game.units[i]
 
                     if (longClick(p.RIGHT) && otherUnit.sprite.position.dist(mousePos) < 80) {
                         unit.joiningBattle = true
@@ -116,8 +115,8 @@ function sketch(p: p5) {
                     }
                 }
 
-                for (const i in client.globalBattles) {
-                    let battle = client.globalBattles[i]
+                for (const i in game.battles) {
+                    let battle = game.battles[i]
                     let mousePos = p.createVector(p.mouseX, p.mouseY)
 
                     if (longClick(p.RIGHT) && battle.sprite.position.dist(mousePos) < 80) {
@@ -131,10 +130,10 @@ function sketch(p: p5) {
         }
 
         // Update battles
-        for (const i in client.globalBattles) {
-            console.log(client.globalBattles.length)
+        for (const i in game.battles) {
+            console.log(game.battles.length)
 
-            let battle = client.globalBattles[i]
+            let battle = game.battles[i]
             battle.update()
 
             for (const factionName in battle.factions) {
@@ -160,17 +159,17 @@ function sketch(p: p5) {
                     unit.sprite = new sprites.Sprite(battle.positionX,battle.positionY,50,50,unit)
                     unit.kill = false
                     unit.strength = Math.round(unit.strength)
-                    client.globalUnits.push(unit)
+                    game.units.push(unit)
                 }
 
-                client.globalBattles.splice(parseInt(i), 1)
+                game.battles.splice(parseInt(i), 1)
             }
         }
 
         // Update cities
-        for (const i in client.globalCities) {
+        for (const i in game.cities) {
 
-            let city = client.globalCities[i]
+            let city = game.cities[i]
 
             city.update()
 
@@ -180,17 +179,17 @@ function sketch(p: p5) {
         }
 
         // Update depots
-        for (const i in client.globalDepots) {
+        for (const i in game.depots) {
 
-            let depot = client.globalDepots[i]
+            let depot = game.depots[i]
 
             depot.update()
         }
 
         // Update UI elements
-        for (const i in client.globalUIComponents) {
+        for (const i in UIComponents) {
 
-            let UIComponent = client.globalUIComponents[i]
+            let UIComponent = UIComponents[i]
 
             UIComponent.update()
         }
@@ -223,8 +222,8 @@ function sketch(p: p5) {
 
             let unitSelected = false
             // Select a unit by clicking on it
-            for (const i in client.globalUnits) {
-                let unit = client.globalUnits[i]
+            for (const i in game.units) {
+                let unit = game.units[i]
                 if (unit.sprite.isMouseOver() && unit.faction === game.client.faction.name && unitSelected === false) {
                     unit.select()
                     unitSelected = true
@@ -235,13 +234,13 @@ function sketch(p: p5) {
                 }
             }
             // Select a depot by clicking on it
-            for (const i in client.globalDepots) {
-                let depot = client.globalDepots[i]
+            for (const i in game.depots) {
+                let depot = game.depots[i]
 
                 if (depot.sprite.isMouseOver() && depot.faction === game.client.faction.name) {
                     depot.select()
                 }
-                else {
+            else {
                     depot.deselect()
                 }
             }
@@ -253,8 +252,8 @@ function sketch(p: p5) {
         mouseState[p.mouseButton] = false;
         mouseUpState[p.mouseButton] = true
         if (p.mouseButton === p.LEFT) {
-            for (const i in client.globalUnits) {
-                let unit = client.globalUnits[i]
+            for (const i in game.units) {
+                let unit = game.units[i]
 
                 let pos = worldToScreen(unit.sprite.position.x, unit.sprite.position.y);
                 // Check if a unit is within the rectangle

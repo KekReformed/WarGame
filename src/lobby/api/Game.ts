@@ -1,3 +1,8 @@
+import Battle from "../game/Battle"
+import City from "../game/City"
+import { AnyDepot } from "../game/depots/Depot"
+import { AnyUIComponent } from "../game/ui/UIComponent"
+import { AnyUnit } from "../game/units/Unit"
 import Client from "./Client"
 import Player from "./Player"
 
@@ -19,6 +24,12 @@ export default class Game {
 
     playersReady: number
 
+    day: number
+    units: AnyUnit[]
+    battles: Battle[]
+    cities: City[]
+    depots: AnyDepot[]
+    
     constructor(data: GameData) {
         this.id = data.id
         this.players = data.players
@@ -27,6 +38,12 @@ export default class Game {
         this.phase = data.phase
 
         this.playersReady = data.playersReady
+
+        this.day = data.day || 0
+        this.units = []
+        this.battles = []
+        this.cities = []
+        this.depots = []
     }
 
     /** Save the current gamestate to the browser's localstorage. */

@@ -1,9 +1,10 @@
 import { Color } from "p5"
-import { client } from ".."
 import { p } from "../sketch"
 import { screenToWorld } from "../Util"
 import Button from "./Button"
 import PanelUI from "./PanelUI"
+
+export const UIComponents: UIComponent[] = []
 
 export type AnyUIComponent = Button | PanelUI
 
@@ -22,8 +23,7 @@ class UIComponent {
         this.height = height
         this.colour = colour
         this.hidden = hidden
-        // @ts-ignore
-        client.globalUIComponents.push(this)
+        UIComponents.push(this)
     }
 
     hide() {

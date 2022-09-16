@@ -1,5 +1,5 @@
 import { Vector } from "p5"
-import { client } from ".."
+import { game } from "../../lobby"
 import { p } from "../sketch"
 import { Sprite } from "../Sprite"
 import { worldToScreen } from "../Util"
@@ -29,8 +29,8 @@ class Nuke {
     update(){
         if (this.sprite.position.dist(this.target) < bufferDistance) {
 
-            for (const i in client.globalUnits) {
-                let unit = client.globalUnits[Number(i)]
+            for (const i in game.units) {
+                let unit = game.units[Number(i)]
 
                 if(unit.sprite.position.dist(this.sprite.position) <= explosionRadius) {
                     unit.strength = 0

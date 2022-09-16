@@ -1,14 +1,10 @@
-import Client from "./Client";
 import Armour from "./units/Armour";
 import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
 import Bomber from "./units/Bomber";
 import BattleShip from "./units/BattleShip";
-import { game } from "../lobby";
 let keysPressed: string[] = []
 let keysHeld: string[] = []
-
-export const client = new Client(game.client.faction.name, 0, game.client.name, 1)
 
 interface UnitTypes {
     [type: string]: any

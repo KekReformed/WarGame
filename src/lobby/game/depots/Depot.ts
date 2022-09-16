@@ -1,4 +1,4 @@
-import { client } from ".."
+import { game } from "../../lobby"
 import City from "../City"
 import { p } from "../sketch"
 import { Sprite } from "../Sprite"
@@ -28,7 +28,7 @@ class Depot {
 
         if (this.city) this.inCity = true
 
-        client.globalDepots.push(this)
+        game.depots.push(this)
     }
 
     is<DepotType>(type: string): this is DepotType {

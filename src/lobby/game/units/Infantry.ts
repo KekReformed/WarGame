@@ -1,4 +1,4 @@
-import { client } from "..";
+import { game } from "../../lobby";
 import Unit, { UnitData } from "./Unit";
 
 class Infantry extends Unit {
@@ -15,8 +15,8 @@ class Infantry extends Unit {
     update() {
         super.update()
 
-        for (const i in client.globalCities) {
-            let city = client.globalCities[i]
+        for (const i in game.cities) {
+            let city = game.cities[i]
 
             if (this.inCity && !this.sprite.overlap(city.sprite)) {
                 this.inCity = false

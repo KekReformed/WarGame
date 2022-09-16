@@ -1,4 +1,5 @@
-import { client, unitTypes } from "..";
+import { unitTypes } from "..";
+import { game } from "../../lobby";
 import { p, timeScale } from "../sketch";
 import PanelUI from "../ui/PanelUI";
 import { UnitData } from "../units/Unit";
@@ -45,7 +46,7 @@ class ProductionDepot extends Depot {
 
     disableFor(time: number) {
         this.selectable = false
-        this.productionFinishTime = client.day + time
+        this.productionFinishTime = game.day + time
         this.increment = 2 * p.PI / time
     }
 
@@ -84,7 +85,7 @@ class ProductionDepot extends Depot {
 
     update() {
         if (this.productionQueue.length > 0) {
-            if (client.day >= this.productionFinishTime) {
+            if (game.day >= this.productionFinishTime) {
                 this.enable()
 
                 this.build()

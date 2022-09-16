@@ -1,5 +1,5 @@
 import { Vector } from "p5";
-import { client } from "..";
+import { game } from "../../lobby";
 import Airstrip from "../depots/Airstrip";
 import Unit, { UnitData } from "./Unit";
 
@@ -23,8 +23,8 @@ class AirUnit extends Unit {
 
         //Find the closest airstrip
         
-        for (const i in client.globalDepots) {
-            let depot = client.globalDepots[i]
+        for (const i in game.depots) {
+            let depot = game.depots[i]
 
             let dist = depot.sprite.position.dist(this.sprite.position)
 
@@ -54,8 +54,8 @@ class AirUnit extends Unit {
         let dist = 0
         let lowestDist = Infinity
 
-        for (const i in client.globalDepots) {
-            let depot = client.globalDepots[i]
+        for (const i in game.depots) {
+            let depot = game.depots[i]
             dist = depot.sprite.position.dist(this.goToPoint)
 
             if (depot.is<Airstrip>("airstrip") && dist <= lowestDist && depot.faction === this.faction) {

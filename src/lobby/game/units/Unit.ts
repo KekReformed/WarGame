@@ -1,7 +1,7 @@
 import { Vector } from "p5";
-import { p, longClick, mouseUp } from "../sketch";
+import { p, mouseUp } from "../sketch";
 import Battle from "../Battle";
-import { client, keyDown, unitTypes } from "../index";
+import { keyDown, unitTypes } from "../index";
 import { Anchor, Sprite } from "../Sprite";
 import Armour from "./Armour.js";
 import Bomber from "./Bomber.js";
@@ -9,6 +9,7 @@ import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
 import * as pathfinding from "../Pathfinding"
+import { game } from "../../lobby";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -50,7 +51,7 @@ class Unit {
         this.effectiveStrength = unitData.strength
         this.strengthModifier = 1
         this.speed = 1
-        client.globalUnits.push(this)
+        game.units.push(this)
         this.sprite = new Sprite(unitData.positionX, unitData.positionY, this.height, this.width, 0, Anchor.top)
         this.sprite.userData = this
         this.goToPoint = this.sprite.position
@@ -175,7 +176,7 @@ class Unit {
     startBattle(EnemyUnit: Unit) {
         this.deselect()
         let battle = new Battle((this.sprite.position.x + EnemyUnit.sprite.position.x) / 2, (this.sprite.position.y + EnemyUnit.sprite.position.y) / 2, this, EnemyUnit)
-        client.globalBattles.push(battle)
+        game.battles.push(battle)
         this.kill = true
         EnemyUnit.kill = true
     }
