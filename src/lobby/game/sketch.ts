@@ -32,45 +32,23 @@ function sketch(p: p5) {
         initalizeQuadTree(3)
         const canvas = p.createCanvas(window.outerWidth, window.outerHeight);
 
-        const jeff = new Infantry({
-            faction: "USA",
-            positionX: 100,
-            positionY: 200,
-            strength: 2000
-        })
+        let positionX = 100;
+        for (const player of game.players) {
+            for (let i = 0; i < 2; i++) {
+                new Infantry({
+                    faction: player.faction.name || "no faction",
+                    positionX,
+                    positionY: 200,
+                    strength: 2000
+                })
+                positionX += 100
+            }
+        }
 
-        const dave = new Infantry({
-            faction: "USA",
-            positionX: 200,
-            positionY: 200,
-            strength: 2000
-        })
-
-        const derek = new Infantry({
-            faction: "UK",
-            positionX: 300,
-            positionY: 200,
-            strength: 2000,
-        })
-
-        const john = new BattleShip({
-            faction: "UK",
-            positionX: 400,
-            positionY: 200,
-            strength: 2000
-        })
-
-        const garry = new Infantry({
-            faction: "Spain",
+        new BattleShip({
+            faction: game.client.faction.name,
             positionX: 600,
-            positionY: 200,
-            strength: 2000
-        })
-
-        const jimbo = new Infantry({
-            faction: "Spain",
-            positionX: 500,
-            positionY: 200,
+            positionY: 400,
             strength: 2000
         })
 
