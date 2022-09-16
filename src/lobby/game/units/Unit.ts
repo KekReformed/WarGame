@@ -1,7 +1,7 @@
 import { Vector } from "p5";
 import { p, mouseUp } from "../sketch";
 import Battle from "../Battle";
-import { keyDown, unitTypes } from "../index";
+import { generateID, keyDown, unitTypes } from "../index";
 import { Anchor, Sprite } from "../Sprite";
 import Armour from "./Armour.js";
 import Bomber from "./Bomber.js";
@@ -10,6 +10,7 @@ import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
 import * as pathfinding from "../Pathfinding"
 import { game } from "../../lobby";
+import { socket } from "../../../shared/api";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -22,6 +23,7 @@ export interface UnitData extends Partial<Unit> {
 // let pos: Vector;
 
 class Unit {
+    id: number
     height: number
     width: number
     selected: boolean
@@ -43,6 +45,7 @@ class Unit {
     path: pathfinding.node[]
 
     constructor(unitData: UnitData) {
+        this.id = generateID()
         this.height = 50
         this.width = 50
         this.selected = false
@@ -244,7 +247,7 @@ class Unit {
         unit.combining = true
     }
 
-    goTo(destination: Vector, speed = 1) {
+    goTo(destination: Vector, speed = 1, toServer: boolean = true) {
         this.goToPoint = p.createVector(destination.x, destination.y)
         this.vector = p.createVector(destination.x - this.sprite.position.x, destination.y - this.sprite.position.y)
         this.vector.normalize()
@@ -252,6 +255,8 @@ class Unit {
         // Multiply the vector by deltatime so that it isn't tied to frame rate
         this.vector.mult(p.deltaTime * 0.1)
         this.sprite.setVelocity(this.vector.x, this.vector.y)
+
+        if (toServer) socket.emit("moveUnit", { id: this.id, destination, speed })
     }
 }
 export default Unit

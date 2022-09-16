@@ -3,11 +3,19 @@ import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
 import Bomber from "./units/Bomber";
 import BattleShip from "./units/BattleShip";
+import { socket } from "../../shared/api";
+import { Vector } from "p5";
+import { game } from "../lobby";
 let keysPressed: string[] = []
 let keysHeld: string[] = []
 
 interface UnitTypes {
     [type: string]: any
+}
+
+let current = -1
+export function generateID() {
+    return ++current
 }
 
 export const unitTypes: UnitTypes = {
@@ -53,3 +61,12 @@ function removeKey(keyReleased: KeyboardEvent) {
 export function keyDown(key: string) {
     return keysPressed.includes(key.toLowerCase()) // yeah bud no
 }
+
+interface UnitMoveData {
+    id: number
+    destination: Vector
+    speed: number
+}
+socket.on("unitMove", (data: UnitMoveData) => {
+    game.units[data.id].goTo(data.destination, data.speed, false)
+})
