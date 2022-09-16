@@ -1,3 +1,4 @@
+import Client from "./Client"
 import Player from "./Player"
 
 export enum GamePhase {
@@ -12,7 +13,7 @@ interface GameData extends Partial<Game> {
 export default class Game {
     id: string
     players: Player[]
-    client: Player
+    client: Client
     public?: boolean
     phase: GamePhase
 
@@ -21,7 +22,7 @@ export default class Game {
     constructor(data: GameData) {
         this.id = data.id
         this.players = data.players
-        this.client = data.players[data.clientIndex]
+        this.client = new Client({...data.players[data.clientIndex], money: 0})
         this.public = data.public
         this.phase = data.phase
 

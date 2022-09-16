@@ -1,5 +1,5 @@
 
-// This class is currently unused as anything except a type, not sure if that should change or not, possibly in the future 
+// Warning: This class isn't used for the players yet, only the actual client uses this type as anything but a type.
 export default class Player {
     name: string
     faction: {
@@ -8,4 +8,11 @@ export default class Player {
     }
     ready?: boolean
     index: number
+
+    constructor(data: Partial<Player>) {
+        this.name = data.name
+        this.faction = data.faction
+        this.ready = data.ready
+        this.index = data.index
+    }
 }

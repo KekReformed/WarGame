@@ -5,9 +5,6 @@ import { AnyUIComponent } from "./ui/UIComponent"
 import { AnyUnit } from "./units/Unit"
 
 class Client {
-    faction: string
-    money: number
-    name: string
     day: number
 
     globalUnits: AnyUnit[]
@@ -17,9 +14,6 @@ class Client {
     globalUIComponents: AnyUIComponent[]
 
     constructor(faction: string, money: number, name: string, day: number) {
-        this.faction = faction
-        this.money = money
-        this.name = name
         this.day = day
 
         this.globalUnits = []

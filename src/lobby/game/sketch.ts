@@ -9,6 +9,7 @@ import { scaleBy, setOffset, worldToScreen } from './Util'
 import * as pathfinding from "./Pathfinding"
 import Aviation from './depots/Aviation'
 import BattleShip from './units/BattleShip'
+import { game } from '../lobby'
 
 let timeHeld = 0
 var dragged = false
@@ -91,7 +92,6 @@ function sketch(p: p5) {
         })
 
         pathfinding.generateNodes()
-        console.log(client)
     }
 
     p.draw = () => {
@@ -102,7 +102,7 @@ function sketch(p: p5) {
         p.textAlign(p.CENTER)
         p.fill(255, 255, 255)
         p.noStroke()
-        let roundedPlayerMoney = Math.round(client.money)
+        let roundedPlayerMoney = Math.round(game.client.money)
         p.text(`£${roundedPlayerMoney >= 1000 ? Math.round(roundedPlayerMoney / 100) / 10 + "B" : roundedPlayerMoney + "M"}`, window.outerWidth / 2, 35)
         p.text(`Day ${p.floor(client.day)} of the conflict`, window.outerWidth / 2, 20)
         p.text(`${p.floor(p.frameRate())} fps`, window.outerWidth - 100, 20)
@@ -196,8 +196,8 @@ function sketch(p: p5) {
 
             city.update()
 
-            if (city.faction === client.faction) {
-                client.money += (city.value / 365 * 1000 * p.deltaTime / 1000) * timeScale
+            if (city.faction === game.client.faction.name) {
+                game.client.money += (city.value / 365 * 1000 * p.deltaTime / 1000) * timeScale
             }
         }
 
@@ -247,7 +247,7 @@ function sketch(p: p5) {
             // Select a unit by clicking on it
             for (const i in client.globalUnits) {
                 let unit = client.globalUnits[i]
-                if (unit.sprite.isMouseOver() && unit.faction === client.faction && unitSelected === false) {
+                if (unit.sprite.isMouseOver() && unit.faction === game.client.faction.name && unitSelected === false) {
                     unit.select()
                     unitSelected = true
                 }
@@ -260,7 +260,7 @@ function sketch(p: p5) {
             for (const i in client.globalDepots) {
                 let depot = client.globalDepots[i]
 
-                if (depot.sprite.isMouseOver() && depot.faction === client.faction) {
+                if (depot.sprite.isMouseOver() && depot.faction === game.client.faction.name) {
                     depot.select()
                 }
                 else {

@@ -1,5 +1,5 @@
 import { Vector } from "p5";
-import { client } from "..";
+import { game } from "../../lobby";
 import { longClick, p } from "../sketch";
 import Button from "../ui/Button";
 import PanelUI from "../ui/PanelUI";
@@ -23,9 +23,9 @@ class NukeSilo extends ProductionDepot {
         this.loaded = false
 
         this.button = new Button(p.color(50, 50, 50, 80), 0, 0, 80, 50, "Build Nuke \n Cost: 6B", true, () => {
-            if (client.money >= 6000 && !this.loaded) {
+            if (game.client.money >= 6000 && !this.loaded) {
                 this.load()
-                client.money -= 6000
+                game.client.money -= 6000
             }
         })
 

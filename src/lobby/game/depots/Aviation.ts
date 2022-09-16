@@ -1,8 +1,9 @@
 import ProductionDepot, { Production } from "./ProductionDepot";
-import { client, randomInt } from "..";
+import { randomInt } from "..";
 import Button from "../ui/Button";
 import PanelUI from "../ui/PanelUI";
 import { p } from "../sketch";
+import { game } from "../../lobby";
 
 
 class Aviation extends ProductionDepot {
@@ -13,7 +14,7 @@ class Aviation extends ProductionDepot {
         this.type = "aviation"
 
         this.fighterButton = new Button(p.color(50, 50, 50, 80), 0, 0, 80, 50, "Create fighter \n Cost: 2.5B", true, () => {
-            if (client.money >= 2500) {
+            if (game.client.money >= 2500) {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
@@ -32,7 +33,7 @@ class Aviation extends ProductionDepot {
 
                 this.enqueue(production)
 
-                client.money -= 2500
+                game.client.money -= 2500
             }
         })
 
