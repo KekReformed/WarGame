@@ -37,7 +37,7 @@ function sketch(p: p5) {
                 new Infantry({
                     faction: player.faction.name || "no faction",
                     positionX,
-                    positionY: 200,
+                    positionY: 250,
                     strength: 2000
                 })
                 positionX += 100

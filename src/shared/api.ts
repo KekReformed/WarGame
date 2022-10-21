@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client'
 
-const hostname = "wargame.amelix.xyz:7777/api"
-const socketPort = "4000"
+const hostname = localStorage.dev ? "wargame.amelix.xyz:7777/api" : "wargame.amelix.xyz/api";
+const socketPort = localStorage.dev ? "4000" : "3001"
 
 export async function request(method: string, path: string, write: any, headers={}, hostOverwrite?: string) {
     if (typeof write === "object") write = JSON.stringify(write);
