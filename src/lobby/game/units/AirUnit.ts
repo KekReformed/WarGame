@@ -35,6 +35,7 @@ class AirUnit extends Unit {
         }
 
         if (!this.closestAirstrip && !this.goToClosestAirstrip) return;
+        if (this.selected)
 
         this.range = this.closestAirstrip.range * this.rangeModifier / 2 
         if (this.goToClosestAirstrip) this.goToRange = this.goToClosestAirstrip.range * this.rangeModifier / 2 

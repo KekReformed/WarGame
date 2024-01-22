@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import PanelUI from "../ui/PanelUI";
 import { p } from "../sketch";
 import { game } from "../../lobby";
+import QueuePanel from "../ui/QueuePanel";
 
 
 class Barracks extends ProductionDepot {
@@ -15,8 +16,8 @@ class Barracks extends ProductionDepot {
         super(depotData)
         this.type = "barracks"
 
-        this.infantryButton = new Button(p.color(50, 50, 50, 80), 0, -30, 80, 50, "Create infantry \n Cost: 1B", true, () => {
-            if (game.client.money >= 1000) {
+        this.infantryButton = new Button(p.color(50, 50, 50, 80), -10, -30, 80, 50, "Create infantry \n Cost: 1B", true, () => {
+            if (game.client.money >= 1000  && this.productionQueue.length < this.maxQueue) {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
@@ -39,8 +40,8 @@ class Barracks extends ProductionDepot {
             }
         })
 
-        this.tankButton = new Button(p.color(50, 50, 50, 80), 0, 30, 80, 50, "Create Armour \n Cost: 1.2B", true, () => {
-            if (game.client.money >= 1200) {
+        this.tankButton = new Button(p.color(50, 50, 50, 80), -10, 30, 80, 50, "Create Armour \n Cost: 1.2B", true, () => {
+            if (game.client.money >= 1200 && this.productionQueue.length < this.maxQueue) {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
@@ -63,7 +64,7 @@ class Barracks extends ProductionDepot {
             }
         })
 
-        this.panel = new PanelUI(p.color(25, 25, 25, 80), this.sprite.position.x + 60, this.sprite.position.y - 75, 100, 120, true, [this.infantryButton, this.tankButton])
+        this.panel = new QueuePanel(p.color(25, 25, 25, 80), this.sprite.position.x + 60, this.sprite.position.y - 75, 120, 120, true, [this.infantryButton, this.tankButton], this.productionQueue, this.maxQueue)
     }
 }
 

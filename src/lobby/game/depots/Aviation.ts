@@ -1,7 +1,7 @@
 import ProductionDepot, { Production } from "./ProductionDepot";
 import { randomInt } from "..";
 import Button from "../ui/Button";
-import PanelUI from "../ui/PanelUI";
+import QueuePanel from "../ui/QueuePanel";
 import { p } from "../sketch";
 import { game } from "../../lobby";
 
@@ -13,8 +13,8 @@ class Aviation extends ProductionDepot {
         super(depotData)
         this.type = "aviation"
 
-        this.fighterButton = new Button(p.color(50, 50, 50, 80), 0, 0, 80, 50, "Create fighter \n Cost: 2.5B", true, () => {
-            if (game.client.money >= 2500) {
+        this.fighterButton = new Button(p.color(50, 50, 50, 80), -10, 0, 80, 50, "Create fighter \n Cost: 2.5B", true, () => {
+            if (game.client.money >= 2500 && this.productionQueue.length < this.maxQueue) {
                 let newUnitX = this.sprite.position.x + randomInt(-50, 50)
                 let newUnitY = this.sprite.position.y + randomInt(-50, 50)
 
@@ -37,7 +37,7 @@ class Aviation extends ProductionDepot {
             }
         })
 
-        this.panel = new PanelUI(p.color(25, 25, 25, 80), this.sprite.position.x + 60, this.sprite.position.y - 50, 100, 60, true, [this.fighterButton])
+        this.panel = new QueuePanel(p.color(25, 25, 25, 80), this.sprite.position.x + 60, this.sprite.position.y - 50, 120, 60, true, [this.fighterButton], this.productionQueue, this.maxQueue)
     }
 }
 

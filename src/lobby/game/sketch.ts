@@ -11,6 +11,7 @@ import Aviation from './depots/Aviation'
 import BattleShip from './units/BattleShip'
 import { game } from '../lobby'
 import { UIComponents } from './ui/UIComponent'
+import Barracks from './depots/Barracks'
 
 let timeHeld = 0
 var dragged = false
@@ -45,7 +46,7 @@ function sketch(p: p5) {
         }
 
         new BattleShip({
-            faction: game.client.faction.name,
+            faction: game.client.faction.name || "Other Faction",
             positionX: 600,
             positionY: 400,
             strength: 2000
@@ -64,6 +65,13 @@ function sketch(p: p5) {
         const airstrip = new Aviation({
             faction: "UK",
             positionX: 600,
+            positionY: 600,
+            inCity: false
+        })
+
+        const barracksl = new Barracks({
+            faction: "UK",
+            positionX: 800,
             positionY: 600,
             inCity: false
         })

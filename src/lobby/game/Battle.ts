@@ -46,6 +46,7 @@ class Battle {
         this.sprite.color = `rgb(0,0,255)`
         this.timer = 0
         this.factionList = Object.keys(this.factions)
+        this.timer = damageInterval
     }
 
     update() {
@@ -64,7 +65,10 @@ class Battle {
                     let unit = faction.units[i]
                     this.totalStrength += unit.strength * unit.strengthModifier
                     faction.totalStrength += unit.strength * unit.strengthModifier
-
+                    if (faction.totalStrength > this.winningStrength) {
+                        this.winningStrength = faction.totalStrength
+                        this.winningFaction = unit.faction
+                    }
                     faction.unitCount += 1
                 }
 
@@ -107,7 +111,7 @@ class Battle {
         p.noStroke()
         p.text(`Battle between ${this.battleParticipants.join(" and ")}`, pos.x, pos.y)
         p.text(`Total Strength:${Math.round(this.totalStrength)}`, pos.x, pos.y + 20)
-        p.text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left`, pos.x, pos.y + 40)
+        p.text(`Currently winning: ${this.winningFaction} with ${Math.round(this.winningStrength)} troops left. Percent ${Math.ceil((this.winningStrength / this.totalStrength) * 100)}`, pos.x, pos.y + 40)
     }
 }
 

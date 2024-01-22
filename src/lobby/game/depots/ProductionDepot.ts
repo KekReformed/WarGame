@@ -10,7 +10,7 @@ import Nuke from "./Nuke";
 const radius = 50
 
 export interface Production {
-    unitData: UnitData | Nuke
+    unitData: UnitData
     productionTime: number
 }
 
@@ -22,6 +22,7 @@ class ProductionDepot extends Depot {
     arcStart: number
     arcEnd: number
     productionQueue: Production[]
+    maxQueue: number
 
     constructor(depotData: { [k: string]: any }) {
         super(depotData)
@@ -30,6 +31,7 @@ class ProductionDepot extends Depot {
         this.arcStart = -p.HALF_PI
         this.arcEnd = p.PI + p.HALF_PI
         this.productionQueue = []
+        this.maxQueue = 8
     }
 
     select() {
@@ -45,7 +47,7 @@ class ProductionDepot extends Depot {
     }
 
     disableFor(time: number) {
-        this.selectable = false
+        //this.selectable = false
         this.productionFinishTime = game.day + time
         this.increment = 2 * p.PI / time
     }

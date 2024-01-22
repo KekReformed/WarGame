@@ -105,7 +105,7 @@ function renderPlayerHtml(player: Player) {
     const html = `
         <p class="${player.ready ? 'ready' : ''}${player.index === 0 ? ' owner' : ''}">${player.name}</p>
         <div class="faction">
-            <p class="${player.faction.name ? "" : "no-faction"}">${player.faction.name || "No faction selected"}</p>
+            <p class="${player.faction.name ? "" : "no-faction"}">${player.faction.name || "Input a Faction Name"}</p>
             ${input}
             ${player.faction.colour
                 ? `<div class="player-colour" style="background-color: ${player.faction.colour}"></div>`

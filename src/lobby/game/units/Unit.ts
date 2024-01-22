@@ -71,22 +71,9 @@ class Unit {
 
         if (this.strength <= 0 || this.kill) return;
 
-        if (this.goToPoint && this.sprite.position.dist(this.goToPoint) < 3) {
-            if (this.path.length > 0 && this.terrainType !== "air") {
-                let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
-                this.goTo(finalPoint, this.speed)
-                this.path.splice(0, 1)
-            }
-            else {
-                this.sprite.setVelocity(0, 0);
-                this.goToPoint = undefined
-            }
-        }
-
         if (this.goingToUnit) this.goTo(this.goingToUnit.sprite.position, this.speed)
 
-
-        let mousePos = p.createVector(p.mouseX, p.mouseY)
+        if (Math.abs(this.goToPoint.x - this.sprite.position.x) < 5 && Math.abs(this.goToPoint.y - this.sprite.position.y) < 5) this.sprite.setVelocity(0,0) 
 
         // New unit collisions
         if (this.sprite.collisions.length !== 0) {
@@ -118,43 +105,8 @@ class Unit {
             if (mouseUp(p.RIGHT)) {
                 let pos = screenToWorld(p.mouseX, p.mouseY);
                 let mousePos = p.createVector(pos.x, pos.y);
-                let closestMouseNodePosition;
-                let closestNode;
-                let closestMouseNode;
-                let closestNodeDist = Infinity
-                let closestMouseNodeDist = Infinity
-
-                for (const y in pathfinding.nodes) {
-                    let nodeRows = pathfinding.nodes[y]
-
-                    for (const x in nodeRows) {
-                        let node = nodeRows[x]
-                        let nodePosition = p.createVector(node.x, node.y)
-                        let dist = this.sprite.position.dist(nodePosition)
-                        let mouseDist = mousePos.dist(nodePosition)
-
-                        if (dist < pathfinding.nodeSize && dist < closestNodeDist) {
-                            closestNodeDist = dist
-                            closestNode = node
-                        }
-
-                        if (mouseDist < pathfinding.nodeSize && mouseDist < closestMouseNodeDist) {
-                            closestMouseNodeDist = mouseDist
-                            closestMouseNodePosition = nodePosition
-                            closestMouseNode = node
-                        }
-                    }
-                }
-
-                this.path = pathfinding.findBestPath(closestNode.xIndex, closestNode.yIndex, closestMouseNode.xIndex, closestMouseNode.yIndex)
-                let finalPoint = p.createVector(this.path[0].x, this.path[0].y)
-
-                this.goingToBattle ? this.goingToBattle = false : this.joiningBattle = false
-                if (!this.joiningBattle) this.goingToUnit = null
-                if (this.terrainType === "air" && !mousePos.equals(this.goToPoint)) this.goTo(mousePos, this.speed)
-                else if (!mousePos.equals(this.goToPoint)) this.goTo(finalPoint, this.speed)
-            }
-
+                this.goTo(mousePos, this.speed)
+            } 
             //Unit Splitting
             if (keyDown("s") && this.strength / 2 >= 100) {
                 this.split()
