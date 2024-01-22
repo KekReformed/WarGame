@@ -164,7 +164,7 @@ function sketch(p: p5) {
                 console.log(units)
                 for (const i in units) {
                     let unit = units[i]
-                    unit.sprite = new sprites.Sprite(battle.positionX,battle.positionY,50,50,unit)
+                    unit.sprite = new sprites.Sprite(battle.positionX, battle.positionY, 50, 50, unit)
                     unit.kill = false
                     unit.strength = Math.round(unit.strength)
                     game.units.push(unit)
@@ -233,6 +233,7 @@ function sketch(p: p5) {
             for (const i in game.units) {
                 let unit = game.units[i]
                 if (unit.sprite.isMouseOver() && unit.faction === game.client.faction.name && unitSelected === false) {
+                    console.log(unit.faction, game.client.faction.name)
                     unit.select()
                     unitSelected = true
                 }
@@ -248,7 +249,7 @@ function sketch(p: p5) {
                 if (depot.sprite.isMouseOver() && depot.faction === game.client.faction.name) {
                     depot.select()
                 }
-            else {
+                else {
                     depot.deselect()
                 }
             }
@@ -269,7 +270,7 @@ function sketch(p: p5) {
                     Math.min(rectStartX, p.mouseX) < pos.x &&
                     pos.x < Math.max(rectStartX, p.mouseX) &&
                     Math.min(rectStartY, p.mouseY) < pos.y &&
-                    pos.y < Math.max(rectStartY, p.mouseY)
+                    pos.y < Math.max(rectStartY, p.mouseY) && unit.faction === game.client.faction.name
                 ) {
                     unit.select()
                 }
