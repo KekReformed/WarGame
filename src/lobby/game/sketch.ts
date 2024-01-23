@@ -75,8 +75,6 @@ function sketch(p: p5) {
             positionY: 600,
             inCity: false
         })
-
-        pathfinding.generateNodes()
     }
 
     p.draw = () => {

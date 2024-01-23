@@ -38,7 +38,6 @@ class City {
                     if (unit.faction === this.faction && unit.is<Infantry>("infantry") && !unit.inCity) {
                         this.defenders += 1
                         unit.inCity = true
-                        unit.strengthModifier += 1
                     }
                 }
             }

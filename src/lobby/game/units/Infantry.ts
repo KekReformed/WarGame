@@ -14,13 +14,14 @@ class Infantry extends Unit {
 
     update() {
         super.update()
+        if (this.inCity) this.strengthModifier = 2
 
         for (const i in game.cities) {
             let city = game.cities[i]
-
             if (this.inCity && !this.sprite.overlap(city.sprite)) {
                 this.inCity = false
-                this.strengthModifier -= 1
+                console.log("Not longe rin city", this.inCity)
+                this.strengthModifier = 1
             }
         }
     }
