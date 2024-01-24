@@ -93,12 +93,13 @@ function createGameString(game) {
 
 async function joinGame(id) {
     if (input.value.length > 0) {
-        request("POST", `/games/${id}/join`, { name: input.value })
+        request("POST", `/games/${id}/join`, { name: input.value },  localStorage.secret ? { Authorization: localStorage.secret } : undefined)
         .then(res => saveNewGame(res.body))
         .catch(e => {
             if (e.statusCode === 409) {
                 usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
             }
+            else if (e.statusCode === 400) usernameError.innerHTML = e.message
             else usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
         })
     }
