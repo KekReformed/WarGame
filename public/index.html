@@ -2,81 +2,81 @@
 <html lang="en">
 
 <head>
-    <link href="./index.css" rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./index.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script defer src="index.js"></script>
+  <script defer src="index.js"></script>
 </head>
 
-<body>    
-    <div class="container">
-        <section id="main">
-            <h1>Wargame</h1>
-            <p>Epic strategy game involving tasty looking cubes</p>
+<body>
+  <div class="container">
+    <section id="main">
+      <h1>Wargame</h1>
+      <p>Epic strategy game involving tasty looking cubes</p>
 
-            <div class="buttons" id="buttons">
-                <div class="button" id="join">
-                    Join Game
-                </div>
-                <div class="button" id="create">
-                    Create Game
-                </div>
-            </div>
+      <div class="buttons" id="buttons">
+        <div class="button" id="join">
+          Join Game
+        </div>
+        <div class="button" id="create">
+          Create Game
+        </div>
+      </div>
 
-            <p class="footer">Pro tip: You can click on units and right click anywhere on the screen to move them!</p>
-        </section>
+      <p class="footer">Pro tip: You can click on units and right click anywhere on the screen to move them!</p>
+    </section>
 
-        <section class="page" id="lobbies">
-            <h1>Join Game</h1>
+    <section class="page" id="lobbies">
+      <h1>Join Game</h1>
 
-            <div class="form">
-                <div class="tooltip">You must enter a username to join a game.</div>
-                <input class="input" id="join-game-u" type="text" placeholder="Username" maxlength="30" %eval%|req.user ?
-                    `value="${req.user.username}" ` : ``|>
-                <p class="error" id="username-taken"></p>
-            </div>
+      <div class="form">
+        <div class="tooltip">You must enter a username to join a game.</div>
+        <input class="input" id="join-game-u" type="text" placeholder="Username" maxlength="30" %eval%|req.user ?
+          `value="${req.user.username}" ` : ``|>
+        <p class="error" id="username-taken"></p>
+      </div>
 
-            <div id="games"></div>
+      <div id="games"></div>
 
-            <div class="buttons">
-                <div class="back button">
-                    Back
-                </div>
-            </div>
-            <p class="footer">There's no need to refresh the page; games show up as soon as they become available, and
-                player counts will update instantly too!</p>
-        </section>
+      <div class="buttons">
+        <div class="back button">
+          Back
+        </div>
+      </div>
+      <p class="footer">There's no need to refresh the page; games show up as soon as they become available, and
+        player counts will update instantly too!</p>
+    </section>
 
-        <section class="page" id="create-game">
-            <h1>Create Game</h1>
+    <section class="page" id="create-game">
+      <h1>Create Game</h1>
 
-            <div class="form">
-                <div class="tooltip">Enter a username so that players know what to call you.</div>
-                <input class="input" id="u" type="text" placeholder="Username" maxlength="30" %eval%|req.user ?
-                    `value="${req.user.username}" ` : ``|>
-                <div class="form-section left">
-                    <input type="checkbox" name="public" id="public">
-                    <label id="public-label" for="public">
-                        <p>Public</p>
-                    </label>
-                </div>
-                <div class="tooltip">Public games can be joined by anyone.<br>If unchecked, players will only be able to
-                    join your game through a link you send them.</div>
-            </div>
+      <div class="form">
+        <div class="tooltip">Enter a username so that players know what to call you.</div>
+        <input class="input" id="u" type="text" placeholder="Username" maxlength="30" %eval%|req.user ?
+          `value="${req.user.username}" ` : ``|>
+        <div class="form-section left">
+          <input type="checkbox" name="public" id="public">
+          <label id="public-label" for="public">
+            <p>Public</p>
+          </label>
+        </div>
+        <div class="tooltip">Public games can be joined by anyone.<br>If unchecked, players will only be able to
+          join your game through a link you send them.</div>
+      </div>
 
-            <div class="buttons">
-                <div class="button invalid" id="game-create">
-                    Create!
-                </div>
-                <div class="back button">
-                    Back
-                </div>
-            </div>
-            <p class="error" id="create-game-error"></p>
-        </section>
-    </div>
+      <div class="buttons">
+        <div class="button invalid" id="game-create">
+          Create!
+        </div>
+        <div class="back button">
+          Back
+        </div>
+      </div>
+      <p class="error" id="create-game-error"></p>
+    </section>
+  </div>
 </body>
 
 </html>

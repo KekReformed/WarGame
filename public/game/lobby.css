@@ -1,305 +1,332 @@
 html {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    background-color: black;
-    height: 100%;
+  background-color: black;
+  height: 100%;
 }
 
-h1, p {
-    user-select: auto;
+h1,
+p {
+  user-select: auto;
 }
 
 #lobby {
-    height: 90%;
-    width: 65%;
-    margin: 20px 0 0 50px
+  height: 90%;
+  width: 65%;
+  margin: 20px 0 0 50px
 }
 
 @media (max-width: 1600px) {
-    #lobby {
-        width: 80%;
-    }
+  #lobby {
+    width: 80%;
+  }
 }
 
 @media (max-width: 1000px) {
-    #lobby {
-        margin-left: 0;
-        width: 100%;
-    }
+  #lobby {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .lobby-container {
-    display: flex;
-    height: 90%;
+  display: flex;
+  height: 90%;
 }
 
 #title {
-    padding-left: 10px;
-    border: 2px solid grey;
-    width: 70%
+  padding-left: 10px;
+  border: 2px solid grey;
+  width: 70%
 }
 
 #title p {
-    padding: 5px;
-    font-size: 20px;
-    color: #9974ff;
+  padding: 5px;
+  font-size: 20px;
+  color: #9974ff;
 }
 
 #left {
-    position: relative;
-    width: 70%;
-    height: 90%;
+  position: relative;
+  width: 70%;
+  height: 90%;
 }
 
 #players {
-    border: 2px solid grey;
-    border-top: none;
-    height: 100%;
+  border: 2px solid grey;
+  border-top: none;
+  height: 100%;
 }
 
 .player {
-    display: flex;
-    position: relative;
-    border: 2px solid #161616;
-    background-color: #070606;
-    margin: 10px 10px 0 10px;
+  display: flex;
+  position: relative;
+  border: 2px solid #161616;
+  background-color: #070606;
+  margin: 10px 10px 0 10px;
 }
 
-.player > p.ready {
-    color: #087908;
+.player>p.ready {
+  color: #087908;
 }
 
-.player > p.owner {
-    color: #e4e468
+.player>p.owner {
+  color: #e4e468
 }
 
 .player#client {
-    background-color: #181818
+  background-color: #181818
 }
 
 .player#client .faction {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .player p {
-    padding: 10px;
-    font-family: monospace;
+  padding: 10px;
+  font-family: monospace;
 }
 
 .faction {
-    display: flex;
-    position: absolute;
-    right: 0;
-    background-color: #0a0a0a;
-    text-align: left;
-    font-family: monospace;
-    height: 100%;
+  display: flex;
+  position: absolute;
+  right: 0;
+  background-color: #0a0a0a;
+  text-align: left;
+  font-family: monospace;
+  height: 100%;
 }
 
 .faction p.no-faction {
-    color: #a52424
+  color: #a52424
 }
 
 .input {
-    margin: 0;
-    border: none;
-    min-width: 153px !important;
-    height: 100%;
-    font-family: monospace;
+  margin: 0;
+  border: none;
+  min-width: 153px !important;
+  height: 100%;
+  font-family: monospace;
 }
 
 .player-colour {
-    width: 52.5px;
+  width: 52.5px;
 }
 
 .player-colour.no-faction {
-    background-image: url("https://wargame.amelix.xyz/no-faction.svg");
-    background-size: cover;
+  background-image: url("https://wargame.amelix.xyz/no-faction.svg");
+  background-size: cover;
 }
 
 #right {
-    position: relative;
-    height: 90%;
-    border: 2px solid grey;
-    margin-left: 2%;
-    width: 28%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+  position: relative;
+  height: 90%;
+  border: 2px solid grey;
+  margin-left: 2%;
+  width: 28%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .lobby-button {
-    display:inline-block;
-    padding: 0.7em 1.4em;
-    border-radius:0.15em;
-    box-sizing: border-box;
-    text-decoration:none;
-    font-family:'Roboto',sans-serif;
-    font-weight:400;
-    color:#a5a5a5;
-    background-color:#202020;
-    box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-    text-align:center;
-    position:relative;
-    transition: all 0.15s;
-    user-select: none;
-    cursor: pointer;
+  display: inline-block;
+  padding: 0.7em 1.4em;
+  border-radius: 0.15em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  color: #a5a5a5;
+  background-color: #202020;
+  box-shadow: inset 0 -0.6em 0 -0.35em rgba(0, 0, 0, 0.17);
+  text-align: center;
+  position: relative;
+  transition: all 0.15s;
+  user-select: none;
+  cursor: pointer;
 }
 
 .lobby-button:active {
-    bottom: 10px !important;
+  bottom: 10px !important;
 }
 
 #start {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    transition: 400ms;
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  transition: 400ms;
 }
 
 #start:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #start.enabled {
-    background-color: #014201;
+  background-color: #014201;
 }
 
 #start.enabled:hover {
-    background-color: #018328;
-    transition: 300ms;
+  background-color: #018328;
+  transition: 300ms;
 }
 
 #start.disabled {
-    cursor: not-allowed;
-    background-color: #350808;
+  cursor: not-allowed;
+  background-color: #350808;
 }
 
 #readyStatus {
-    margin-top: 10px
+  margin-top: 10px
 }
 
 #leave {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-    transition: 400ms;
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  transition: 400ms;
 }
 
 #leave:hover {
-    cursor: pointer;
-    background-color: #6d0101;
-    transition: 300ms;
+  cursor: pointer;
+  background-color: #6d0101;
+  transition: 300ms;
 }
 
 #colours {
-    display: none;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 20px 20px 5px 20px;
-    background-color: #070707e0;
-    position: absolute;
-    width: 235px;
-    z-index: 1;
+  display: none;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px 20px 5px 20px;
+  background-color: #070707e0;
+  position: absolute;
+  width: 235px;
+  z-index: 1;
 }
 
 .colour {
-    cursor: pointer;
-    height: 45px;
-    width: 90px;
-    border: 3px solid #000000;
-    margin-bottom: 15px;
+  cursor: pointer;
+  height: 45px;
+  width: 90px;
+  border: 3px solid #000000;
+  margin-bottom: 15px;
 }
 
 .colour.disabled {
-    display: none;
+  display: none;
 }
 
 .deselect {
-    color: #4686ff;
-    cursor: pointer;
-    margin-bottom: 10px;
+  color: #4686ff;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 
 .settings {
-    margin-top: 10px;
-    border: 2px solid grey;
-    border-radius: 15px;
-    width: 90%;
-    height: 85%
+  margin-top: 10px;
+  border: 2px solid grey;
+  border-radius: 15px;
+  width: 90%;
+  height: 85%
 }
 
 .settings h1 {
-    text-align: center;
-    font-size: 30px;
-    margin-bottom: 10px;
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 10px;
 }
 
 .setting {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 5px 10px
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 10px
 }
 
 
 /* --- Option Sliderz --- */
 .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 22px;
-    margin: 0 10px;
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 22px;
+  margin: 0 10px;
 }
 
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #202020;
-    transform: .4s;
-    border-radius: 34px;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #202020;
+  transform: .4s;
+  border-radius: 34px;
 }
 
 .slider.notOwner {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 .switch input {
-    display: none;
+  display: none;
 }
 
 .slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 1px;
-    background-color: #0e0e0e;
-    transition: .4s;
-    border-radius: 50px;
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 1px;
+  background-color: #0e0e0e;
+  transition: .4s;
+  border-radius: 50px;
 }
 
-input:checked + .slider {
-    background-color: #1c3d9e;
+input:checked+.slider {
+  background-color: #1c3d9e;
 }
 
-input:checked + .slider:before {
-    transform: translateX(26px);
+input:checked+.slider:before {
+  transform: translateX(26px);
+}
+
+
+section.connection {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  background-color: #181818;
+  right: 0;
+  bottom: 0;
+  border-top-left-radius: 10px;
+}
+
+section.connection p {
+  font-size: 12px;
+  padding: 5px;
+}
+
+div#connectStatus {
+  aspect-ratio: 1 / 1;
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  margin: 8px;
+  margin-right: 5px;
+  background-color: rgb(18, 165, 18);
 }
 
 
 /*   Canvas Overlay  */
 main {
-    position: absolute;
-    top: 0;
-    z-index: -4;
+  position: absolute;
+  top: 0;
+  z-index: -4;
 }
