@@ -4,6 +4,7 @@ import Game from "./api/Game";
 import Player from "./api/Player";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
+import './socketStatus'
 
 const title = document.getElementById("title");
 const players = document.getElementById("players");
