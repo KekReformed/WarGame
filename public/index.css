@@ -215,3 +215,30 @@ p.error#username-taken {
   position: absolute;
   right: 0
 }
+
+
+section.connection {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  background-color: #181818;
+  right: 0;
+  bottom: 0;
+  border-top-left-radius: 10px;
+}
+
+section.connection p {
+  font-size: 12px;
+  padding: 5px;
+  margin-right: 4px;
+}
+
+div#connectStatus {
+  aspect-ratio: 1 / 1;
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  margin: 8px;
+  margin-right: 5px;
+  background-color: orange;
+}
