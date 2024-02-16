@@ -1,11 +1,12 @@
 import { createElement, request, socket } from "../shared/api";
 import Client from "./api/Client";
-import Game from "./api/Game";
+import Game, { GamePhase } from "./api/Game";
 import Player from "./api/Player";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
 import '../shared/socketStatus'
 
+const lobby = document.getElementById('lobby')
 const title = document.getElementById("title");
 const players = document.getElementById("players");
 
@@ -73,6 +74,11 @@ export let game: Game;
     settings()
 
     game.save()
+
+    // Add lobby if game is not started
+    if (game.phase === GamePhase.lobby) {
+      lobby.style.display = 'block'
+    }
   }
 })()
 
@@ -215,6 +221,7 @@ function editPlayer(player: Player) {
   const currentPlayer = game.players[player.index]
   if (currentPlayer.ready !== player.ready) toggleReadyStatus(currentPlayer)
 
+  // todo: get rid of this if and edit current player if socket request received to do so, stop local caching!!!
   if (player.index !== game.client.index) {
     if (currentPlayer.faction.colour !== player.faction.colour) {
       disabledColours.splice(disabledColours.indexOf(currentPlayer.faction.colour), 1)
@@ -238,7 +245,17 @@ function removePlayer(index: number) {
   renderStart()
 }
 
+function phaseEdit(phase: GamePhase) {
+  if (phase === 1) {
+    // Game start, remove lobby
+    lobby.style.display = 'none'
+  }
+  game.phase = phase
+  game.save()
+}
+
 socket.on('playerJoin', addPlayer)
 socket.on('playerEdit', editPlayer)
 socket.on('playerLeave', removePlayer)
+socket.on('phaseEdit', phaseEdit)
 socket.on('exception', msg => console.error(`Socket request rejected: ${msg}`))

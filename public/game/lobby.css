@@ -13,6 +13,7 @@ p {
 }
 
 #lobby {
+  display: none;
   height: 90%;
   width: 65%;
   margin: 20px 0 0 50px

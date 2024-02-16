@@ -12,15 +12,6 @@ export default () => {
   renderReadyStatusText()
 }
 
-startButton.addEventListener("click", e => {
-  if (game.client.index === 0) {
-    if (allPlayersReady()) {
-      socket.emit("gameStart")
-    }
-  }
-  else socket.emit("editPlayer", { ready: !game.client.ready })
-})
-
 export function toggleReadyStatus(player: Player) {
   if (player.ready) game.playersReady--
   else game.playersReady++
@@ -53,4 +44,14 @@ function allPlayersReady() {
 
 export function renderReadyStatusText() {
   readyStatus.innerHTML = `<p>${game.playersReady}/${game.players.length} players ready.</p>`
+}
+
+startButton.addEventListener("click", e => {
+  if (game.client.index === 0) sendStartGame()
+  else socket.emit("editPlayer", { ready: !game.client.ready })
+})
+function sendStartGame() {
+  if (allPlayersReady()) {
+    socket.emit("gameStart")
+  }
 }
