@@ -1,6 +1,6 @@
 import { request, saveNewGame, socket } from "./shared/api";
 import { createGame } from "./createGame.js";
-import { delay } from "./index.js"
+import { delay } from "./shared/modules";
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")

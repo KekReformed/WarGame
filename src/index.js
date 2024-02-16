@@ -30,8 +30,4 @@ if ("ontouchstart" in window) {
     buttons.innerHTML = "It appears you're viewing this screen on a touch screen device. Unfortunately Wargame can't be played on a touch screen device as we've designed the experience explicitly for keyboard and mouse. This is not likely to change.<br><br>The buttons are still accessible below as some devices support keyboard, mouse and touchscreen. But if you are on a phone/tablet, nothing will work for you." + buttons.innerHTML
 }
 
-export async function delay(seconds) {
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
-}
-
 import './createGame.js'

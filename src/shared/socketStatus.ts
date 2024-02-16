@@ -1,5 +1,5 @@
 /** Handles styling/text updates for the socket connection status of the client and players. */
-import { delay } from "..";
+import { delay } from "./modules";
 import { socket } from "./api"
 
 const circle = document.getElementById('connectStatus')
