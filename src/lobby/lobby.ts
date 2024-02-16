@@ -1,4 +1,5 @@
-import { createElement, request, socket } from "../shared/api";
+import { request, socket } from "../shared/api";
+import { createElement } from "../shared/modules";
 import Client from "./api/Client";
 import Game, { GamePhase } from "./api/Game";
 import Player from "./api/Player";

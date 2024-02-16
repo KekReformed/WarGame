@@ -1,4 +1,5 @@
-import { request, saveNewGame } from "./shared/api"
+import { request } from "./shared/api"
+import { saveNewGame } from "./shared/modules"
 
 export const createGame = document.getElementById("create-game")
 

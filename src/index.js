@@ -1,6 +1,6 @@
 import './agar.js'
-import { createElement } from './shared/api.ts'
 import './shared/socketStatus'
+import { createElement } from './shared/modules.ts'
 
 const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")

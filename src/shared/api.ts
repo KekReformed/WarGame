@@ -23,16 +23,3 @@ export async function request(method: string, path: string, write: any, headers 
 let socketOptions;
 if (localStorage.secret) socketOptions = { query: { secret: localStorage.secret } }
 export const socket = io("https://amelix.xyz:" + socketPort, socketOptions)
-
-const dom = new DOMParser()
-export function createElement(html: string) {
-  return dom.parseFromString(html, 'text/html').activeElement.children.item(0)
-}
-
-/** Saves a game to the browser after receiving it from the server for the first time, then navigates to the lobby. */
-export function saveNewGame(body: { secret: string }) {
-  if (location.hostname === "localhost") localStorage.secret = body.secret
-  delete body.secret
-  localStorage.game = JSON.stringify(body)
-  location.pathname = "/game/"
-}
