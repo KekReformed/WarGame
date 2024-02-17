@@ -1,4 +1,4 @@
-import { main, saveNewGame } from "."
+import { main } from "."
 import { api } from "./shared/api"
 
 export const createGame = document.getElementById("create-game")
@@ -27,7 +27,10 @@ gameCreateBtn.addEventListener('click', e => {
       name: usernameInput.value,
       public: publicCheckbox.checked
     }).then(res => {
-      if (res.ok) return saveNewGame(res.body)
+      if (res.ok) {
+        if (location.hostname === 'localhost') localStorage.secret = res.body.secret
+        return location.pathname = "/game/"
+      }
       createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${res.statusText}`
     })
   }

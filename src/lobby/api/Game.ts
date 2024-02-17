@@ -49,17 +49,19 @@ export default class Game {
     this.depots = []
   }
 
-  /** Save the current gamestate to the browser's localstorage. */
+  /** Save the current gamestate to the browser's localstorage.
+   * @deprecated Currently does nothing as don't want to cache game. BUT might want to in the future while game is running, so leaving this here for now
+  */
   save() {
-    const clone: any = Object.assign({}, this)
-    delete clone.client
+    // const clone: any = Object.assign({}, this)
+    // delete clone.client
 
-    for (let key in clone) {
-      // Delete any arrays for now as trying to store Jack's units / other game data is circular
-      if (key !== "players" && Array.isArray(clone[key])) delete clone[key]
-    }
+    // for (let key in clone) {
+    //   // Delete any arrays for now as trying to store Jack's units / other game data is circular
+    //   if (key !== "players" && Array.isArray(clone[key])) delete clone[key]
+    // }
 
-    clone.clientIndex = this.client.index
-    localStorage.game = JSON.stringify(clone)
+    // clone.clientIndex = this.client.index
+    // localStorage.game = JSON.stringify(clone)
   }
 }

@@ -32,16 +32,11 @@ let clientColour: HTMLDivElement;
 
 export let game: Game;
 (async () => {
-  if (localStorage.game) {
-    game = new Game(JSON.parse(localStorage.game))
+  const res = await api.getGame()
+  if (!res.ok) {
+    return title.innerHTML = `<p>Failed to load a game: ${res.statusText}</p>`
   }
-  else {
-    const res = await api.getGame()
-    if (!res.ok) {
-      return title.innerHTML = `<p>Failed to load a game: ${res.statusText}</p>`
-    }
-    game = new Game(res.body)
-  }
+  game = new Game(res.body)
 
   const titleString = `${game.players[0].name}'s Game`
   document.title = titleString + " | Wargame"
@@ -78,12 +73,12 @@ export let game: Game;
   if (game.phase === GamePhase.lobby) {
     lobby.style.display = 'block'
   }
-})()
+})().catch(e => title.innerHTML = `<p>An unexpected error occurred: ${e}`)
 
 const leaveBtn = document.getElementById("leave")
 leaveBtn.addEventListener("click", async e => {
   await api.leaveGame()
-  localStorage.clear()
+  delete localStorage.secret
   location.pathname = ""
 })
 

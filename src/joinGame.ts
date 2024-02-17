@@ -1,4 +1,4 @@
-import { main, saveNewGame } from ".";
+import { main } from ".";
 import { createGame } from "./createGame";
 import { PartialGame, api, socket } from "./shared/api";
 import { delay } from "./shared/modules";
@@ -104,7 +104,8 @@ async function joinGame(id: string) {
         }
         return usernameError.innerHTML = res.statusText
       }
-      saveNewGame(res.body)
+      if (location.hostname === 'localhost') localStorage.secret = res.body.secret
+      return location.pathname = "/game/"
     }).catch(e => {
       usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
     })

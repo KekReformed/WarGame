@@ -6,12 +6,12 @@ import { initalizeQuadTree, } from './QuadTree'
 import * as sprites from './Sprite'
 import City from "./City"
 import { scaleBy, setOffset, worldToScreen } from './Util'
-import * as pathfinding from "./Pathfinding"
 import Aviation from './depots/Aviation'
 import BattleShip from './units/BattleShip'
 import { game } from '../lobby'
 import { UIComponents } from './ui/UIComponent'
 import Barracks from './depots/Barracks'
+import { delay } from '../../shared/modules'
 
 let timeHeld = 0
 var dragged = false
@@ -27,10 +27,15 @@ let mouseDownState: { [k: string]: Boolean } = { "right": false, "left": false, 
 let mouseUpState: { [k: string]: Boolean } = { "right": false, "left": false, "center": false };
 
 function sketch(p: p5) {
-    p.setup = () => {
+    p.setup = async () => {
         sprites.initalize()
         initalizeQuadTree(3)
         const canvas = p.createCanvas(window.outerWidth, window.outerHeight);
+
+        // Ensure the game is loaded before drawing the game
+        while (!game) {
+            await delay(0.1)
+        }
 
         let positionX = 100;
         for (const player of game.players) {
