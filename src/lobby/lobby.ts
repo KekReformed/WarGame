@@ -78,7 +78,6 @@ leaveBtn.addEventListener("click", async e => {
   location.pathname = ""
 })
 
-// TODO: move this into the Game class
 function addPlayer(player: Player, client = false, initialisation = false) {
   if (!initialisation) {
     game.players.push(player)
