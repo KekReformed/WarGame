@@ -10,7 +10,7 @@ import Infantry from "./Infantry.js";
 import { screenToWorld, worldToScreen } from "../Util";
 import * as pathfinding from "../Pathfinding"
 import { game } from "../../lobby";
-import { socket } from "../../../shared/api";
+import { socket } from "../../shared/api";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"

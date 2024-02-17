@@ -1,6 +1,6 @@
 import { api, socket } from "../shared/api";
 import { createElement } from "../shared/modules";
-import Game, { GamePhase, Player } from "./api/Game";
+import Game, { GamePhase, Player } from "../game/Game";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
 import '../shared/socketStatus'

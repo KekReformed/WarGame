@@ -1,8 +1,8 @@
 /* Things to do with the Start/Ready button, not necessarily starting the game */
 
 import { socket } from "../shared/api"
-import Player from "./api/Player"
-import { game } from "./lobby"
+import { game } from "."
+import { Player } from "../game/Game"
 
 export const startButton = document.getElementById("start")
 const readyStatus = document.getElementById("readyStatus")

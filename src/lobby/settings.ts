@@ -1,6 +1,6 @@
 import { socket } from "../shared/api";
-import Game from "./api/Game";
-import { game } from "./lobby";
+import Game from "../game/Game";
+import { game } from ".";
 
 const inputs: { [setting: string]: HTMLInputElement } = {}
 

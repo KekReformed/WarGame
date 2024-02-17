@@ -3,7 +3,7 @@ import Fighter from "./units/Fighter";
 import Infantry from "./units/Infantry";
 import Bomber from "./units/Bomber";
 import BattleShip from "./units/BattleShip";
-import { socket } from "../../shared/api";
+import { socket } from "../shared/api";
 import { Vector } from "p5";
 import { game } from "../lobby";
 let keysPressed: string[] = []

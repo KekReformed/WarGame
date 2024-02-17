@@ -11,7 +11,7 @@ import BattleShip from './units/BattleShip'
 import { game } from '../lobby'
 import { UIComponents } from './ui/UIComponent'
 import Barracks from './depots/Barracks'
-import { delay } from '../../shared/modules'
+import { delay } from '../shared/modules'
 
 let timeHeld = 0
 var dragged = false

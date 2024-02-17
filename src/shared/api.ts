@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client'
-import { GameData } from '../lobby/api/Game';
+import { GameData } from '../game/Game';
 
 const apiUrl = localStorage.dev ? "https://wargame.amelix.xyz:7777/api" : "https://wargame.amelix.xyz/api";
 const socketPort = localStorage.dev ? "4000" : "3001"
