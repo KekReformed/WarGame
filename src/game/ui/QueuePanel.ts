@@ -8,13 +8,6 @@ import { Production } from "../depots/ProductionDepot";
 
 
 class QueuePanel extends PanelUI {
-    colour: Color
-    posX: number
-    posY: number
-    width: number
-    height: number
-    hidden: boolean
-    UIComponents: UIComponent[]
     queue: Production[]
     maxQueue: number
     squareSize: number

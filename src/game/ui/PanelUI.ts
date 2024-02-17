@@ -4,12 +4,6 @@ import { worldToScreen } from "../Util"
 import UIComponent from "./UIComponent"
 
 class PanelUI extends UIComponent {
-    colour: Color
-    posX: number
-    posY: number
-    width: number
-    height: number
-    hidden: boolean
     UIComponents: UIComponent[]
 
     constructor(colour: Color, posX: number, posY: number, width: number, height: number, hidden: boolean, UIComponents: UIComponent[]) {

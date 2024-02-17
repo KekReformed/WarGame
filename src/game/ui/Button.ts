@@ -4,13 +4,7 @@ import { screenToWorld, worldToScreen } from "../Util"
 import UIComponent from "./UIComponent"
 
 class Button extends UIComponent {
-    colour: Color
-    posX: number
-    posY: number
-    width: number
-    height: number
     label: string
-    hidden: boolean
 
     buttonFunction: () => void
 

@@ -14,7 +14,6 @@ const explosionRadius = 100
 class NukeSilo extends ProductionDepot {
     loaded: boolean
     button: Button
-    panel: PanelUI
     target: Vector
     nuke: Nuke
 
