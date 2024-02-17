@@ -5,7 +5,7 @@ import { delay, saveNewGame } from "./shared/modules";
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")
 /** @type {HTMLCollectionOf<Element>} */
-let joinButtons; 
+let joinButtons;
 
 const input = document.getElementById("join-game-u")
 let inputBlinking = false
@@ -19,102 +19,102 @@ const usernameError = document.getElementById("username-taken")
 const noGamesString = `<p>There aren't any public games to join at the moment. Wanna <span id="create-one">create one?</span></p>`
 
 joinBtn.addEventListener("click", async e => {
-    main.style.display = "none"
-    lobbies.style.display = "block"
+  main.style.display = "none"
+  lobbies.style.display = "block"
 
-    if (!games) {
-        gamesDiv.innerHTML = "Fetching games..."
-        // Load games
-        request("GET", "/games")
-        .then(res => {
-            games = res.body
-            gamesDiv.innerHTML = ""
-            
-            if (games.length) {
-                for (const game of games) {
-                    addGame(game)
-                }
-            }
-            else {
-                gamesDiv.innerHTML = noGamesString
-                document.getElementById("create-one").addEventListener("click", e => {
-                    lobbies.style.display = "none"
-                    createGame.style.display = "block"
-                })
-            }
-    
-            joinButtons = document.getElementsByClassName("join-button")
-            updateJoinButtons()
-        })
-        .catch(e => 
-            gamesDiv.innerHTML = `Failed to load games due to an unexpected error. Please report this to the developers.<br><br>${e}<br><br>You can try fetching games again by clicking the back button below, then coming back to this page.`
-        )
-    }
+  if (!games) {
+    gamesDiv.innerHTML = "Fetching games..."
+    // Load games
+    request("GET", "/games")
+      .then(res => {
+        games = res.body
+        gamesDiv.innerHTML = ""
+
+        if (games.length) {
+          for (const game of games) {
+            addGame(game)
+          }
+        }
+        else {
+          gamesDiv.innerHTML = noGamesString
+          document.getElementById("create-one").addEventListener("click", e => {
+            lobbies.style.display = "none"
+            createGame.style.display = "block"
+          })
+        }
+
+        joinButtons = document.getElementsByClassName("join-button")
+        updateJoinButtons()
+      })
+      .catch(e =>
+        gamesDiv.innerHTML = `Failed to load games due to an unexpected error. Please report this to the developers.<br><br>${e}<br><br>You can try fetching games again by clicking the back button below, then coming back to this page.`
+      )
+  }
 });
 
 input.addEventListener("keyup", e => updateJoinButtons())
 
 function joinButtonClass() {
-    return input.value.length > 0 
-    ? "join-button valid" 
+  return input.value.length > 0
+    ? "join-button valid"
     : "join-button invalid"
 }
 
 function updateJoinButtons() {
-    usernameError.innerHTML = ""
-    const className = joinButtonClass()
+  usernameError.innerHTML = ""
+  const className = joinButtonClass()
 
-    for (const button of joinButtons) {
-        button.className = className
-    }
+  for (const button of joinButtons) {
+    button.className = className
+  }
 }
 
 function addGame(game) {
-    if (games.length === 0) gamesDiv.innerHTML = ""
-    const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button ${joinButtonClass()}">Join</div></div>`, 'text/html').activeElement.children.item(0)
-    gamesDiv.appendChild(element)
-    element.children.item(1).addEventListener("click", e => joinGame(game.id))
+  if (games.length === 0) gamesDiv.innerHTML = ""
+  const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button ${joinButtonClass()}">Join</div></div>`, 'text/html').activeElement.children.item(0)
+  gamesDiv.appendChild(element)
+  element.children.item(1).addEventListener("click", e => joinGame(game.id))
 }
 
 function editGame(game) {
-    const element = document.getElementById(game.id)
-    if (element) element.children.item(0).innerHTML = createGameString(game)
-    else addGame(game)
+  const element = document.getElementById(game.id)
+  if (element) element.children.item(0).innerHTML = createGameString(game)
+  else addGame(game)
 }
 
 function deleteGame(id) {
-    document.getElementById(id)?.remove()
-    if (games.length === 0) gamesDiv.innerHTML = noGamesString
+  document.getElementById(id)?.remove()
+  if (games.length === 0) gamesDiv.innerHTML = noGamesString
 }
 
 function createGameString(game) {
-    return `<p>${game.creatorName}'s game - ${game.players} player${game.players > 1 ? 's' : ''}</p>`
+  return `<p>${game.creatorName}'s game - ${game.players} player${game.players > 1 ? 's' : ''}</p>`
 }
 
 async function joinGame(id) {
-    if (input.value.length > 0) {
-        request("POST", `/games/${id}/join`, { name: input.value },  localStorage.secret ? { Authorization: localStorage.secret } : undefined)
-        .then(res => saveNewGame(res.body))
-        .catch(e => {
-            if (e.statusCode === 409) {
-                usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
-            }
-            else if (e.statusCode === 400) usernameError.innerHTML = e.message
-            else usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
-        })
-    }
-    else {
-        if (!inputBlinking) {
-            inputBlinking = true
-            for (let i=0; i<4; i++) {
-                input.style.border = "1px solid #ff3d3d"
-                await delay(0.3)
-                input.style.border = null
-                await delay(0.3)
-            }
-            inputBlinking = false
+  if (input.value.length > 0) {
+    request("POST", `/games/${id}/join`, { name: input.value }, localStorage.secret ? { Authorization: localStorage.secret } : undefined)
+      .then(res => saveNewGame(res.body))
+      .catch(e => {
+        if (e.statusCode === 409) {
+          usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
         }
+        else if (e.statusCode === 400) usernameError.innerHTML = e.message
+        else usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
+      })
+  }
+  else {
+    if (!inputBlinking) {
+      inputBlinking = true
+      for (let i = 0; i < 4; i++) {
+        input.style.border = "1px solid #ff3d3d"
+        await delay(0.3)
+        input.style.border = null
+        await delay(0.3)
+      }
+      inputBlinking = false
     }
+  }
 }
 
 socket.on('gameCreate', addGame)
