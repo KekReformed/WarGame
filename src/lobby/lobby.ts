@@ -1,4 +1,4 @@
-import { request, socket } from "../shared/api";
+import { api, socket } from "../shared/api";
 import { createElement } from "../shared/modules";
 import Client from "./api/Client";
 import Game, { GamePhase } from "./api/Game";
@@ -30,62 +30,59 @@ let disabledColours: string[] = [];
 let colourIndex: number;
 let clientColour: HTMLDivElement;
 
-const secret = localStorage.secret;
-
 export let game: Game;
 (async () => {
   if (localStorage.game) {
     game = new Game(JSON.parse(localStorage.game))
   }
   else {
-    const res = await request("GET", "/game", undefined, { authorization: secret }).catch(e => {
-      title.innerHTML = `<p>Failed to load a game: ${e.message}</p>`
-    })
-    if (res) game = new Game(res.body)
+    const res = await api.getGame()
+    if (!res.ok) {
+      return title.innerHTML = `<p>Failed to load a game: ${res.statusText}</p>`
+    }
+    game = new Game(res.body)
   }
 
-  if (game) {
-    const titleString = `${game.players[0].name}'s Game`
-    document.title = titleString + " | Wargame"
-    title.innerHTML = `<p>${titleString}</p>`
+  const titleString = `${game.players[0].name}'s Game`
+  document.title = titleString + " | Wargame"
+  title.innerHTML = `<p>${titleString}</p>`
 
-    game.playersReady = 0
-    for (const i in game.players) {
-      const player = game.players[i]
-      const isClient = parseInt(i) === game.clientIndex
+  game.playersReady = 0
+  for (const i in game.players) {
+    const player = game.players[i]
+    const isClient = parseInt(i) === game.clientIndex
 
-      isClient
-        ? game.players[i] = new Client(player)
-        : game.players[i] = new Player(player)
+    isClient
+      ? game.players[i] = new Client(player)
+      : game.players[i] = new Player(player)
 
-      if (player.faction?.colour) disabledColours.push(player.faction.colour)
-      if (player.ready) game.playersReady++
-      addPlayer(player, isClient, true)
-    }
+    if (player.faction?.colour) disabledColours.push(player.faction.colour)
+    if (player.ready) game.playersReady++
+    addPlayer(player, isClient, true)
+  }
 
-    renderStart()
+  renderStart()
 
-    // Generate colour select box
-    renderColours()
+  // Generate colour select box
+  renderColours()
 
-    positionColoursBox(clientColour)
-    window.onresize = () => positionColoursBox(clientColour)
+  positionColoursBox(clientColour)
+  window.onresize = () => positionColoursBox(clientColour)
 
-    // Initialise Settings
-    settings()
+  // Initialise Settings
+  settings()
 
-    game.save()
+  game.save()
 
-    // Add lobby if game is not started
-    if (game.phase === GamePhase.lobby) {
-      lobby.style.display = 'block'
-    }
+  // Add lobby if game is not started
+  if (game.phase === GamePhase.lobby) {
+    lobby.style.display = 'block'
   }
 })()
 
 const leaveBtn = document.getElementById("leave")
 leaveBtn.addEventListener("click", async e => {
-  await request("POST", "/game/leave", undefined, { authorization: secret });
+  await api.leaveGame()
   localStorage.clear()
   location.pathname = ""
 })

@@ -1,22 +1,23 @@
 import { main } from ".";
 import { createGame } from "./createGame";
-import { request, socket } from "./shared/api";
+import { PartialGame, api, socket } from "./shared/api";
 import { delay, saveNewGame } from "./shared/modules";
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")
-let joinButtons: HTMLCollectionOf<Element>;
+let joinButtons: HTMLCollectionOf<Element> | undefined;
 
 const input = <HTMLInputElement>document.getElementById("join-game-u")
 let inputBlinking = false
 
 const gamesDiv = document.getElementById("games")
 
-let games: Game[];
+let games: PartialGame[];
 
 const usernameError = document.getElementById("username-taken")
 
 const noGamesString = `<p>There aren't any public games to join at the moment. Wanna <span id="create-one">create one?</span></p>`
+const errorString = `<br><br>You can try fetching games again by clicking the back button below, then coming back to this page.`
 
 joinBtn.addEventListener("click", async e => {
   main.style.display = "none"
@@ -25,30 +26,32 @@ joinBtn.addEventListener("click", async e => {
   if (!games) {
     gamesDiv.innerHTML = "Fetching games..."
     // Load games
-    request("GET", "/games", undefined)
-      .then(res => {
-        games = res.body
-        gamesDiv.innerHTML = ""
+    api.getGames().then(res => {
+      if (!res.ok) {
+        return gamesDiv.innerHTML = `Failed to load games: ${res.statusText}${errorString}`
+      }
+      games = res.body
+      gamesDiv.innerHTML = ""
 
-        if (games.length) {
-          for (const game of games) {
-            addGame(game)
-          }
+      if (games.length) {
+        for (const game of games) {
+          addGame(game)
         }
-        else {
-          gamesDiv.innerHTML = noGamesString
-          document.getElementById("create-one").addEventListener("click", e => {
-            lobbies.style.display = "none"
-            createGame.style.display = "block"
-          })
-        }
+      }
+      else {
+        gamesDiv.innerHTML = noGamesString
+        document.getElementById("create-one").addEventListener("click", e => {
+          lobbies.style.display = "none"
+          createGame.style.display = "block"
+        })
+      }
 
-        joinButtons = document.getElementsByClassName("join-button")
-        updateJoinButtons()
-      })
-      .catch(e =>
-        gamesDiv.innerHTML = `Failed to load games due to an unexpected error. Please report this to the developers.<br><br>${e}<br><br>You can try fetching games again by clicking the back button below, then coming back to this page.`
-      )
+      joinButtons = document.getElementsByClassName("join-button")
+      updateJoinButtons()
+    }).catch(e => {
+      console.log(e)
+      gamesDiv.innerHTML = `Failed to load games due to an unexpected error. Please report this to the developers.<br><br>${e}${errorString}`
+    })
   }
 });
 
@@ -61,6 +64,7 @@ function joinButtonClass() {
 }
 
 function updateJoinButtons() {
+  if (!joinButtons) return
   usernameError.innerHTML = ""
   const className = joinButtonClass()
 
@@ -70,14 +74,14 @@ function updateJoinButtons() {
   }
 }
 
-function addGame(game: Game) {
+function addGame(game: PartialGame) {
   if (games.length === 0) gamesDiv.innerHTML = ""
   const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button ${joinButtonClass()}">Join</div></div>`, 'text/html').activeElement.children.item(0)
   gamesDiv.appendChild(element)
   element.children.item(1).addEventListener("click", e => joinGame(game.id))
 }
 
-function editGame(game: Game) {
+function editGame(game: PartialGame) {
   const element = document.getElementById(game.id)
   if (element) element.children.item(0).innerHTML = createGameString(game)
   else addGame(game)
@@ -88,21 +92,23 @@ function deleteGame(id: string) {
   if (games.length === 0) gamesDiv.innerHTML = noGamesString
 }
 
-function createGameString(game: Game) {
+function createGameString(game: PartialGame) {
   return `<p>${game.creatorName}'s game - ${game.players} player${game.players > 1 ? 's' : ''}</p>`
 }
 
 async function joinGame(id: string) {
   if (input.value.length > 0) {
-    request("POST", `/games/${id}/join`, { name: input.value }, localStorage.secret ? { Authorization: localStorage.secret } : undefined)
-      .then(res => saveNewGame(res.body))
-      .catch(e => {
-        if (e.statusCode === 409) {
-          usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
+    api.joinGame({ id, name: input.value }).then(res => {
+      if (!res.ok) {
+        if (res.status === 409) {
+          return usernameError.innerHTML = 'Sorry, this username has already been taken by someone in that game!'
         }
-        else if (e.statusCode === 400) usernameError.innerHTML = e.message
-        else usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
-      })
+        return usernameError.innerHTML = res.statusText
+      }
+      saveNewGame(res.body)
+    }).catch(e => {
+      usernameError.innerHTML = `An unexpected error occurred while joining that game. Please report this to the developers.<br><br>${e.message}`
+    })
   }
   else {
     if (!inputBlinking) {
@@ -121,9 +127,3 @@ async function joinGame(id: string) {
 socket.on('gameCreate', addGame)
 socket.on('publicGameEdit', editGame)
 socket.on('gameDelete', deleteGame)
-
-interface Game {
-  id: string
-  creatorName: string
-  players: number
-}

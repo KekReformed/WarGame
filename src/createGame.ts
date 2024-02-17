@@ -1,5 +1,5 @@
 import { main } from "."
-import { request } from "./shared/api"
+import { api } from "./shared/api"
 import { saveNewGame } from "./shared/modules"
 
 export const createGame = document.getElementById("create-game")
@@ -23,11 +23,14 @@ usernameInput.addEventListener('keyup', e => updateGameCreateButton())
 gameCreateBtn.addEventListener('click', e => {
   if (gameCreateFormValid()) {
     createGameError.innerHTML = ""
-    request("POST", "/games", { name: usernameInput.value, public: publicCheckbox.checked })
-      .then(res => saveNewGame(res.body))
-      .catch((err) => {
-        createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${err.message}`
-      })
+
+    api.createGame({
+      name: usernameInput.value,
+      public: publicCheckbox.checked
+    }).then(res => {
+      if (res.ok) return saveNewGame(res.body)
+      createGameError.innerHTML = `An unexpected error occurred while attempting to create a game. Contact the developers if this happens frequently.<br><br>${res.statusText}`
+    })
   }
   else {
     createGameError.innerHTML = `You must enter a username to create a game.`
