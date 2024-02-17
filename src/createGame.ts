@@ -1,3 +1,4 @@
+import { main } from "."
 import { request } from "./shared/api"
 import { saveNewGame } from "./shared/modules"
 
@@ -6,8 +7,8 @@ export const createGame = document.getElementById("create-game")
 const createBtn = document.getElementById("create")
 const gameCreateBtn = document.getElementById("game-create")
 
-const usernameInput = document.getElementById("u")
-const publicCheckbox = document.getElementById("public")
+const usernameInput = <HTMLInputElement>document.getElementById("u")
+const publicCheckbox = <HTMLInputElement>document.getElementById("public")
 
 const createGameError = document.getElementById("create-game-error")
 

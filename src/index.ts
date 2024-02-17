@@ -1,16 +1,18 @@
 import './agar.js'
 import './shared/socketStatus'
-import { createElement } from './shared/modules.ts'
+import { createElement } from './shared/modules'
 
-const main = document.getElementById("main")
+export const main = document.getElementById("main")
 const backBtns = document.getElementsByClassName("back")
 const pages = document.getElementsByClassName("page")
 
 // Back button functionality
-for (let btn of backBtns) {
+for (let i = 0; i < backBtns.length; i++) {
+  const btn = backBtns.item(i)
   btn.addEventListener("click", e => {
     main.style.display = "block"
-    for (let page of pages) {
+    for (let i = 0; i < pages.length; i++) {
+      const page = <HTMLElement>pages.item(i)
       page.style.display = "none"
     }
   })
@@ -29,5 +31,3 @@ if (localStorage.game) {
 if ("ontouchstart" in window) {
   buttons.innerHTML = "It appears you're viewing this screen on a touch screen device. Unfortunately Wargame can't be played on a touch screen device as we've designed the experience explicitly for keyboard and mouse. This is not likely to change.<br><br>The buttons are still accessible below as some devices support keyboard, mouse and touchscreen. But if you are on a phone/tablet, nothing will work for you." + buttons.innerHTML
 }
-
-import './createGame.js'

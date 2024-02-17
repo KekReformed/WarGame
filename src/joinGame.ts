@@ -1,18 +1,18 @@
+import { main } from ".";
 import { createGame } from "./createGame";
 import { request, socket } from "./shared/api";
 import { delay, saveNewGame } from "./shared/modules";
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")
-/** @type {HTMLCollectionOf<Element>} */
-let joinButtons;
+let joinButtons: HTMLCollectionOf<Element>;
 
-const input = document.getElementById("join-game-u")
+const input = <HTMLInputElement>document.getElementById("join-game-u")
 let inputBlinking = false
 
 const gamesDiv = document.getElementById("games")
 
-let games;
+let games: Game[];
 
 const usernameError = document.getElementById("username-taken")
 
@@ -25,7 +25,7 @@ joinBtn.addEventListener("click", async e => {
   if (!games) {
     gamesDiv.innerHTML = "Fetching games..."
     // Load games
-    request("GET", "/games")
+    request("GET", "/games", undefined)
       .then(res => {
         games = res.body
         gamesDiv.innerHTML = ""
@@ -64,34 +64,35 @@ function updateJoinButtons() {
   usernameError.innerHTML = ""
   const className = joinButtonClass()
 
-  for (const button of joinButtons) {
+  for (let i=0; i < joinButtons.length; i++) {
+    const button = joinButtons.item(i)
     button.className = className
   }
 }
 
-function addGame(game) {
+function addGame(game: Game) {
   if (games.length === 0) gamesDiv.innerHTML = ""
   const element = new DOMParser().parseFromString(`<div class="game" id="${game.id}">${createGameString(game)}<div class="join-button ${joinButtonClass()}">Join</div></div>`, 'text/html').activeElement.children.item(0)
   gamesDiv.appendChild(element)
   element.children.item(1).addEventListener("click", e => joinGame(game.id))
 }
 
-function editGame(game) {
+function editGame(game: Game) {
   const element = document.getElementById(game.id)
   if (element) element.children.item(0).innerHTML = createGameString(game)
   else addGame(game)
 }
 
-function deleteGame(id) {
+function deleteGame(id: string) {
   document.getElementById(id)?.remove()
   if (games.length === 0) gamesDiv.innerHTML = noGamesString
 }
 
-function createGameString(game) {
+function createGameString(game: Game) {
   return `<p>${game.creatorName}'s game - ${game.players} player${game.players > 1 ? 's' : ''}</p>`
 }
 
-async function joinGame(id) {
+async function joinGame(id: string) {
   if (input.value.length > 0) {
     request("POST", `/games/${id}/join`, { name: input.value }, localStorage.secret ? { Authorization: localStorage.secret } : undefined)
       .then(res => saveNewGame(res.body))
@@ -120,3 +121,9 @@ async function joinGame(id) {
 socket.on('gameCreate', addGame)
 socket.on('publicGameEdit', editGame)
 socket.on('gameDelete', deleteGame)
+
+interface Game {
+  id: string
+  creatorName: string
+  players: number
+}
