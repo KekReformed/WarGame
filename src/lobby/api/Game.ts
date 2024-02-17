@@ -2,8 +2,6 @@ import Battle from "../game/Battle"
 import City from "../game/City"
 import { AnyDepot } from "../game/depots/Depot"
 import { AnyUnit } from "../game/units/Unit"
-import Client from "./Client"
-import Player from "./Player"
 
 export enum GamePhase {
   "lobby",
@@ -64,4 +62,18 @@ export default class Game {
     // clone.clientIndex = this.client.index
     // localStorage.game = JSON.stringify(clone)
   }
+}
+
+export interface Player {
+  name: string
+  faction: {
+    name: string,
+    colour: string
+  }
+  ready?: boolean
+  index: number
+}
+
+export interface Client extends Player {
+  money: number
 }

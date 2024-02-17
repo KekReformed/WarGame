@@ -1,8 +1,6 @@
 import { api, socket } from "../shared/api";
 import { createElement } from "../shared/modules";
-import Client from "./api/Client";
-import Game, { GamePhase } from "./api/Game";
-import Player from "./api/Player";
+import Game, { GamePhase, Player } from "./api/Game";
 import settings from "./settings";
 import renderStart, { toggleReadyStatus } from "./start";
 import '../shared/socketStatus'
@@ -47,9 +45,7 @@ export let game: Game;
     const player = game.players[i]
     const isClient = parseInt(i) === game.clientIndex
 
-    isClient
-      ? game.players[i] = new Client(player)
-      : game.players[i] = new Player(player)
+    game.players[i] = player
 
     if (player.faction?.colour) disabledColours.push(player.faction.colour)
     if (player.ready) game.playersReady++
@@ -83,10 +79,9 @@ leaveBtn.addEventListener("click", async e => {
 })
 
 // TODO: move this into the Game class
-// the "player" here isn't an instance of a class (yet) and won't have methods
 function addPlayer(player: Player, client = false, initialisation = false) {
   if (!initialisation) {
-    game.players.push(new Player(player))
+    game.players.push(player)
     game.save()
   }
 
