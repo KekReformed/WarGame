@@ -1,6 +1,5 @@
-import { main } from "."
+import { main, saveNewGame } from "."
 import { api } from "./shared/api"
-import { saveNewGame } from "./shared/modules"
 
 export const createGame = document.getElementById("create-game")
 

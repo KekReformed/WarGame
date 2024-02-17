@@ -1,7 +1,7 @@
-import { main } from ".";
+import { main, saveNewGame } from ".";
 import { createGame } from "./createGame";
 import { PartialGame, api, socket } from "./shared/api";
-import { delay, saveNewGame } from "./shared/modules";
+import { delay } from "./shared/modules";
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")
@@ -25,7 +25,6 @@ joinBtn.addEventListener("click", async e => {
 
   if (!games) {
     gamesDiv.innerHTML = "Fetching games..."
-    // Load games
     api.getGames().then(res => {
       if (!res.ok) {
         return gamesDiv.innerHTML = `Failed to load games: ${res.statusText}${errorString}`
