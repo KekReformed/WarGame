@@ -1,4 +1,3 @@
-import './agar.js'
 import './shared/socketStatus'
 import { createElement } from './shared/modules'
 import { api } from './shared/api'
