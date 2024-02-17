@@ -32,6 +32,7 @@ export let game: Game;
 (async () => {
   const res = await api.getGame()
   if (!res.ok) {
+    if (res.status === 400) location.pathname = ''
     return title.innerHTML = `<p>Failed to load a game: ${res.statusText}</p>`
   }
   game = new Game(res.body)
