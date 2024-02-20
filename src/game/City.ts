@@ -35,7 +35,7 @@ class City {
                 if (this.sprite.collisions[i].userData instanceof Unit) {
                     let unit: Unit = this.sprite.collisions[i].userData
 
-                    if (unit.faction === this.faction && unit.is<Infantry>("infantry") && !unit.inCity) {
+                    if (unit.faction.name === this.faction && unit.is<Infantry>("infantry") && !unit.inCity) {
                         this.defenders += 1
                         unit.inCity = true
                     }
@@ -47,8 +47,8 @@ class City {
                     let unit: Unit = this.sprite.collisions[i].userData
 
                     //Oh noes! there is an enemy inside of me, now im gonna be captured!
-                    if (this.faction !== unit.faction && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0 && unit.type === "infantry") {
-                        this.faction = unit.faction
+                    if (this.faction !== unit.faction.name && unit.sprite.velocity.x === 0 && unit.sprite.velocity.y === 0 && this.defenders === 0 && unit.strength > 0 && unit.type === "infantry") {
+                        this.faction = unit.faction.name
                     }
                 }
             }

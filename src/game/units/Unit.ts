@@ -7,10 +7,11 @@ import Armour from "./Armour.js";
 import Bomber from "./Bomber.js";
 import Fighter from "./Fighter.js";
 import Infantry from "./Infantry.js";
-import { screenToWorld, worldToScreen } from "../Util";
+import { screenToWorld, shadeColor, worldToScreen } from "../Util";
 import * as pathfinding from "../Pathfinding"
 import { game } from "../../lobby";
 import { socket } from "../../shared/api";
+import { Faction } from "../Game";
 
 export type AnyUnit = Infantry | Armour | Fighter | Bomber
 export type Terrain = "land" | "air"
@@ -27,7 +28,7 @@ class Unit {
     height: number
     width: number
     selected: boolean
-    faction: string
+    faction: Faction
     strength: number
     effectiveStrength: number
     strengthModifier: number
@@ -58,7 +59,7 @@ class Unit {
         this.sprite = new Sprite(unitData.positionX, unitData.positionY, this.height, this.width, 0, Anchor.top)
         this.sprite.userData = this
         this.goToPoint = this.sprite.position
-        this.sprite.color = `RGB(102,0,0)`
+        this.sprite.color = this.faction.colour
         this.sprite.velocityRotate = true
         this.path = []
     }
@@ -120,12 +121,12 @@ class Unit {
 
     select() {
         this.selected = true
-        this.sprite.color = "RGB(255,0,0)"
+        this.sprite.color = shadeColor(this.faction.colour,50)
     }
 
     deselect() {
         this.selected = false
-        this.sprite.color = "RGB(102,0,0)"
+        this.sprite.color = this.faction.colour
     }
 
     startBattle(EnemyUnit: Unit) {
@@ -141,20 +142,20 @@ class Unit {
 
         for (const faction in battle.factions) {
 
-            if (faction === this.faction) {
+            if (faction === this.faction.name) {
 
-                battle.factions[this.faction].units.push(this)
+                battle.factions[this.faction.name].units.push(this)
                 factionExists = true
             }
         }
 
         if (!factionExists) {
             console.log(battle)
-            battle.factions[this.faction] = {
+            battle.factions[this.faction.name] = {
                 units: [this]
             }
             battle.totalStrength += this.effectiveStrength
-            battle.factionList.push(this.faction)
+            battle.factionList.push(this.faction.name)
         }
 
         this.kill = true
@@ -165,7 +166,7 @@ class Unit {
         p.textSize(12)
         p.textAlign(p.CENTER)
         p.fill(255, 255, 255)
-        p.text(this.faction, pos.x, pos.y)
+        p.text(this.faction.name, pos.x, pos.y)
         p.textSize(8)
         p.text(`Strength:${this.effectiveStrength}`, pos.x, pos.y + 10)
         p.textSize(8)

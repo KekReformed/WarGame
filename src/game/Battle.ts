@@ -33,10 +33,10 @@ class Battle {
         this.positionX = positionX
         this.positionY = positionY
         this.factions = {
-            [firstUnit.faction]: {
+            [firstUnit.faction.name]: {
                 units: [firstUnit]
             },
-            [secondUnit.faction]: {
+            [secondUnit.faction.name]: {
                 units: [secondUnit]
             }
         }
@@ -67,7 +67,7 @@ class Battle {
                     faction.totalStrength += unit.strength * unit.strengthModifier
                     if (faction.totalStrength > this.winningStrength) {
                         this.winningStrength = faction.totalStrength
-                        this.winningFaction = unit.faction
+                        this.winningFaction = unit.faction.name
                     }
                     faction.unitCount += 1
                 }

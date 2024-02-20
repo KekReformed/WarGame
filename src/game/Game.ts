@@ -66,12 +66,14 @@ export default class Game {
 
 export interface Player {
   name: string
-  faction: {
-    name: string,
-    colour: string
-  }
+  faction: Faction
   ready?: boolean
   index: number
+}
+
+export interface Faction {
+  name?: string,
+  colour?: string
 }
 
 export interface Client extends Player {

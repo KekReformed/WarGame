@@ -41,7 +41,7 @@ function sketch(p: p5) {
         for (const player of game.players) {
             for (let i = 0; i < 2; i++) {
                 new Infantry({
-                    faction: player.faction.name || "no faction",
+                    faction: { name: player.faction.name || 'no faction', colour: player.faction.colour || '#222222' },
                     positionX,
                     positionY: 250,
                     strength: 2000
@@ -51,7 +51,7 @@ function sketch(p: p5) {
         }
 
         new BattleShip({
-            faction: game.client.faction.name || "Other Faction",
+            faction: { name: "Other Faction", colour: '#123456' },
             positionX: 600,
             positionY: 400,
             strength: 2000
@@ -235,7 +235,7 @@ function sketch(p: p5) {
             // Select a unit by clicking on it
             for (const i in game.units) {
                 let unit = game.units[i]
-                if (unit.sprite.isMouseOver() && unit.faction === game.client.faction.name && unitSelected === false) {
+                if (unit.sprite.isMouseOver() && unit.faction.name === game.client.faction.name && unitSelected === false) {
                     console.log(unit.faction, game.client.faction.name)
                     unit.select()
                     unitSelected = true
@@ -249,7 +249,7 @@ function sketch(p: p5) {
             for (const i in game.depots) {
                 let depot = game.depots[i]
 
-                if (depot.sprite.isMouseOver() && depot.faction === game.client.faction.name) {
+                if (depot.sprite.isMouseOver() && depot.faction.name === game.client.faction.name) {
                     depot.select()
                 }
                 else {
@@ -273,7 +273,7 @@ function sketch(p: p5) {
                     Math.min(rectStartX, p.mouseX) < pos.x &&
                     pos.x < Math.max(rectStartX, p.mouseX) &&
                     Math.min(rectStartY, p.mouseY) < pos.y &&
-                    pos.y < Math.max(rectStartY, p.mouseY) && unit.faction === game.client.faction.name
+                    pos.y < Math.max(rectStartY, p.mouseY) && unit.faction.name === game.client.faction.name
                 ) {
                     unit.select()
                 }

@@ -70,7 +70,10 @@ export let game: Game;
   if (game.phase === GamePhase.lobby) {
     lobby.style.display = 'block'
   }
-})().catch(e => title.innerHTML = `<p>An unexpected error occurred: ${e}`)
+})().catch(e => {
+  console.error(e)
+  title.innerHTML = `<p>An unexpected error occurred: ${e}`
+})
 
 const leaveBtn = document.getElementById("leave")
 leaveBtn.addEventListener("click", async e => {

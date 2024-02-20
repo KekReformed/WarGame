@@ -1,5 +1,6 @@
 import { game } from "../../lobby"
 import City from "../City"
+import { Faction } from "../Game"
 import { p } from "../sketch"
 import { Sprite } from "../Sprite"
 import Unit from "../units/Unit"
@@ -12,7 +13,7 @@ export type AnyDepot = Airstrip | Aviation | Barracks | Depot
 
 class Depot {
     type: string
-    faction: string | "None"
+    faction: Faction
     sprite: Sprite
     city: City
     inCity: boolean
@@ -36,7 +37,7 @@ class Depot {
     }
 
     update() {
-        if (this.inCity) this.faction = this.city.faction
+        if (this.inCity) this.faction.name = this.city.faction
 
         for (const i in this.sprite.collisions) {
 
