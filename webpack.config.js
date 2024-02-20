@@ -5,7 +5,9 @@ const serveDirectory = path.resolve(__dirname, 'public')
 
 module.exports = {
   entry: {
-    index: ['./src/index.ts', './src/joinGame.ts'],
+    // Main Menu
+    index: ['./src/menu/index.ts', './src/menu/joinGame.ts'],
+    // Lobby and Game
     game: ['./src/lobby/index.ts', 'p5', './src/game/sketch.ts']
   },
   mode: "development",

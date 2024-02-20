@@ -1,6 +1,6 @@
-import './shared/socketStatus'
-import { createElement } from './shared/modules'
-import { api } from './shared/api'
+import '../shared/socketStatus'
+import { createElement } from '../shared/modules'
+import { api } from '../shared/api'
 
 export const main = document.getElementById("main")
 const buttons = document.getElementById("buttons")

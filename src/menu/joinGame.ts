@@ -1,7 +1,7 @@
 import { main } from ".";
 import { createGame } from "./createGame";
-import { PartialGame, api, socket } from "./shared/api";
-import { delay } from "./shared/modules";
+import { PartialGame, api, socket } from "../shared/api";
+import { delay } from "../shared/modules";
 
 const lobbies = document.getElementById("lobbies")
 const joinBtn = document.getElementById("join")

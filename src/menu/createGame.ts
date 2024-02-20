@@ -1,5 +1,5 @@
 import { main } from "."
-import { api } from "./shared/api"
+import { api } from "../shared/api"
 
 export const createGame = document.getElementById("create-game")
 
